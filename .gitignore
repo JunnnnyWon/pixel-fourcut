@@ -1,0 +1,18 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Env
+.env
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Workspace (로컬 테스트 데이터)
+workspace/
+
+# Logs
+*.log
