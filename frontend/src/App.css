@@ -117,6 +117,10 @@ body { background: #111; color: #eee; font-family: sans-serif; }
   gap: 12px;
 }
 
+.status-card-three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .status-card > div,
 .admin section {
   background: #1a1a1a;
@@ -249,6 +253,10 @@ body { background: #111; color: #eee; font-family: sans-serif; }
   margin-bottom: 12px;
 }
 
+.session-summary-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .session-summary > div {
   background: #202020;
   border-radius: 10px;
@@ -264,6 +272,18 @@ body { background: #111; color: #eee; font-family: sans-serif; }
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.capture-lane-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.lane-meta {
+  font-size: 13px;
+  color: #8a8a8a;
 }
 
 .admin-gallery {
@@ -328,6 +348,54 @@ body { background: #111; color: #eee; font-family: sans-serif; }
   color: #86f0b5;
   font-size: 14px;
   font-weight: 600;
+}
+
+.queue-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.queue-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #202020;
+  border: 1px solid #2a2a2a;
+}
+
+.queue-card.compact {
+  min-height: 0;
+}
+
+.queue-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.queue-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: #9a9a9a;
+}
+
+.queue-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #111;
+}
+
+.queue-card-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .log-list {
@@ -464,9 +532,39 @@ body { background: #111; color: #eee; font-family: sans-serif; }
   margin-bottom: 8px;
 }
 
+.public-queue-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.public-queue-box {
+  background: #202020;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.queue-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.muted-text {
+  color: #7d7d7d;
+  font-size: 14px;
+}
+
 @media (max-width: 720px) {
   .status-card,
-  .session-summary {
+  .status-card-three,
+  .session-summary,
+  .session-summary-four,
+  .public-queue-grid {
     grid-template-columns: 1fr;
   }
 

@@ -52,3 +52,11 @@ def serve_session_shot(shot_id: str):
     if not path or not path.exists():
         raise HTTPException(404, "세션 이미지를 찾을 수 없습니다.")
     return FileResponse(str(path))
+
+
+@router.get("/api/session/shots/{session_id}/{shot_id}")
+def serve_session_shot_scoped(session_id: str, shot_id: str):
+    path = session.get_shot_path(shot_id, session_id=session_id)
+    if not path or not path.exists():
+        raise HTTPException(404, "세션 이미지를 찾을 수 없습니다.")
+    return FileResponse(str(path))

@@ -6,25 +6,50 @@ const PHASE_LABEL = {
   idle: '대기 중',
   capturing: '촬영 중',
   reviewing: '사진 선택 중',
+  queued: 'AI 대기열',
   processing: 'AI 처리 중',
-  result_ready: '결과 준비 완료',
-  completed: '세션 완료',
+  result_ready: '인화 대기',
+  completed: '완료',
   error: '오류',
+}
+
+function SessionCard({ title, session, children, compact = false }) {
+  if (!session) return null
+  const heroImage = session.result_url || session.selected_shot?.url || session.preview_shot?.url || session.shots?.[0]?.url
+  return (
+    <div className={`queue-card ${compact ? 'compact' : ''}`}>
+      <div className="queue-card-head">
+        <div>
+          <div className="summary-label">{title}</div>
+          <strong>{session.session_id}</strong>
+        </div>
+        <span className={`phase-badge phase-${session.phase}`}>{PHASE_LABEL[session.phase] || session.phase}</span>
+      </div>
+      <div className="queue-card-meta">
+        <span>shots {session.shots?.length || 0}</span>
+        {session.selected_shot && <span>selected {session.selected_shot.filename}</span>}
+        {session.result_filename && <span>result {session.result_filename}</span>}
+      </div>
+      {heroImage && <img src={heroImage} alt={session.session_id} className="queue-card-image" />}
+      {children}
+    </div>
+  )
 }
 
 export default function AdminScreen() {
   const {
-    sessionId,
+    currentSession,
     phase,
     shots,
     selectedShotId,
     selectedShot,
-    resultUrl,
     progress,
-    error,
-    logs,
     wsConnected,
+    processingSessions,
+    printReadySessions,
+    erroredSessions,
     selectShot,
+    completeSession,
   } = useSession()
 
   const [presets, setPresets] = useState([])
@@ -79,7 +104,6 @@ export default function AdminScreen() {
         flash(err.message, 'err')
       }
     }
-
     bootstrap()
     const timer = setInterval(() => {
       checkComfy().catch(() => {})
@@ -110,23 +134,14 @@ export default function AdminScreen() {
   const handleRunSelected = async () => {
     try {
       await request('/api/session/run-selected', { method: 'POST' }, 'AI 처리 시작 실패')
-      flash('AI 처리를 시작했습니다')
-    } catch (err) {
-      flash(err.message, 'err')
-    }
-  }
-
-  const handleCompleteSession = async () => {
-    try {
-      await request('/api/session/complete', { method: 'POST' }, '세션 완료 실패')
-      flash('세션을 완료 처리했습니다')
+      flash('AI 대기열에 추가했습니다')
     } catch (err) {
       flash(err.message, 'err')
     }
   }
 
   const handleReset = async () => {
-    if (!confirm('현재 세션 상태와 inbox를 초기화할까요?')) return
+    if (!confirm('모든 세션과 inbox를 초기화할까요?')) return
     try {
       await request('/api/session/reset', { method: 'POST' }, '초기화 실패')
       flash('초기화 완료')
@@ -190,7 +205,7 @@ export default function AdminScreen() {
     fd.append('file', uploadFile)
     try {
       await request('/api/upload', { method: 'POST', body: fd }, '이미지 업로드 실패')
-      flash(phase === 'capturing' ? '업로드 완료: 현재 세션 shot으로 편입됩니다' : '업로드 완료: capturing 상태에서만 세션에 편입됩니다')
+      flash(currentSession?.phase === 'capturing' ? '업로드 완료: 현재 촬영 세션에 편입됩니다' : '업로드 완료: 현재 capture lane이 비어 있습니다')
       setUploadFile(null)
       setUploadPreview(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
@@ -199,7 +214,7 @@ export default function AdminScreen() {
     }
   }
 
-  const canRun = phase === 'reviewing' && !!selectedShotId && !!activePreset && comfyOnline
+  const canRun = currentSession?.phase === 'reviewing' && !!selectedShotId && !!activePreset && comfyOnline
 
   return (
     <div className="admin">
@@ -221,107 +236,143 @@ export default function AdminScreen() {
 
       <section>
         <div className="section-header">
-          <h3>부스 세션</h3>
-          <button className="btn-new-guest" onClick={handleReset}>강제 초기화</button>
+          <h3>현재 Capture Lane</h3>
+          <button className="btn-new-guest" onClick={handleReset}>전체 초기화</button>
         </div>
 
-        <div className="session-summary">
+        <div className="session-summary session-summary-four">
           <div>
-            <span className="summary-label">세션 ID</span>
-            <strong>{sessionId || '없음'}</strong>
+            <span className="summary-label">현재 세션</span>
+            <strong>{currentSession?.session_id || '비어 있음'}</strong>
           </div>
           <div>
             <span className="summary-label">상태</span>
-            <strong>{PHASE_LABEL[phase] || phase}</strong>
+            <strong>{PHASE_LABEL[currentSession?.phase || 'idle'] || '대기 중'}</strong>
           </div>
           <div>
-            <span className="summary-label">촬영 컷 수</span>
-            <strong>{shots.length}</strong>
+            <span className="summary-label">처리 대기/중</span>
+            <strong>{processingSessions.length}</strong>
+          </div>
+          <div>
+            <span className="summary-label">출력 대기</span>
+            <strong>{printReadySessions.length}</strong>
           </div>
         </div>
 
         <div className="action-row">
-          <button className="btn-primary" onClick={handleStartSession} disabled={phase === 'capturing' || phase === 'processing'}>
+          <button className="btn-primary" onClick={handleStartSession} disabled={!!currentSession}>
             새 세션 시작
           </button>
-          <button className="btn-primary secondary" onClick={handleFinishCapture} disabled={phase !== 'capturing'}>
+          <button className="btn-primary secondary" onClick={handleFinishCapture} disabled={currentSession?.phase !== 'capturing'}>
             촬영 종료
           </button>
           <button className="btn-primary" onClick={handleRunSelected} disabled={!canRun}>
-            {phase === 'processing' ? '처리 중...' : 'AI 처리 시작'}
-          </button>
-          <button className="btn-primary secondary" onClick={handleCompleteSession} disabled={phase !== 'result_ready'}>
-            세션 완료
+            {currentSession?.phase === 'reviewing' ? 'AI 대기열 추가' : 'AI 대기열 추가'}
           </button>
         </div>
 
-        {phase === 'processing' && (
+        {currentSession ? (
+          <>
+            <div className="capture-lane-header">
+              <span className={`phase-badge phase-${currentSession.phase}`}>{PHASE_LABEL[currentSession.phase] || currentSession.phase}</span>
+              <span className="lane-meta">shots {shots.length}</span>
+            </div>
+
+            {shots.length === 0 ? (
+              <div className="empty-gallery">촬영된 사진이 아직 없습니다</div>
+            ) : (
+              <div className="admin-gallery">
+                {shots.map((shot) => (
+                  <div
+                    key={`${currentSession.session_id}-${shot.shot_id}`}
+                    className={`admin-thumb ${selectedShotId === shot.shot_id ? 'selected' : ''}`}
+                    onClick={() => selectShot(shot.shot_id).catch((err) => flash(err.message, 'err'))}
+                  >
+                    <img src={shot.url} alt={shot.filename} />
+                    {selectedShotId === shot.shot_id && <div className="thumb-check">✓</div>}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {selectedShot && (
+              <div className="selected-panel">
+                <img src={selectedShot.url} alt={selectedShot.filename} />
+                <div>
+                  <div className="summary-label">선택 컷</div>
+                  <strong>{selectedShot.filename}</strong>
+                </div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="empty-gallery">지금은 capture lane이 비어 있습니다. 처리 대기 중인 팀과 별개로 새 팀을 받을 수 있습니다.</div>
+        )}
+
+        {processingSessions.some((item) => item.phase === 'processing') && (
           <div className="status-bar" style={{ marginTop: 12 }}>
             <div className="spinner" />
             AI 처리 중...{progress && ` (${progress.value} / ${progress.max})`}
           </div>
         )}
-        {phase === 'error' && (
-          <div className="status-bar error" style={{ marginTop: 12 }}>{error}</div>
-        )}
       </section>
 
       <section>
         <div className="section-header">
-          <h3>촬영본 선택</h3>
+          <h3>AI 처리 대기 / 진행 중</h3>
         </div>
-        {shots.length === 0 ? (
-          <div className="empty-gallery">capturing 상태에서 촬영된 사진이 여기에 쌓입니다</div>
+        {processingSessions.length === 0 ? (
+          <div className="empty-gallery">대기 중인 세션이 없습니다</div>
         ) : (
-          <div className="admin-gallery">
-            {shots.map((shot) => (
-              <div
-                key={shot.shot_id}
-                className={`admin-thumb ${selectedShotId === shot.shot_id ? 'selected' : ''}`}
-                onClick={() => selectShot(shot.shot_id).catch((err) => flash(err.message, 'err'))}
-              >
-                <img src={shot.url} alt={shot.filename} />
-                {selectedShotId === shot.shot_id && <div className="thumb-check">✓</div>}
-              </div>
+          <div className="queue-grid">
+            {processingSessions.map((item) => (
+              <SessionCard
+                key={item.session_id}
+                title={item.phase === 'queued' ? '대기열' : '처리 중'}
+                session={item}
+                compact
+              />
             ))}
-          </div>
-        )}
-
-        {selectedShot && (
-          <div className="selected-panel">
-            <img src={selectedShot.url} alt={selectedShot.filename} />
-            <div>
-              <div className="summary-label">선택 컷</div>
-              <strong>{selectedShot.filename}</strong>
-            </div>
-          </div>
-        )}
-
-        {resultUrl && (
-          <div className="result-preview">
-            <img src={resultUrl} alt="result" />
-            <span>결과 준비 완료</span>
           </div>
         )}
       </section>
 
       <section>
         <div className="section-header">
-          <h3>세션 로그</h3>
+          <h3>출력 대기</h3>
         </div>
-        {logs.length === 0 ? (
-          <div className="empty-gallery">표시할 로그가 없습니다</div>
+        {printReadySessions.length === 0 ? (
+          <div className="empty-gallery">출력 대기 세션이 없습니다</div>
         ) : (
-          <ul className="log-list">
-            {[...logs].slice(-8).reverse().map((log, index) => (
-              <li key={`${log.at}-${index}`}>
-                <span className="log-time">{log.at}</span>
-                <span className="log-message">{log.message}</span>
-              </li>
+          <div className="queue-grid">
+            {printReadySessions.map((item) => (
+              <SessionCard key={item.session_id} title="출력 대기" session={item}>
+                <div className="queue-card-actions">
+                  <button
+                    className="btn-primary"
+                    onClick={() => completeSession(item.session_id).catch((err) => flash(err.message, 'err'))}
+                  >
+                    인화 완료 처리
+                  </button>
+                </div>
+              </SessionCard>
             ))}
-          </ul>
+          </div>
         )}
       </section>
+
+      {erroredSessions.length > 0 && (
+        <section>
+          <div className="section-header">
+            <h3>오류 세션</h3>
+          </div>
+          <div className="queue-grid">
+            {erroredSessions.map((item) => (
+              <SessionCard key={item.session_id} title="오류" session={item} compact />
+            ))}
+          </div>
+        </section>
+      )}
 
       <section>
         <h3>이미지 직접 업로드</h3>

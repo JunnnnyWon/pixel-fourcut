@@ -47,16 +47,18 @@ class RunnerEnqueueTests(unittest.TestCase):
         self.loop.close()
         asyncio.set_event_loop(None)
 
-    def test_enqueue_selected_marks_processing_and_queues_prompt(self):
+    def test_enqueue_selected_marks_queued_and_queues_prompt(self):
         with patch("backend.runner.comfy_client.upload_image", AsyncMock(return_value="uploaded.png")) as upload_image, \
              patch("backend.runner.comfy_client.patch_workflow", return_value={"patched": True}) as patch_workflow, \
              patch("backend.runner.comfy_client.queue_prompt", AsyncMock(return_value="prompt-123")) as queue_prompt:
 
-            prompt_id = asyncio.run(runner.enqueue_selected())
+            prompt_id = asyncio.run(runner.enqueue_selected(session_id="session-test-001"))
 
         self.assertEqual(prompt_id, "prompt-123")
-        self.assertEqual(session.phase, "processing")
-        self.assertEqual(session.prompt_id, "prompt-123")
+        processing_session = session.processing_sessions[0]
+        self.assertEqual(processing_session["session_id"], "session-test-001")
+        self.assertEqual(processing_session["phase"], "queued")
+        self.assertEqual(processing_session["prompt_id"], "prompt-123")
         self.assertEqual(runner._queue.qsize(), 1)
         upload_image.assert_awaited_once()
         patch_workflow.assert_called_once()

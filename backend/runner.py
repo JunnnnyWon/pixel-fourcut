@@ -13,11 +13,14 @@ from backend.watcher import manager
 _queue: asyncio.Queue = asyncio.Queue()
 
 
-async def enqueue_selected() -> str:
-    if not session.selected_shot_id:
+async def enqueue_selected(session_id: str) -> str:
+    target_session = session.get_session(session_id)
+    if not target_session:
+        raise RuntimeError("session_not_found")
+    if not target_session.get("selected_shot_id"):
         raise RuntimeError("selected_shot_missing")
 
-    shot_path = session.get_shot_path(session.selected_shot_id)
+    shot_path = session.get_shot_path(target_session["selected_shot_id"], session_id=session_id)
     if not shot_path or not Path(shot_path).exists():
         raise FileNotFoundError("selected_shot_not_found")
 
@@ -32,8 +35,8 @@ async def enqueue_selected() -> str:
     client_id = str(uuid.uuid4())
     prompt_id = await comfy_client.queue_prompt(patched, client_id)
 
-    session.mark_processing(prompt_id)
-    await _queue.put((prompt_id, client_id))
+    session.mark_queued(prompt_id, session_id=session_id)
+    await _queue.put((session_id, prompt_id, client_id))
     return prompt_id
 
 
@@ -41,7 +44,10 @@ async def run_worker():
     ws_url = COMFYUI_URL.replace("http://", "ws://").replace("https://", "wss://")
 
     while True:
-        prompt_id, client_id = await _queue.get()
+        session_id, prompt_id, client_id = await _queue.get()
+        session.start_processing_session(session_id)
+        await manager.broadcast_session()
+
         retries = 0
         success = False
 
@@ -67,14 +73,17 @@ async def run_worker():
 
                         elif mtype == "executed" and data.get("prompt_id") == prompt_id:
                             output_filename = await comfy_client.get_output_image(prompt_id)
-                            session.mark_result_ready(output_filename)
+                            if not output_filename:
+                                session.mark_error(session_id, "ComfyUI 결과 파일을 찾지 못했습니다.")
+                            else:
+                                session.mark_result_ready(session_id, result_filename=output_filename)
                             await manager.broadcast_session()
                             success = True
                             break
 
                         elif mtype == "execution_error" and data.get("prompt_id") == prompt_id:
                             err = data.get("exception_message", "Unknown error")
-                            session.mark_error(err)
+                            session.mark_error(session_id, err)
                             await manager.broadcast({
                                 "event": "session_error",
                                 "message": err,
@@ -89,21 +98,21 @@ async def run_worker():
                     try:
                         output_filename = await comfy_client.get_output_image(prompt_id)
                         if output_filename:
-                            session.mark_result_ready(output_filename)
+                            session.mark_result_ready(session_id, result_filename=output_filename)
                             await manager.broadcast_session()
                             success = True
                         else:
-                            session.mark_error(f"ComfyUI 연결 실패: {exc}")
+                            session.mark_error(session_id, f"ComfyUI 연결 실패: {exc}")
                             await manager.broadcast({
                                 "event": "session_error",
-                                "message": session.error,
+                                "message": session.get_session(session_id)["error"],
                                 "session": session.to_dict(),
                             })
                     except Exception:
-                        session.mark_error(f"ComfyUI 연결 실패: {exc}")
+                        session.mark_error(session_id, f"ComfyUI 연결 실패: {exc}")
                         await manager.broadcast({
                             "event": "session_error",
-                            "message": session.error,
+                            "message": session.get_session(session_id)["error"],
                             "session": session.to_dict(),
                         })
                 else:

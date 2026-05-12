@@ -73,6 +73,29 @@ class SessionApiTests(unittest.TestCase):
         self.assertEqual(exc.exception.status_code, 409)
         self.assertIn("선택된 컷", str(exc.exception.detail))
 
+    def test_can_start_new_session_while_previous_one_is_processing(self):
+        first_session = self.loop.run_until_complete(run_router.start_session())
+        first_session_id = first_session["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+
+        async def fake_enqueue_selected(session_id):
+            session.mark_queued("prompt-a", session_id=session_id)
+            return "prompt-a"
+
+        with patch("backend.routers.run.runner.enqueue_selected", AsyncMock(side_effect=fake_enqueue_selected)):
+            self.loop.run_until_complete(run_router.run_selected())
+
+        next_session = self.loop.run_until_complete(run_router.start_session())
+
+        self.assertEqual(next_session["active_capture_session_id"], next_session["current_session"]["session_id"])
+        self.assertEqual(next_session["processing_sessions"][0]["session_id"], first_session_id)
+
 
 if __name__ == "__main__":
     unittest.main()

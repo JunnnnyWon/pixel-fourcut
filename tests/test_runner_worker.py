@@ -51,7 +51,8 @@ class RunnerWorkerTests(unittest.TestCase):
         shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
         session.finish_capture()
         session.select_shot(shot["shot_id"])
-        session.mark_processing("prompt-123")
+        session.mark_queued("prompt-123")
+        session.start_processing_session("session-test-001")
         runner._queue = asyncio.Queue()
 
     def tearDown(self):
@@ -64,15 +65,16 @@ class RunnerWorkerTests(unittest.TestCase):
 
     def test_worker_marks_result_ready_after_executed_message(self):
         async def scenario():
-            await runner._queue.put(("prompt-123", "client-1"))
+            await runner._queue.put(("session-test-001", "prompt-123", "client-1"))
             with patch("backend.runner.websockets.connect", return_value=_FakeWebSocket("prompt-123")), \
                  patch("backend.runner.comfy_client.get_output_image", AsyncMock(return_value="result.png")), \
                  patch("backend.runner.manager.broadcast_session", AsyncMock()) as broadcast_session:
 
                 worker = asyncio.create_task(runner.run_worker())
                 await asyncio.wait_for(runner._queue.join(), timeout=2)
-                self.assertEqual(session.phase, "result_ready")
-                self.assertEqual(session.result_filename, "result.png")
+                ready_session = session.get_session("session-test-001")
+                self.assertEqual(ready_session["phase"], "result_ready")
+                self.assertEqual(ready_session["result_filename"], "result.png")
                 broadcast_session.assert_awaited()
                 worker.cancel()
                 with contextlib.suppress(asyncio.CancelledError):

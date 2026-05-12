@@ -51,8 +51,12 @@ async def watch_folder(folder: str):
                 continue
 
             if session.phase != "capturing":
-                if session.session_id:
-                    session.log_event("ignored_inbox_file", f"{p.name} 무시됨 (phase={session.phase})")
+                if session.active_capture_session_id:
+                    session.log_event(
+                        "ignored_inbox_file",
+                        f"{p.name} 무시됨 (phase={session.phase})",
+                        session_id=session.active_capture_session_id,
+                    )
                     await manager.broadcast_session()
                 continue
 
@@ -60,9 +64,10 @@ async def watch_folder(folder: str):
                 session.add_shot_from_file(p, source_name=p.name, source_type="watcher")
                 await manager.broadcast_session()
             except Exception as exc:
-                session.mark_error(f"이미지 수집 실패: {exc}")
+                if session.active_capture_session_id:
+                    session.mark_error(session.active_capture_session_id, f"이미지 수집 실패: {exc}")
                 await manager.broadcast({
                     "event": "session_error",
-                    "message": session.error,
+                    "message": str(exc),
                     "session": session.to_dict(),
                 })
