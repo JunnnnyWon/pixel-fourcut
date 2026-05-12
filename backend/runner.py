@@ -20,7 +20,7 @@ async def enqueue(filename: str) -> str:
     active = Path(PRESETS_FOLDER) / "active.json"
     if not active.exists():
         raise FileNotFoundError("No active preset. Please activate a workflow preset first.")
-    workflow = json.loads(active.read_text())
+    workflow = json.loads(active.read_text(encoding="utf-8"))
     patched = comfy_client.patch_workflow(workflow, comfy_filename)
     prompt_id = await comfy_client.queue_prompt(patched)
     await _queue.put(prompt_id)
