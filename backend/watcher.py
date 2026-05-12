@@ -1,13 +1,13 @@
-import json
 import asyncio
+import json
 from pathlib import Path
 
 from fastapi import WebSocket
-from watchfiles import Change, awatch
 
 from backend.session import session
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
+POLL_INTERVAL_SECONDS = 0.5
 
 
 class ConnectionManager:
@@ -45,39 +45,36 @@ async def watch_folder(folder: str):
     folder_path = Path(folder)
     folder_path.mkdir(parents=True, exist_ok=True)
 
-    async for changes in awatch(folder):
-        for change_type, path in changes:
-            p = Path(path)
-            if p.suffix.lower() not in IMAGE_EXTS or change_type not in {Change.added, Change.modified}:
-                continue
-
-            if session.phase != "capturing":
-                if session.active_capture_session_id:
-                    session.log_event(
-                        "ignored_inbox_file",
-                        f"{p.name} 무시됨 (phase={session.phase})",
-                        session_id=session.active_capture_session_id,
-                    )
-                    await manager.broadcast_session()
-                continue
-
-            try:
-                if session.has_source_filename(p.name, session_id=session.active_capture_session_id):
-                    continue
-                await _wait_until_file_stable(p)
-                session.add_shot_from_file(p, source_name=p.name, source_type="watcher")
-                await manager.broadcast_session()
-            except Exception as exc:
-                if session.active_capture_session_id:
-                    session.mark_error(session.active_capture_session_id, f"이미지 수집 실패: {exc}")
+    while True:
+        try:
+            await _ingest_available_files(folder_path)
+        except Exception as exc:
+            if session.active_capture_session_id:
+                session.mark_error(session.active_capture_session_id, f"이미지 수집 실패: {exc}")
                 await manager.broadcast({
                     "event": "session_error",
                     "message": str(exc),
                     "session": session.to_dict(),
                 })
+        await asyncio.sleep(POLL_INTERVAL_SECONDS)
 
 
-async def _wait_until_file_stable(path: Path, retries: int = 6, delay: float = 0.2):
+async def _ingest_available_files(folder_path: Path):
+    if session.phase != "capturing" or not session.active_capture_session_id:
+        return
+
+    for path in sorted(folder_path.iterdir(), key=lambda item: item.stat().st_mtime):
+        if path.suffix.lower() not in IMAGE_EXTS:
+            continue
+        if session.has_source_filename(path.name, session_id=session.active_capture_session_id):
+            continue
+        await _wait_until_file_stable(path)
+        if not session.has_source_filename(path.name, session_id=session.active_capture_session_id):
+            session.add_shot_from_file(path, source_name=path.name, source_type="watcher")
+            await manager.broadcast_session()
+
+
+async def _wait_until_file_stable(path: Path, retries: int = 8, delay: float = 0.2):
     previous_size = -1
     for _ in range(retries):
         if not path.exists():
