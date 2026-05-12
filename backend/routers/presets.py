@@ -53,3 +53,16 @@ def activate_preset(name: str):
         raise HTTPException(404, "Preset not found")
     shutil.copy2(src, _dir / "active.json")
     return {"active": name}
+
+
+@router.delete("/{name}")
+def delete_preset(name: str):
+    _ensure_dir()
+    src = _dir / f"{name}.json"
+    if not src.exists():
+        raise HTTPException(404, "Preset not found")
+    active = _dir / "active.json"
+    if active.exists() and active.read_bytes() == src.read_bytes():
+        active.unlink()
+    src.unlink()
+    return {"deleted": name}
