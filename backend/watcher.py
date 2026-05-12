@@ -1,4 +1,5 @@
 import json
+import asyncio
 from pathlib import Path
 
 from fastapi import WebSocket
@@ -47,7 +48,7 @@ async def watch_folder(folder: str):
     async for changes in awatch(folder):
         for change_type, path in changes:
             p = Path(path)
-            if p.suffix.lower() not in IMAGE_EXTS or change_type != Change.added:
+            if p.suffix.lower() not in IMAGE_EXTS or change_type not in {Change.added, Change.modified}:
                 continue
 
             if session.phase != "capturing":
@@ -61,6 +62,9 @@ async def watch_folder(folder: str):
                 continue
 
             try:
+                if session.has_source_filename(p.name, session_id=session.active_capture_session_id):
+                    continue
+                await _wait_until_file_stable(p)
                 session.add_shot_from_file(p, source_name=p.name, source_type="watcher")
                 await manager.broadcast_session()
             except Exception as exc:
@@ -71,3 +75,16 @@ async def watch_folder(folder: str):
                     "message": str(exc),
                     "session": session.to_dict(),
                 })
+
+
+async def _wait_until_file_stable(path: Path, retries: int = 6, delay: float = 0.2):
+    previous_size = -1
+    for _ in range(retries):
+        if not path.exists():
+            await asyncio.sleep(delay)
+            continue
+        current_size = path.stat().st_size
+        if current_size > 0 and current_size == previous_size:
+            return
+        previous_size = current_size
+        await asyncio.sleep(delay)

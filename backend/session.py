@@ -291,6 +291,17 @@ class SessionState:
             return None
         return self._get_shot(session, shot_id)
 
+    def has_source_filename(self, source_filename: str, session_id: Optional[str] = None) -> bool:
+        if session_id:
+            session = self._get_session(session_id)
+        elif self.active_capture_session_id:
+            session = self._get_session(self.active_capture_session_id)
+        else:
+            return False
+        if not session:
+            return False
+        return any(shot["source_filename"] == source_filename for shot in session["shots"])
+
     def get_shot_path(self, shot_id: str, session_id: Optional[str] = None) -> Optional[Path]:
         shot = self.get_shot(shot_id, session_id=session_id)
         return Path(shot["path"]) if shot else None
