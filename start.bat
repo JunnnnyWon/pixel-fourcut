@@ -9,7 +9,14 @@ if not exist "%SCRIPT_DIR%.env" copy "%SCRIPT_DIR%.env.example" "%SCRIPT_DIR%.en
 if not exist "%SCRIPT_DIR%workspace\input"   mkdir "%SCRIPT_DIR%workspace\input"
 if not exist "%SCRIPT_DIR%workspace\presets" mkdir "%SCRIPT_DIR%workspace\presets"
 
-:: Python 의존성 설치
+:: 가상환경 없으면 Python 3.13으로 생성
+if not exist "%SCRIPT_DIR%.venv" (
+    echo [start.bat] 가상환경 생성 중...
+    py -3.13 -m venv "%SCRIPT_DIR%.venv"
+)
+
+:: 가상환경 활성화 후 의존성 설치
+call "%SCRIPT_DIR%.venv\Scripts\activate.bat"
 pip install -q -r "%SCRIPT_DIR%requirements.txt"
 
 :: 프론트엔드 빌드
