@@ -11,6 +11,7 @@ source .env
 # Create required folders
 mkdir -p "${WATCH_FOLDER:-/workspace/input}"
 mkdir -p "${PRESETS_FOLDER:-/workspace/presets}"
+mkdir -p "${SESSIONS_FOLDER:-/workspace/sessions}"
 
 # Start ComfyUI in background (if not already running)
 if ! pgrep -f "comfyui" > /dev/null 2>&1; then

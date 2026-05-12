@@ -6,6 +6,7 @@ if not exist "%SCRIPT_DIR%.env" copy "%SCRIPT_DIR%.env.example" "%SCRIPT_DIR%.en
 
 if not exist "%SCRIPT_DIR%workspace\input"   mkdir "%SCRIPT_DIR%workspace\input"
 if not exist "%SCRIPT_DIR%workspace\presets" mkdir "%SCRIPT_DIR%workspace\presets"
+if not exist "%SCRIPT_DIR%workspace\sessions" mkdir "%SCRIPT_DIR%workspace\sessions"
 
 if not exist "%SCRIPT_DIR%.venv" (
     echo [start.bat] Creating virtualenv with Python 3.13...

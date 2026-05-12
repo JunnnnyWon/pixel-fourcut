@@ -1,6 +1,7 @@
 import uuid
 import httpx
 from pathlib import Path
+from typing import Optional
 from backend.config import COMFYUI_URL
 
 
@@ -28,9 +29,11 @@ def patch_workflow(workflow: dict, filename: str) -> dict:
     return wf
 
 
-async def queue_prompt(workflow: dict) -> str:
+async def queue_prompt(workflow: dict, client_id: str = None) -> str:
     """Submit workflow to ComfyUI queue, return prompt_id."""
-    client_id = str(uuid.uuid4())
+    import uuid
+    if client_id is None:
+        client_id = str(uuid.uuid4())
     async with httpx.AsyncClient() as client:
         r = await client.post(
             f"{COMFYUI_URL}/prompt",
@@ -40,7 +43,7 @@ async def queue_prompt(workflow: dict) -> str:
         return r.json()["prompt_id"]
 
 
-async def get_output_image(prompt_id: str) -> str | None:
+async def get_output_image(prompt_id: str) -> Optional[str]:
     """Poll history and return the first output image filename, or None."""
     async with httpx.AsyncClient() as client:
         r = await client.get(f"{COMFYUI_URL}/history/{prompt_id}")

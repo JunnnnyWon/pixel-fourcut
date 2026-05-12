@@ -1,7 +1,10 @@
 import json
 from pathlib import Path
+
 from fastapi import WebSocket
-from watchfiles import awatch, Change
+from watchfiles import Change, awatch
+
+from backend.session import session
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
 
@@ -24,39 +27,42 @@ class ConnectionManager:
             try:
                 await ws.send_text(msg)
             except Exception:
-                self._clients.discard(ws) if hasattr(self._clients, 'discard') else None
                 if ws in self._clients:
                     self._clients.remove(ws)
+
+    async def broadcast_session(self, event: str = "session_updated"):
+        await self.broadcast({
+            "event": event,
+            "session": session.to_dict(),
+        })
 
 
 manager = ConnectionManager()
 
 
 async def watch_folder(folder: str):
-    from backend.session import session
-    Path(folder).mkdir(parents=True, exist_ok=True)
+    folder_path = Path(folder)
+    folder_path.mkdir(parents=True, exist_ok=True)
+
     async for changes in awatch(folder):
         for change_type, path in changes:
             p = Path(path)
-            if p.suffix.lower() not in IMAGE_EXTS:
+            if p.suffix.lower() not in IMAGE_EXTS or change_type != Change.added:
                 continue
-            filename = p.name
-            if change_type == Change.added:
-                if filename not in session.images:
-                    session.images.append(filename)
+
+            if session.phase != "capturing":
+                if session.session_id:
+                    session.log_event("ignored_inbox_file", f"{p.name} 무시됨 (phase={session.phase})")
+                    await manager.broadcast_session()
+                continue
+
+            try:
+                session.add_shot_from_file(p, source_name=p.name, source_type="watcher")
+                await manager.broadcast_session()
+            except Exception as exc:
+                session.mark_error(f"이미지 수집 실패: {exc}")
                 await manager.broadcast({
-                    "event": "new_image",
-                    "filename": filename,
-                    "url": f"/api/input/{filename}",
-                    "images": session.images,
-                })
-            elif change_type == Change.deleted:
-                if filename in session.images:
-                    session.images.remove(filename)
-                if session.selected == filename:
-                    session.selected = None
-                await manager.broadcast({
-                    "event": "image_removed",
-                    "filename": filename,
-                    "images": session.images,
+                    "event": "session_error",
+                    "message": session.error,
+                    "session": session.to_dict(),
                 })

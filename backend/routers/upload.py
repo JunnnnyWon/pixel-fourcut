@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from backend.config import WATCH_FOLDER
+from backend.session import session
 
 router = APIRouter()
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
@@ -19,18 +20,11 @@ def _sanitize(filename: str) -> str:
 
 @router.get("/api/images")
 def list_images():
-    """현재 input 폴더의 이미지 목록 반환 (최신순)"""
-    from backend.session import session
-    d = Path(WATCH_FOLDER)
-    d.mkdir(parents=True, exist_ok=True)
-    files = sorted(
-        [f.name for f in d.iterdir() if f.suffix.lower() in IMAGE_EXTS],
-        key=lambda n: (d / n).stat().st_mtime,
-        reverse=True,
-    )
-    # 세션 동기화
-    session.images = list(reversed(files))  # 오래된 것부터
-    return {"images": files}
+    """현재 세션 기준 이미지/shot 목록 반환"""
+    return {
+        "images": session.images,
+        "shots": session.shots,
+    }
 
 
 @router.post("/api/upload")
@@ -49,4 +43,12 @@ def serve_input(filename: str):
     path = Path(WATCH_FOLDER) / filename
     if not path.exists():
         raise HTTPException(404, "이미지를 찾을 수 없습니다.")
+    return FileResponse(str(path))
+
+
+@router.get("/api/session/shots/{shot_id}")
+def serve_session_shot(shot_id: str):
+    path = session.get_shot_path(shot_id)
+    if not path or not path.exists():
+        raise HTTPException(404, "세션 이미지를 찾을 수 없습니다.")
     return FileResponse(str(path))

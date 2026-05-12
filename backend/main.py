@@ -5,7 +5,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
-from backend.config import WATCH_FOLDER
+from backend.config import PRESETS_FOLDER, SESSIONS_FOLDER, WATCH_FOLDER
 from backend.watcher import manager, watch_folder
 from backend.runner import run_worker
 from backend.routers import presets, upload, run, result
@@ -13,16 +13,9 @@ from backend.routers import presets, upload, run, result
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 시작 시 기존 이미지 세션에 로드
-    from backend.session import session
-    from backend.config import WATCH_FOLDER as WF
-    IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".bmp"}
-    folder = Path(WF)
-    folder.mkdir(parents=True, exist_ok=True)
-    session.images = sorted(
-        [f.name for f in folder.iterdir() if f.suffix.lower() in IMAGE_EXTS],
-        key=lambda n: (folder / n).stat().st_mtime,
-    )
+    Path(WATCH_FOLDER).mkdir(parents=True, exist_ok=True)
+    Path(PRESETS_FOLDER).mkdir(parents=True, exist_ok=True)
+    Path(SESSIONS_FOLDER).mkdir(parents=True, exist_ok=True)
     t1 = asyncio.create_task(watch_folder(WATCH_FOLDER))
     t2 = asyncio.create_task(run_worker())
     yield
@@ -50,8 +43,8 @@ async def ws_watch(websocket: WebSocket):
     # 연결 즉시 현재 상태 전송
     try:
         await websocket.send_text(__import__('json').dumps({
-            "event": "init",
-            **session.to_dict(),
+            "event": "session_init",
+            "session": session.to_dict(),
         }, ensure_ascii=False))
     except Exception:
         pass

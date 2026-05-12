@@ -1,0 +1,2832 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "label": "vite.config.js",
+      "file_type": "code",
+      "source_file": "frontend/vite.config.js",
+      "source_location": "L1",
+      "id": "frontend_vite_config_js",
+      "community": 12,
+      "norm_label": "vite.config.js"
+    },
+    {
+      "label": "eslint.config.js",
+      "file_type": "code",
+      "source_file": "frontend/eslint.config.js",
+      "source_location": "L1",
+      "id": "frontend_eslint_config_js",
+      "community": 13,
+      "norm_label": "eslint.config.js"
+    },
+    {
+      "label": "useSession.js",
+      "file_type": "code",
+      "source_file": "frontend/src/useSession.js",
+      "source_location": "L1",
+      "id": "frontend_src_usesession_js",
+      "community": 6,
+      "norm_label": "usesession.js"
+    },
+    {
+      "label": "useSession()",
+      "file_type": "code",
+      "source_file": "frontend/src/useSession.js",
+      "source_location": "L20",
+      "id": "src_usesession_usesession",
+      "community": 6,
+      "norm_label": "usesession()"
+    },
+    {
+      "label": "AdminScreen.jsx",
+      "file_type": "code",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L1",
+      "id": "frontend_src_adminscreen_jsx",
+      "community": 6,
+      "norm_label": "adminscreen.jsx"
+    },
+    {
+      "label": "AdminScreen()",
+      "file_type": "code",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L15",
+      "id": "src_adminscreen_adminscreen",
+      "community": 6,
+      "norm_label": "adminscreen()"
+    },
+    {
+      "label": "UserScreen.jsx",
+      "file_type": "code",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L1",
+      "id": "frontend_src_userscreen_jsx",
+      "community": 6,
+      "norm_label": "userscreen.jsx"
+    },
+    {
+      "label": "resolveMainImage()",
+      "file_type": "code",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L14",
+      "id": "src_userscreen_resolvemainimage",
+      "community": 6,
+      "norm_label": "resolvemainimage()"
+    },
+    {
+      "label": "UserScreen()",
+      "file_type": "code",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L27",
+      "id": "src_userscreen_userscreen",
+      "community": 6,
+      "norm_label": "userscreen()"
+    },
+    {
+      "label": "main.jsx",
+      "file_type": "code",
+      "source_file": "frontend/src/main.jsx",
+      "source_location": "L1",
+      "id": "frontend_src_main_jsx",
+      "community": 14,
+      "norm_label": "main.jsx"
+    },
+    {
+      "label": "App.jsx",
+      "file_type": "code",
+      "source_file": "frontend/src/App.jsx",
+      "source_location": "L1",
+      "id": "frontend_src_app_jsx",
+      "community": 11,
+      "norm_label": "app.jsx"
+    },
+    {
+      "label": "App()",
+      "file_type": "code",
+      "source_file": "frontend/src/App.jsx",
+      "source_location": "L5",
+      "id": "src_app_app",
+      "community": 11,
+      "norm_label": "app()"
+    },
+    {
+      "label": "test_session_state.py",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L1",
+      "id": "tests_test_session_state_py",
+      "community": 8,
+      "norm_label": "test_session_state.py"
+    },
+    {
+      "label": "SessionStateTests",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L8",
+      "id": "tests_test_session_state_sessionstatetests",
+      "community": 8,
+      "norm_label": "sessionstatetests"
+    },
+    {
+      "label": ".test_start_session_creates_session_and_shots_directory()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L9",
+      "id": "tests_test_session_state_sessionstatetests_test_start_session_creates_session_and_shots_directory",
+      "community": 8,
+      "norm_label": ".test_start_session_creates_session_and_shots_directory()"
+    },
+    {
+      "label": ".test_add_shot_copies_file_into_active_session()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L21",
+      "id": "tests_test_session_state_sessionstatetests_test_add_shot_copies_file_into_active_session",
+      "community": 8,
+      "norm_label": ".test_add_shot_copies_file_into_active_session()"
+    },
+    {
+      "label": ".test_finish_capture_and_select_shot_updates_review_state()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L43",
+      "id": "tests_test_session_state_sessionstatetests_test_finish_capture_and_select_shot_updates_review_state",
+      "community": 8,
+      "norm_label": ".test_finish_capture_and_select_shot_updates_review_state()"
+    },
+    {
+      "label": ".test_mark_processing_and_result_ready()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L61",
+      "id": "tests_test_session_state_sessionstatetests_test_mark_processing_and_result_ready",
+      "community": 8,
+      "norm_label": ".test_mark_processing_and_result_ready()"
+    },
+    {
+      "label": "test_runner_enqueue.py",
+      "file_type": "code",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L1",
+      "id": "tests_test_runner_enqueue_py",
+      "community": 10,
+      "norm_label": "test_runner_enqueue.py"
+    },
+    {
+      "label": "RunnerEnqueueTests",
+      "file_type": "code",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L12",
+      "id": "tests_test_runner_enqueue_runnerenqueuetests",
+      "community": 10,
+      "norm_label": "runnerenqueuetests"
+    },
+    {
+      "label": ".setUp()",
+      "file_type": "code",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L13",
+      "id": "tests_test_runner_enqueue_runnerenqueuetests_setup",
+      "community": 10,
+      "norm_label": ".setup()"
+    },
+    {
+      "label": ".tearDown()",
+      "file_type": "code",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L41",
+      "id": "tests_test_runner_enqueue_runnerenqueuetests_teardown",
+      "community": 10,
+      "norm_label": ".teardown()"
+    },
+    {
+      "label": ".test_enqueue_selected_marks_processing_and_queues_prompt()",
+      "file_type": "code",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L50",
+      "id": "tests_test_runner_enqueue_runnerenqueuetests_test_enqueue_selected_marks_processing_and_queues_prompt",
+      "community": 10,
+      "norm_label": ".test_enqueue_selected_marks_processing_and_queues_prompt()"
+    },
+    {
+      "label": "test_session_api.py",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L1",
+      "id": "tests_test_session_api_py",
+      "community": 7,
+      "norm_label": "test_session_api.py"
+    },
+    {
+      "label": "SessionApiTests",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L13",
+      "id": "tests_test_session_api_sessionapitests",
+      "community": 7,
+      "norm_label": "sessionapitests"
+    },
+    {
+      "label": ".setUp()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L14",
+      "id": "tests_test_session_api_sessionapitests_setup",
+      "community": 7,
+      "norm_label": ".setup()"
+    },
+    {
+      "label": ".tearDown()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L34",
+      "id": "tests_test_session_api_sessionapitests_teardown",
+      "community": 7,
+      "norm_label": ".teardown()"
+    },
+    {
+      "label": ".test_start_session_returns_capturing_phase()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L42",
+      "id": "tests_test_session_api_sessionapitests_test_start_session_returns_capturing_phase",
+      "community": 7,
+      "norm_label": ".test_start_session_returns_capturing_phase()"
+    },
+    {
+      "label": ".test_finish_capture_and_select_shot()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L48",
+      "id": "tests_test_session_api_sessionapitests_test_finish_capture_and_select_shot",
+      "community": 7,
+      "norm_label": ".test_finish_capture_and_select_shot()"
+    },
+    {
+      "label": ".test_run_selected_requires_selected_shot()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L61",
+      "id": "tests_test_session_api_sessionapitests_test_run_selected_requires_selected_shot",
+      "community": 7,
+      "norm_label": ".test_run_selected_requires_selected_shot()"
+    },
+    {
+      "label": "runner.py",
+      "file_type": "code",
+      "source_file": "backend/runner.py",
+      "source_location": "L1",
+      "id": "backend_runner_py",
+      "community": 2,
+      "norm_label": "runner.py"
+    },
+    {
+      "label": "enqueue_selected()",
+      "file_type": "code",
+      "source_file": "backend/runner.py",
+      "source_location": "L16",
+      "id": "backend_runner_enqueue_selected",
+      "community": 2,
+      "norm_label": "enqueue_selected()"
+    },
+    {
+      "label": "run_worker()",
+      "file_type": "code",
+      "source_file": "backend/runner.py",
+      "source_location": "L40",
+      "id": "backend_runner_run_worker",
+      "community": 2,
+      "norm_label": "run_worker()"
+    },
+    {
+      "label": "config.py",
+      "file_type": "code",
+      "source_file": "backend/config.py",
+      "source_location": "L1",
+      "id": "backend_config_py",
+      "community": 15,
+      "norm_label": "config.py"
+    },
+    {
+      "label": "session.py",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L1",
+      "id": "backend_session_py",
+      "community": 4,
+      "norm_label": "session.py"
+    },
+    {
+      "label": "SessionState",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L10",
+      "id": "backend_session_sessionstate",
+      "community": 0,
+      "norm_label": "sessionstate"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L11",
+      "id": "backend_session_sessionstate_init",
+      "community": 0,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".reset()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L20",
+      "id": "backend_session_sessionstate_reset",
+      "community": 0,
+      "norm_label": ".reset()"
+    },
+    {
+      "label": "session_dir()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L36",
+      "id": "backend_session_session_dir",
+      "community": 4,
+      "norm_label": "session_dir()"
+    },
+    {
+      "label": "selected_shot()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L40",
+      "id": "backend_session_selected_shot",
+      "community": 4,
+      "norm_label": "selected_shot()"
+    },
+    {
+      "label": "preview_shot()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L46",
+      "id": "backend_session_preview_shot",
+      "community": 4,
+      "norm_label": "preview_shot()"
+    },
+    {
+      "label": "selected()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L52",
+      "id": "backend_session_selected",
+      "community": 4,
+      "norm_label": "selected()"
+    },
+    {
+      "label": "images()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L57",
+      "id": "backend_session_images",
+      "community": 4,
+      "norm_label": "images()"
+    },
+    {
+      "label": "status()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L61",
+      "id": "backend_session_status",
+      "community": 4,
+      "norm_label": "status()"
+    },
+    {
+      "label": ".start_session()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L73",
+      "id": "backend_session_sessionstate_start_session",
+      "community": 0,
+      "norm_label": ".start_session()"
+    },
+    {
+      "label": ".finish_capture()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L87",
+      "id": "backend_session_sessionstate_finish_capture",
+      "community": 0,
+      "norm_label": ".finish_capture()"
+    },
+    {
+      "label": ".add_shot_from_file()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L95",
+      "id": "backend_session_sessionstate_add_shot_from_file",
+      "community": 0,
+      "norm_label": ".add_shot_from_file()"
+    },
+    {
+      "label": ".select_shot()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L125",
+      "id": "backend_session_sessionstate_select_shot",
+      "community": 0,
+      "norm_label": ".select_shot()"
+    },
+    {
+      "label": ".mark_processing()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L135",
+      "id": "backend_session_sessionstate_mark_processing",
+      "community": 0,
+      "norm_label": ".mark_processing()"
+    },
+    {
+      "label": ".mark_result_ready()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L145",
+      "id": "backend_session_sessionstate_mark_result_ready",
+      "community": 0,
+      "norm_label": ".mark_result_ready()"
+    },
+    {
+      "label": ".mark_completed()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L154",
+      "id": "backend_session_sessionstate_mark_completed",
+      "community": 0,
+      "norm_label": ".mark_completed()"
+    },
+    {
+      "label": ".mark_error()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L161",
+      "id": "backend_session_sessionstate_mark_error",
+      "community": 0,
+      "norm_label": ".mark_error()"
+    },
+    {
+      "label": ".log_event()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L169",
+      "id": "backend_session_sessionstate_log_event",
+      "community": 0,
+      "norm_label": ".log_event()"
+    },
+    {
+      "label": ".get_shot()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L175",
+      "id": "backend_session_sessionstate_get_shot",
+      "community": 0,
+      "norm_label": ".get_shot()"
+    },
+    {
+      "label": ".get_shot_path()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L178",
+      "id": "backend_session_sessionstate_get_shot_path",
+      "community": 0,
+      "norm_label": ".get_shot_path()"
+    },
+    {
+      "label": ".to_dict()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L182",
+      "id": "backend_session_sessionstate_to_dict",
+      "community": 0,
+      "norm_label": ".to_dict()"
+    },
+    {
+      "label": "._log()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L205",
+      "id": "backend_session_sessionstate_log",
+      "community": 0,
+      "norm_label": "._log()"
+    },
+    {
+      "label": "._touch()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L212",
+      "id": "backend_session_sessionstate_touch",
+      "community": 0,
+      "norm_label": "._touch()"
+    },
+    {
+      "label": "_preview_deadline()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L216",
+      "id": "backend_session_preview_deadline",
+      "community": 4,
+      "norm_label": "_preview_deadline()"
+    },
+    {
+      "label": "._write_meta()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L219",
+      "id": "backend_session_sessionstate_write_meta",
+      "community": 0,
+      "norm_label": "._write_meta()"
+    },
+    {
+      "label": "_now()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L229",
+      "id": "backend_session_now",
+      "community": 0,
+      "norm_label": "_now()"
+    },
+    {
+      "label": "__init__.py",
+      "file_type": "code",
+      "source_file": "backend/routers/__init__.py",
+      "source_location": "L1",
+      "id": "backend_init_py",
+      "community": 16,
+      "norm_label": "__init__.py"
+    },
+    {
+      "label": "watcher.py",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L1",
+      "id": "backend_watcher_py",
+      "community": 2,
+      "norm_label": "watcher.py"
+    },
+    {
+      "label": "ConnectionManager",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L12",
+      "id": "backend_watcher_connectionmanager",
+      "community": 2,
+      "norm_label": "connectionmanager"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L13",
+      "id": "backend_watcher_connectionmanager_init",
+      "community": 2,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".connect()",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L16",
+      "id": "backend_watcher_connectionmanager_connect",
+      "community": 2,
+      "norm_label": ".connect()"
+    },
+    {
+      "label": ".disconnect()",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L20",
+      "id": "backend_watcher_connectionmanager_disconnect",
+      "community": 2,
+      "norm_label": ".disconnect()"
+    },
+    {
+      "label": ".broadcast()",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L24",
+      "id": "backend_watcher_connectionmanager_broadcast",
+      "community": 2,
+      "norm_label": ".broadcast()"
+    },
+    {
+      "label": ".broadcast_session()",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L33",
+      "id": "backend_watcher_connectionmanager_broadcast_session",
+      "community": 2,
+      "norm_label": ".broadcast_session()"
+    },
+    {
+      "label": "watch_folder()",
+      "file_type": "code",
+      "source_file": "backend/watcher.py",
+      "source_location": "L43",
+      "id": "backend_watcher_watch_folder",
+      "community": 2,
+      "norm_label": "watch_folder()"
+    },
+    {
+      "label": "comfy_client.py",
+      "file_type": "code",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L1",
+      "id": "backend_comfy_client_py",
+      "community": 3,
+      "norm_label": "comfy_client.py"
+    },
+    {
+      "label": "upload_image()",
+      "file_type": "code",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L8",
+      "id": "backend_comfy_client_upload_image",
+      "community": 3,
+      "norm_label": "upload_image()"
+    },
+    {
+      "label": "patch_workflow()",
+      "file_type": "code",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L22",
+      "id": "backend_comfy_client_patch_workflow",
+      "community": 3,
+      "norm_label": "patch_workflow()"
+    },
+    {
+      "label": "queue_prompt()",
+      "file_type": "code",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L32",
+      "id": "backend_comfy_client_queue_prompt",
+      "community": 3,
+      "norm_label": "queue_prompt()"
+    },
+    {
+      "label": "get_output_image()",
+      "file_type": "code",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L46",
+      "id": "backend_comfy_client_get_output_image",
+      "community": 3,
+      "norm_label": "get_output_image()"
+    },
+    {
+      "label": "Upload image to ComfyUI, return filename as stored by ComfyUI.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L9",
+      "id": "backend_comfy_client_rationale_9",
+      "community": 3,
+      "norm_label": "upload image to comfyui, return filename as stored by comfyui."
+    },
+    {
+      "label": "Replace LoadImage node input with the given filename.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L23",
+      "id": "backend_comfy_client_rationale_23",
+      "community": 3,
+      "norm_label": "replace loadimage node input with the given filename."
+    },
+    {
+      "label": "Submit workflow to ComfyUI queue, return prompt_id.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L33",
+      "id": "backend_comfy_client_rationale_33",
+      "community": 3,
+      "norm_label": "submit workflow to comfyui queue, return prompt_id."
+    },
+    {
+      "label": "Poll history and return the first output image filename, or None.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L47",
+      "id": "backend_comfy_client_rationale_47",
+      "community": 3,
+      "norm_label": "poll history and return the first output image filename, or none."
+    },
+    {
+      "label": "main.py",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L1",
+      "id": "backend_main_py",
+      "community": 2,
+      "norm_label": "main.py"
+    },
+    {
+      "label": "lifespan()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L15",
+      "id": "backend_main_lifespan",
+      "community": 2,
+      "norm_label": "lifespan()"
+    },
+    {
+      "label": "health()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L35",
+      "id": "backend_main_health",
+      "community": 2,
+      "norm_label": "health()"
+    },
+    {
+      "label": "ws_watch()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L40",
+      "id": "backend_main_ws_watch",
+      "community": 2,
+      "norm_label": "ws_watch()"
+    },
+    {
+      "label": "spa_fallback()",
+      "file_type": "code",
+      "source_file": "backend/main.py",
+      "source_location": "L63",
+      "id": "backend_main_spa_fallback",
+      "community": 2,
+      "norm_label": "spa_fallback()"
+    },
+    {
+      "label": "run.py",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L1",
+      "id": "backend_routers_run_py",
+      "community": 1,
+      "norm_label": "run.py"
+    },
+    {
+      "label": "RunRequest",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L15",
+      "id": "routers_run_runrequest",
+      "community": 1,
+      "norm_label": "runrequest"
+    },
+    {
+      "label": "BaseModel",
+      "file_type": "code",
+      "source_file": "",
+      "source_location": "",
+      "id": "basemodel",
+      "community": 1,
+      "norm_label": "basemodel"
+    },
+    {
+      "label": "SelectRequest",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L19",
+      "id": "routers_run_selectrequest",
+      "community": 1,
+      "norm_label": "selectrequest"
+    },
+    {
+      "label": "SelectShotRequest",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L23",
+      "id": "routers_run_selectshotrequest",
+      "community": 1,
+      "norm_label": "selectshotrequest"
+    },
+    {
+      "label": "_clear_watch_folder()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L27",
+      "id": "routers_run_clear_watch_folder",
+      "community": 1,
+      "norm_label": "_clear_watch_folder()"
+    },
+    {
+      "label": "get_status()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L35",
+      "id": "routers_run_get_status",
+      "community": 1,
+      "norm_label": "get_status()"
+    },
+    {
+      "label": "get_session()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L40",
+      "id": "routers_run_get_session",
+      "community": 1,
+      "norm_label": "get_session()"
+    },
+    {
+      "label": "start_session()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L45",
+      "id": "routers_run_start_session",
+      "community": 1,
+      "norm_label": "start_session()"
+    },
+    {
+      "label": "finish_capture()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L53",
+      "id": "routers_run_finish_capture",
+      "community": 1,
+      "norm_label": "finish_capture()"
+    },
+    {
+      "label": "select_shot()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L62",
+      "id": "routers_run_select_shot",
+      "community": 1,
+      "norm_label": "select_shot()"
+    },
+    {
+      "label": "run_selected()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L74",
+      "id": "routers_run_run_selected",
+      "community": 1,
+      "norm_label": "run_selected()"
+    },
+    {
+      "label": "complete_session()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L90",
+      "id": "routers_run_complete_session",
+      "community": 1,
+      "norm_label": "complete_session()"
+    },
+    {
+      "label": "reset_session()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L99",
+      "id": "routers_run_reset_session",
+      "community": 1,
+      "norm_label": "reset_session()"
+    },
+    {
+      "label": "select_image()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L108",
+      "id": "routers_run_select_image",
+      "community": 1,
+      "norm_label": "select_image()"
+    },
+    {
+      "label": "run_job()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L118",
+      "id": "routers_run_run_job",
+      "community": 1,
+      "norm_label": "run_job()"
+    },
+    {
+      "label": "reset_session_legacy()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L127",
+      "id": "routers_run_reset_session_legacy",
+      "community": 1,
+      "norm_label": "reset_session_legacy()"
+    },
+    {
+      "label": "upload.py",
+      "file_type": "code",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L1",
+      "id": "backend_routers_upload_py",
+      "community": 5,
+      "norm_label": "upload.py"
+    },
+    {
+      "label": "_sanitize()",
+      "file_type": "code",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L13",
+      "id": "routers_upload_sanitize",
+      "community": 5,
+      "norm_label": "_sanitize()"
+    },
+    {
+      "label": "list_images()",
+      "file_type": "code",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L22",
+      "id": "routers_upload_list_images",
+      "community": 5,
+      "norm_label": "list_images()"
+    },
+    {
+      "label": "upload_image()",
+      "file_type": "code",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L31",
+      "id": "routers_upload_upload_image",
+      "community": 5,
+      "norm_label": "upload_image()"
+    },
+    {
+      "label": "serve_input()",
+      "file_type": "code",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L42",
+      "id": "routers_upload_serve_input",
+      "community": 5,
+      "norm_label": "serve_input()"
+    },
+    {
+      "label": "serve_session_shot()",
+      "file_type": "code",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L50",
+      "id": "routers_upload_serve_session_shot",
+      "community": 5,
+      "norm_label": "serve_session_shot()"
+    },
+    {
+      "label": "\ud0c0\uc784\uc2a4\ud0ec\ud504 prefix + \ud2b9\uc218\ubb38\uc790 \uc81c\uac70",
+      "file_type": "rationale",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L14",
+      "id": "routers_upload_rationale_14",
+      "community": 5,
+      "norm_label": "\u1110\u1161\u110b\u1175\u11b7\u1109\u1173\u1110\u1162\u11b7\u1111\u1173 prefix + \u1110\u1173\u11a8\u1109\u116e\u1106\u116e\u11ab\u110c\u1161 \u110c\u1166\u1100\u1165"
+    },
+    {
+      "label": "\ud604\uc7ac \uc138\uc158 \uae30\uc900 \uc774\ubbf8\uc9c0/shot \ubaa9\ub85d \ubc18\ud658",
+      "file_type": "rationale",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L23",
+      "id": "routers_upload_rationale_23",
+      "community": 5,
+      "norm_label": "\u1112\u1167\u11ab\u110c\u1162 \u1109\u1166\u1109\u1167\u11ab \u1100\u1175\u110c\u116e\u11ab \u110b\u1175\u1106\u1175\u110c\u1175/shot \u1106\u1169\u11a8\u1105\u1169\u11a8 \u1107\u1161\u11ab\u1112\u116a\u11ab"
+    },
+    {
+      "label": "presets.py",
+      "file_type": "code",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L1",
+      "id": "backend_routers_presets_py",
+      "community": 9,
+      "norm_label": "presets.py"
+    },
+    {
+      "label": "_ensure_dir()",
+      "file_type": "code",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L11",
+      "id": "routers_presets_ensure_dir",
+      "community": 9,
+      "norm_label": "_ensure_dir()"
+    },
+    {
+      "label": "list_presets()",
+      "file_type": "code",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L16",
+      "id": "routers_presets_list_presets",
+      "community": 9,
+      "norm_label": "list_presets()"
+    },
+    {
+      "label": "upload_preset()",
+      "file_type": "code",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L36",
+      "id": "routers_presets_upload_preset",
+      "community": 9,
+      "norm_label": "upload_preset()"
+    },
+    {
+      "label": "activate_preset()",
+      "file_type": "code",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L55",
+      "id": "routers_presets_activate_preset",
+      "community": 9,
+      "norm_label": "activate_preset()"
+    },
+    {
+      "label": "delete_preset()",
+      "file_type": "code",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L65",
+      "id": "routers_presets_delete_preset",
+      "community": 9,
+      "norm_label": "delete_preset()"
+    },
+    {
+      "label": "result.py",
+      "file_type": "code",
+      "source_file": "backend/routers/result.py",
+      "source_location": "L1",
+      "id": "backend_routers_result_py",
+      "community": 3,
+      "norm_label": "result.py"
+    },
+    {
+      "label": "comfyui_status()",
+      "file_type": "code",
+      "source_file": "backend/routers/result.py",
+      "source_location": "L11",
+      "id": "routers_result_comfyui_status",
+      "community": 3,
+      "norm_label": "comfyui_status()"
+    },
+    {
+      "label": "result()",
+      "file_type": "code",
+      "source_file": "backend/routers/result.py",
+      "source_location": "L21",
+      "id": "routers_result_result",
+      "community": 3,
+      "norm_label": "result()"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/useSession.js",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "frontend_src_usesession_js",
+      "target": "src_usesession_usesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "frontend_src_adminscreen_jsx",
+      "target": "src_usesession_usesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "frontend_src_userscreen_jsx",
+      "target": "src_usesession_usesession",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "src_adminscreen_adminscreen",
+      "target": "src_usesession_usesession"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "src_userscreen_userscreen",
+      "target": "src_usesession_usesession"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "frontend_src_adminscreen_jsx",
+      "target": "src_adminscreen_adminscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "frontend_src_userscreen_jsx",
+      "target": "src_userscreen_resolvemainimage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "frontend_src_userscreen_jsx",
+      "target": "src_userscreen_userscreen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "src_userscreen_userscreen",
+      "target": "src_userscreen_resolvemainimage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/App.jsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "frontend_src_app_jsx",
+      "target": "src_app_app",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "tests_test_session_state_py",
+      "target": "tests_test_session_state_sessionstatetests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_start_session_creates_session_and_shots_directory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_add_shot_copies_file_into_active_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_finish_capture_and_select_shot_updates_review_state",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_mark_processing_and_result_ready",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "uses",
+      "confidence": "INFERRED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L5",
+      "weight": 0.8,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "backend_session_sessionstate",
+      "confidence_score": 0.5
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_start_session_creates_session_and_shots_directory",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_add_shot_copies_file_into_active_session",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_finish_capture_and_select_shot_updates_review_state",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L68",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_mark_processing_and_result_ready",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "tests_test_runner_enqueue_py",
+      "target": "tests_test_runner_enqueue_runnerenqueuetests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "tests_test_runner_enqueue_runnerenqueuetests",
+      "target": "tests_test_runner_enqueue_runnerenqueuetests_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "tests_test_runner_enqueue_runnerenqueuetests",
+      "target": "tests_test_runner_enqueue_runnerenqueuetests_teardown",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_runner_enqueue.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "tests_test_runner_enqueue_runnerenqueuetests",
+      "target": "tests_test_runner_enqueue_runnerenqueuetests_test_enqueue_selected_marks_processing_and_queues_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "tests_test_session_api_py",
+      "target": "tests_test_session_api_sessionapitests",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_teardown",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_start_session_returns_capturing_phase",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_finish_capture_and_select_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_run_selected_requires_selected_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/runner.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "backend_runner_py",
+      "target": "backend_runner_enqueue_selected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/runner.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_runner_py",
+      "target": "backend_runner_run_worker",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/main.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_main_lifespan",
+      "target": "backend_runner_run_worker"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_sessionstate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_session_dir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_selected_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_preview_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L52",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_selected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_images",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L216",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_preview_deadline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "backend_session_py",
+      "target": "backend_session_now",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_reset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_start_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_finish_capture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_add_shot_from_file",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_select_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L135",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_mark_processing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_mark_result_ready",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_mark_completed",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L161",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_mark_error",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L169",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_log_event",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L175",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_get_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_get_shot_path",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L182",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L205",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L212",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L219",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_init",
+      "target": "backend_session_sessionstate_reset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_start_session",
+      "target": "backend_session_sessionstate_reset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_start_session",
+      "target": "backend_session_now",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_start_session",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_start_session",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_start_session",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_finish_capture",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_finish_capture",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_finish_capture",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_finish_capture",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_add_shot_from_file",
+      "target": "backend_session_now",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_add_shot_from_file",
+      "target": "backend_session_preview_deadline",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_add_shot_from_file",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L121",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_add_shot_from_file",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_add_shot_from_file",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_select_shot",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_select_shot",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_select_shot",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_select_shot",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_processing",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L141",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_processing",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_processing",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_processing",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L149",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_result_ready",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_result_ready",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L151",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_result_ready",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L152",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_result_ready",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_completed",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L157",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_completed",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L158",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_completed",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L159",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_completed",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L164",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_error",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_error",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L166",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_error",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L167",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_mark_error",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_log_event",
+      "target": "backend_session_sessionstate_touch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_log_event",
+      "target": "backend_session_sessionstate_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_log_event",
+      "target": "backend_session_sessionstate_write_meta",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L173",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_log_event",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_get_shot_path",
+      "target": "backend_session_sessionstate_get_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L224",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_write_meta",
+      "target": "backend_session_sessionstate_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_log",
+      "target": "backend_session_now",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "backend_session_sessionstate_touch",
+      "target": "backend_session_now",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "backend_watcher_py",
+      "target": "backend_watcher_connectionmanager",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "backend_watcher_py",
+      "target": "backend_watcher_watch_folder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "backend_watcher_connectionmanager",
+      "target": "backend_watcher_connectionmanager_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "backend_watcher_connectionmanager",
+      "target": "backend_watcher_connectionmanager_connect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "backend_watcher_connectionmanager",
+      "target": "backend_watcher_connectionmanager_disconnect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "backend_watcher_connectionmanager",
+      "target": "backend_watcher_connectionmanager_broadcast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "backend_watcher_connectionmanager",
+      "target": "backend_watcher_connectionmanager_broadcast_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "backend_watcher_connectionmanager_broadcast_session",
+      "target": "backend_watcher_connectionmanager_broadcast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "backend_watcher_watch_folder",
+      "target": "backend_watcher_connectionmanager_broadcast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/watcher.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "backend_watcher_watch_folder",
+      "target": "backend_watcher_connectionmanager_broadcast_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/main.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "backend_main_lifespan",
+      "target": "backend_watcher_watch_folder"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "backend_comfy_client_py",
+      "target": "backend_comfy_client_upload_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "backend_comfy_client_py",
+      "target": "backend_comfy_client_patch_workflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "backend_comfy_client_py",
+      "target": "backend_comfy_client_queue_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "backend_comfy_client_py",
+      "target": "backend_comfy_client_get_output_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "backend_comfy_client_rationale_9",
+      "target": "backend_comfy_client_upload_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "backend_comfy_client_rationale_23",
+      "target": "backend_comfy_client_patch_workflow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "backend_comfy_client_rationale_33",
+      "target": "backend_comfy_client_queue_prompt",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "backend_comfy_client_rationale_47",
+      "target": "backend_comfy_client_get_output_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/routers/result.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "routers_result_result",
+      "target": "backend_comfy_client_get_output_image"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "backend_main_py",
+      "target": "backend_main_lifespan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "backend_main_py",
+      "target": "backend_main_health",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_main_py",
+      "target": "backend_main_ws_watch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/main.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "backend_main_py",
+      "target": "backend_main_spa_fallback",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_runrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_selectrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_selectshotrequest",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_clear_watch_folder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_get_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_get_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L45",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_start_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_finish_capture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L62",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_select_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_run_selected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_complete_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L99",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_reset_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_select_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L118",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_run_job",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_reset_session_legacy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "routers_run_runrequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "routers_run_selectrequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "routers_run_selectshotrequest",
+      "target": "basemodel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "routers_run_start_session",
+      "target": "routers_run_clear_watch_folder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "routers_run_reset_session",
+      "target": "routers_run_clear_watch_folder",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L112",
+      "weight": 1.0,
+      "source": "routers_run_select_image",
+      "target": "routers_run_select_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L122",
+      "weight": 1.0,
+      "source": "routers_run_run_job",
+      "target": "routers_run_select_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "routers_run_run_job",
+      "target": "routers_run_run_selected",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "routers_run_reset_session_legacy",
+      "target": "routers_run_reset_session",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "backend_routers_upload_py",
+      "target": "routers_upload_sanitize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "backend_routers_upload_py",
+      "target": "routers_upload_list_images",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "backend_routers_upload_py",
+      "target": "routers_upload_upload_image",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "backend_routers_upload_py",
+      "target": "routers_upload_serve_input",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "backend_routers_upload_py",
+      "target": "routers_upload_serve_session_shot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "routers_upload_upload_image",
+      "target": "routers_upload_sanitize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "routers_upload_rationale_14",
+      "target": "routers_upload_sanitize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/upload.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "routers_upload_rationale_23",
+      "target": "routers_upload_list_images",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "backend_routers_presets_py",
+      "target": "routers_presets_ensure_dir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "backend_routers_presets_py",
+      "target": "routers_presets_list_presets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "backend_routers_presets_py",
+      "target": "routers_presets_upload_preset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "backend_routers_presets_py",
+      "target": "routers_presets_activate_preset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "backend_routers_presets_py",
+      "target": "routers_presets_delete_preset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "routers_presets_list_presets",
+      "target": "routers_presets_ensure_dir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "routers_presets_upload_preset",
+      "target": "routers_presets_ensure_dir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "routers_presets_activate_preset",
+      "target": "routers_presets_ensure_dir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/presets.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "routers_presets_delete_preset",
+      "target": "routers_presets_ensure_dir",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/result.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "backend_routers_result_py",
+      "target": "routers_result_comfyui_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/result.py",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "backend_routers_result_py",
+      "target": "routers_result_result",
+      "confidence_score": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "15373956194777ed30c804fdb85e1a7b4d7267ce"
+}
