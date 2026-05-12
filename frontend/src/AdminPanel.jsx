@@ -107,6 +107,10 @@ export default function AdminPanel({ onBack }) {
           ))}
         </ul>
 
+        <div className="api-guide">
+          💡 <strong>API 형식</strong>으로 내보낸 파일만 사용 가능합니다.<br/>
+          ComfyUI 우상단 ⚙️ → <em>Enable Dev Mode Options</em> 활성화 → <em>Save (API Format)</em>
+        </div>
         <div className="form-col">
           <div className="form-row">
             <input

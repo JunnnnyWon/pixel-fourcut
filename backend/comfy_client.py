@@ -23,7 +23,7 @@ def patch_workflow(workflow: dict, filename: str) -> dict:
     import copy
     wf = copy.deepcopy(workflow)
     for node in wf.values():
-        if node.get("class_type") == "LoadImage":
+        if isinstance(node, dict) and node.get("class_type") == "LoadImage":
             node["inputs"]["image"] = filename
     return wf
 

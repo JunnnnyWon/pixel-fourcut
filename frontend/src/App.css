@@ -247,3 +247,16 @@ body { background: #111; color: #eee; font-family: sans-serif; }
   border-color: #7a3a3a;
   color: #f88;
 }
+
+.api-guide {
+  background: #1a1a2a;
+  border: 1px solid #446;
+  color: #aaf;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 4px;
+}
+.api-guide strong { color: #88f; }
+.api-guide em { color: #ccf; font-style: normal; font-weight: bold; }

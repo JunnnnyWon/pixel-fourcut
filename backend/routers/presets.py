@@ -38,9 +38,15 @@ async def upload_preset(name: str, file: UploadFile = File(...)):
     dest = _dir / f"{name}.json"
     content = await file.read()
     try:
-        json.loads(content)  # validate JSON
+        wf = json.loads(content)
     except json.JSONDecodeError:
-        raise HTTPException(400, "Invalid JSON")
+        raise HTTPException(400, "유효한 JSON 파일이 아닙니다.")
+    # ComfyUI API 형식 검증: 최상위 키가 숫자이고 값이 dict여야 함
+    if not isinstance(wf, dict) or not wf:
+        raise HTTPException(400, "ComfyUI API 형식의 workflow.json이 아닙니다. ComfyUI에서 'Save (API Format)'으로 내보낸 파일을 사용하세요.")
+    first_val = next(iter(wf.values()))
+    if not isinstance(first_val, dict) or "class_type" not in first_val:
+        raise HTTPException(400, "ComfyUI API 형식이 아닙니다. ComfyUI 우상단 설정에서 'Enable Dev Mode'를 켠 후 'Save (API Format)'으로 내보낸 파일을 사용하세요.")
     dest.write_bytes(content)
     return {"name": name}
 
