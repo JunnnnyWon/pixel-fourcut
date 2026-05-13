@@ -150,6 +150,33 @@ class SessionStateTests(unittest.TestCase):
             self.assertEqual(restored.print_ready_sessions[0]["session_id"], "session-a")
             self.assertTrue(Path(restored.print_ready_sessions[0]["result_local_path"]).exists())
 
+    def test_cache_result_file_accumulates_generated_results(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            sessions_root = root / "sessions"
+            source = root / "input.jpg"
+            source.write_bytes(b"fake-image")
+
+            state = SessionState(sessions_root)
+            state.start_session(session_id="session-a")
+            shot = state.add_shot_from_file(source, source_name="input.jpg", source_type="watcher")
+            state.finish_capture()
+            state.select_shot(shot["shot_id"])
+            state.mark_queued(prompt_id="prompt-a")
+            state.start_processing_session("session-a")
+            state.cache_result_file("session-a", "result-a.png", b"one", "image/png")
+            state.mark_result_ready("session-a", result_filename="result-a.png")
+            state.mark_queued(prompt_id="prompt-b", session_id="session-a")
+            state.start_processing_session("session-a")
+            state.cache_result_file("session-a", "result-b.png", b"two", "image/png")
+            state.mark_result_ready("session-a", result_filename="result-b.png")
+
+            detail = state.get_session("session-a")
+
+            self.assertEqual(len(detail["generated_results"]), 2)
+            self.assertEqual(detail["generated_results"][0]["source_filename"], "result-a.png")
+            self.assertEqual(detail["generated_results"][1]["source_filename"], "result-b.png")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -41,6 +41,7 @@ class SessionState:
                 "result_filename": session_data.get("result_filename"),
                 "result_local_path": session_data.get("result_local_path"),
                 "result_media_type": session_data.get("result_media_type"),
+                "generated_results": session_data.get("generated_results", []),
                 "error": session_data.get("error"),
                 "logs": session_data.get("logs", []),
                 "created_at": session_data.get("created_at"),
@@ -177,11 +178,23 @@ class SessionState:
 
     def finish_capture(self, session_id: Optional[str] = None):
         session = self._get_session_for_capture(session_id)
+        if not session["shots"]:
+            raise RuntimeError("empty_capture_session")
         if session["phase"] == "capturing":
             session["phase"] = "reviewing"
             self._log(session, "capture_finished", "촬영 종료")
             self._touch(session)
             self._write_meta(session)
+        return self.to_dict()
+
+    def retry_capture(self, session_id: Optional[str] = None):
+        session = self._get_session_for_capture(session_id)
+        session["phase"] = "capturing"
+        session["selected_shot_id"] = None
+        self.active_capture_session_id = session["session_id"]
+        self._log(session, "capture_retried", "다시 촬영 단계로 돌아감")
+        self._touch(session)
+        self._write_meta(session)
         return self.to_dict()
 
     def add_shot_from_file(
@@ -281,15 +294,37 @@ class SessionState:
         suffix = Path(source_filename).suffix
         if not suffix:
             suffix = mimetypes.guess_extension(media_type or "") or ".png"
-        local_name = f"result{suffix}"
+        result_index = len(session["generated_results"]) + 1
+        local_name = f"result-{result_index:03d}{suffix}"
         local_path = self._session_dir(session) / local_name
         local_path.write_bytes(content)
         session["result_filename"] = source_filename
         session["result_local_path"] = str(local_path)
         session["result_media_type"] = media_type
+        session["generated_results"].append({
+            "result_id": f"result-{result_index:03d}",
+            "filename": local_name,
+            "source_filename": source_filename,
+            "local_path": str(local_path),
+            "media_type": media_type,
+            "url": f"/api/sessions/{session_id}/results/result-{result_index:03d}",
+            "created_at": self._now(),
+        })
         self._touch(session)
         self._write_meta(session)
         return str(local_path)
+
+    def discard_session(self, session_id: str):
+        session = self._get_session(session_id)
+        if self.active_capture_session_id == session_id:
+            self.active_capture_session_id = None
+        session_dir = self._session_dir(session)
+        if session_dir.exists():
+            shutil.rmtree(session_dir)
+        del self._sessions[session_id]
+        latest = self._get_latest_session()
+        self.updated_at = latest["updated_at"] if latest else None
+        return {"discarded": session_id}
 
     def mark_completed(self, session_id: Optional[str] = None):
         if session_id is None:
@@ -406,6 +441,7 @@ class SessionState:
             "result_filename": None,
             "result_local_path": None,
             "result_media_type": None,
+            "generated_results": [],
             "error": None,
             "logs": [],
             "created_at": created_at,
@@ -467,6 +503,7 @@ class SessionState:
             "result_url": f"/api/result/{session['prompt_id']}" if session["prompt_id"] and session["result_filename"] else None,
             "result_local_path": session["result_local_path"],
             "result_media_type": session["result_media_type"],
+            "generated_results": list(session.get("generated_results", [])),
             "error": session["error"],
             "logs": list(session["logs"]),
             "created_at": session["created_at"],

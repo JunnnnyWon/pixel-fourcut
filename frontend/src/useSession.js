@@ -117,6 +117,18 @@ export function useSession() {
     }
   }, [])
 
+  const rerunSession = useCallback(async (sessionId) => {
+    const response = await fetch('/api/session/rerun', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId }),
+    })
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}))
+      throw new Error(data.detail || 'AI 재생성 실패')
+    }
+  }, [])
+
   return useMemo(() => {
     const currentSession = state.current_session
     const processingSessions = state.processing_sessions || []
@@ -131,6 +143,7 @@ export function useSession() {
       previewActive,
       selectShot,
       completeSession,
+      rerunSession,
       currentSession,
       processingSessions,
       printReadySessions,
@@ -159,5 +172,6 @@ export function useSession() {
     previewActive,
     selectShot,
     completeSession,
+    rerunSession,
   ])
 }

@@ -63,8 +63,20 @@ class SessionApiTests(unittest.TestCase):
         self.assertEqual(select_response["selected_shot_id"], shot["shot_id"])
         self.assertEqual(select_response["phase"], "reviewing")
 
+    def test_finish_capture_rejects_zero_shot_session(self):
+        self.loop.run_until_complete(run_router.start_session())
+
+        with self.assertRaises(HTTPException) as exc:
+            self.loop.run_until_complete(run_router.finish_capture())
+
+        self.assertEqual(exc.exception.status_code, 409)
+        self.assertIn("사진이 아직 없습니다", str(exc.exception.detail))
+
     def test_run_selected_requires_selected_shot(self):
         self.loop.run_until_complete(run_router.start_session())
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
         self.loop.run_until_complete(run_router.finish_capture())
 
         with self.assertRaises(HTTPException) as exc:
@@ -113,6 +125,45 @@ class SessionApiTests(unittest.TestCase):
 
         self.assertTrue(any(item["session_id"] == first_session_id for item in listing["sessions"]))
         self.assertEqual(detail["session_id"], first_session_id)
+
+    def test_retry_capture_and_discard_current_team(self):
+        started = self.loop.run_until_complete(run_router.start_session())
+        session_id = started["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+
+        retried = self.loop.run_until_complete(run_router.retry_capture())
+        discarded = self.loop.run_until_complete(
+            run_router.discard_session(run_router.SessionActionRequest(session_id=session_id))
+        )
+
+        self.assertEqual(retried["phase"], "capturing")
+        self.assertEqual(discarded["discarded"], session_id)
+        self.assertIsNone(session.current_session)
+
+    def test_can_rerun_previous_session(self):
+        started = self.loop.run_until_complete(run_router.start_session())
+        session_id = started["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+        session.mark_completed(session_id)
+
+        with patch("backend.routers.run.runner.enqueue_selected", AsyncMock(return_value="prompt-rerun")):
+            rerun = self.loop.run_until_complete(
+                run_router.rerun_session(run_router.SessionActionRequest(session_id=session_id))
+            )
+
+        self.assertEqual(rerun["prompt_id"], "prompt-rerun")
 
 
 if __name__ == "__main__":

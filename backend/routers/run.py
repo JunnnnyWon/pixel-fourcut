@@ -3,6 +3,8 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import FileResponse
+from pathlib import Path as FilePath
 from pydantic import BaseModel
 
 from backend import runner
@@ -65,6 +67,20 @@ def get_session_detail(session_id: str):
     return detail
 
 
+@router.get("/api/sessions/{session_id}/results/{result_id}")
+def get_session_result_detail(session_id: str, result_id: str):
+    detail = session.get_session(session_id)
+    if not detail:
+        raise HTTPException(404, "세션을 찾을 수 없습니다.")
+    result = next((item for item in detail.get("generated_results", []) if item["result_id"] == result_id), None)
+    if not result:
+        raise HTTPException(404, "결과 이미지를 찾을 수 없습니다.")
+    path = FilePath(result["local_path"])
+    if not path.exists():
+        raise HTTPException(404, "결과 파일이 없습니다.")
+    return FileResponse(str(path), media_type=result.get("media_type") or None)
+
+
 @router.post("/api/session/start")
 async def start_session():
     try:
@@ -81,8 +97,21 @@ async def finish_capture():
     try:
         session_id = _get_active_capture_session_id()
         snapshot = session.finish_capture(session_id=session_id)
-    except RuntimeError:
+    except RuntimeError as exc:
+        if str(exc) == "empty_capture_session":
+            raise HTTPException(409, "사진이 아직 없습니다. 다시 찍거나 팀을 파기하세요.")
         raise HTTPException(409, "진행 중인 촬영 세션이 없습니다.")
+    await manager.broadcast_session()
+    return snapshot
+
+
+@router.post("/api/session/retry-capture")
+async def retry_capture():
+    try:
+        session_id = _get_active_capture_session_id()
+        snapshot = session.retry_capture(session_id=session_id)
+    except RuntimeError:
+        raise HTTPException(409, "다시 촬영할 세션이 없습니다.")
     await manager.broadcast_session()
     return snapshot
 
@@ -134,6 +163,41 @@ async def complete_session(req: SessionActionRequest):
         raise HTTPException(404, "세션을 찾을 수 없습니다.")
     await manager.broadcast_session()
     return snapshot
+
+
+@router.post("/api/session/discard")
+async def discard_session(req: SessionActionRequest):
+    session_id = req.session_id or session.active_capture_session_id
+    if not session_id:
+        raise HTTPException(409, "파기할 세션이 없습니다.")
+    try:
+        result = session.discard_session(session_id)
+    except KeyError:
+        raise HTTPException(404, "세션을 찾을 수 없습니다.")
+    await manager.broadcast_session()
+    return result
+
+
+@router.post("/api/session/rerun")
+async def rerun_session(req: SessionActionRequest):
+    session_id = req.session_id
+    if not session_id:
+        raise HTTPException(409, "다시 생성할 세션이 없습니다.")
+    target_session = session.get_session(session_id)
+    if not target_session:
+        raise HTTPException(404, "세션을 찾을 수 없습니다.")
+    if not target_session.get("selected_shot_id"):
+        raise HTTPException(409, "선택된 컷이 없습니다.")
+    if target_session["phase"] in {"queued", "processing"}:
+        raise HTTPException(409, "이미 AI 처리 중인 세션입니다.")
+    try:
+        prompt_id = await runner.enqueue_selected(session_id=session_id)
+        await manager.broadcast_session()
+        return {"prompt_id": prompt_id, "session": session.to_dict()}
+    except FileNotFoundError:
+        raise HTTPException(400, "활성화된 워크플로우 프리셋이 없습니다.")
+    except Exception as exc:
+        raise HTTPException(500, f"재생성 중 오류: {str(exc)}")
 
 
 @router.post("/api/session/reset")

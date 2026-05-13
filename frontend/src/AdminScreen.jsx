@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import OperatorNav from './OperatorNav'
 import { useSession } from './useSession'
 import './App.css'
 
@@ -18,7 +19,7 @@ function sessionHeroImage(session) {
   return session.result_url || session.selected_shot?.url || session.preview_shot?.url || session.shots?.[0]?.url || null
 }
 
-function QueueCard({ session, title, actionLabel, onAction }) {
+function QueueCard({ session, title }) {
   const heroImage = sessionHeroImage(session)
   return (
     <div className="queue-card">
@@ -32,54 +33,9 @@ function QueueCard({ session, title, actionLabel, onAction }) {
       <div className="queue-card-meta">
         <span>사진 {session.shots?.length || 0}장</span>
         {session.selected_shot && <span>선택 {session.selected_shot.filename}</span>}
+        {session.generated_results?.length ? <span>AI {session.generated_results.length}개</span> : null}
       </div>
       {heroImage && <img src={heroImage} alt={session.session_id} className="queue-card-image" />}
-      {actionLabel && onAction && (
-        <div className="queue-card-actions">
-          <button className="btn-primary secondary" onClick={onAction}>{actionLabel}</button>
-        </div>
-      )}
-    </div>
-  )
-}
-
-function HistoryDetail({ session }) {
-  if (!session) {
-    return <div className="history-empty">왼쪽에서 지난 팀을 누르면 자세히 볼 수 있습니다.</div>
-  }
-
-  const heroImage = sessionHeroImage(session)
-  return (
-    <div className="history-detail">
-      <div className="history-detail-head">
-        <div>
-          <div className="summary-label">세션</div>
-          <strong>{session.session_id}</strong>
-        </div>
-        <span className={`phase-badge phase-${session.phase}`}>{PHASE_LABEL[session.phase] || session.phase}</span>
-      </div>
-
-      <div className="history-detail-meta">
-        <span>사진 {session.shots?.length || 0}장</span>
-        {session.selected_shot && <span>선택 {session.selected_shot.filename}</span>}
-        {session.result_filename && <span>결과 {session.result_filename}</span>}
-      </div>
-
-      {heroImage ? (
-        <img src={heroImage} alt={session.session_id} className="history-detail-image" />
-      ) : (
-        <div className="history-empty">표시할 이미지가 없습니다.</div>
-      )}
-
-      {session.shots?.length > 0 && (
-        <div className="history-shot-grid">
-          {session.shots.map((shot) => (
-            <div key={`${session.session_id}-${shot.shot_id}`} className="history-shot">
-              <img src={shot.url} alt={shot.filename} />
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   )
 }
@@ -93,11 +49,8 @@ export default function AdminScreen() {
     progress,
     wsConnected,
     processingSessions,
-    printReadySessions,
     erroredSessions,
-    allSessions,
     selectShot,
-    completeSession,
   } = useSession()
 
   const [presets, setPresets] = useState([])
@@ -110,7 +63,6 @@ export default function AdminScreen() {
   const [uploadPreview, setUploadPreview] = useState(null)
   const [msg, setMsg] = useState({ text: '', type: 'ok' })
   const [presetsOpen, setPresetsOpen] = useState(false)
-  const [historySessionId, setHistorySessionId] = useState(null)
   const fileInputRef = useRef(null)
   const flashTimerRef = useRef(null)
 
@@ -162,15 +114,6 @@ export default function AdminScreen() {
 
   useEffect(() => () => window.clearTimeout(flashTimerRef.current), [])
 
-  const historySessions = useMemo(() => {
-    return allSessions.filter((item) => item.session_id !== currentSession?.session_id)
-  }, [allSessions, currentSession])
-
-  const historySession = useMemo(() => {
-    if (!historySessions.length) return null
-    return historySessions.find((item) => item.session_id === historySessionId) || historySessions[0]
-  }, [historySessionId, historySessions])
-
   const handleStartSession = useCallback(async () => {
     try {
       await request('/api/session/start', { method: 'POST' }, '새 팀 시작 실패')
@@ -197,6 +140,30 @@ export default function AdminScreen() {
       flash(err.message, 'err')
     }
   }, [flash, request])
+
+  const handleRetryCapture = useCallback(async () => {
+    try {
+      await request('/api/session/retry-capture', { method: 'POST' }, '다시 촬영 실패')
+      flash('다시 촬영 단계로 돌아갑니다')
+    } catch (err) {
+      flash(err.message, 'err')
+    }
+  }, [flash, request])
+
+  const handleDiscardCurrent = useCallback(async () => {
+    if (!currentSession) return
+    if (!confirm('이 팀을 파기할까요?')) return
+    try {
+      await request('/api/session/discard', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: currentSession.session_id }),
+      }, '팀 파기 실패')
+      flash('현재 팀을 파기했습니다')
+    } catch (err) {
+      flash(err.message, 'err')
+    }
+  }, [currentSession, flash, request])
 
   const handleReset = async () => {
     if (!confirm('모든 세션과 받은 사진을 초기화할까요?')) return
@@ -324,6 +291,7 @@ export default function AdminScreen() {
           <div className={`ws-dot ${wsConnected ? 'on' : 'off'}`} />
         </div>
       </div>
+      <OperatorNav />
 
       {msg.text && <div className={`flash ${msg.type === 'err' ? 'flash-err' : ''}`}>{msg.text}</div>}
 
@@ -426,7 +394,13 @@ export default function AdminScreen() {
                 ))}
               </div>
             ) : (
-              <div className="empty-gallery">사진이 들어오면 여기에 보입니다.</div>
+              <div className="friendly-empty">
+                아직 받은 사진이 없습니다.
+                <div className="queue-card-actions" style={{ marginTop: 12 }}>
+                  <button className="btn-primary secondary" onClick={handleRetryCapture}>다시 촬영</button>
+                  <button className="btn-delete" onClick={handleDiscardCurrent}>팀 파기</button>
+                </div>
+              </div>
             )}
           </>
         )}
@@ -460,53 +434,10 @@ export default function AdminScreen() {
 
       <section>
         <div className="section-header">
-          <h3>인화할 팀</h3>
+          <h3>인화는 인화 페이지에서 진행</h3>
         </div>
-        {printReadySessions.length === 0 ? (
-          <div className="friendly-empty">지금은 인화할 팀이 없습니다.</div>
-        ) : (
-          <div className="queue-grid">
-            {printReadySessions.map((item) => (
-              <QueueCard
-                key={item.session_id}
-                title="결과 준비 완료"
-                session={item}
-                actionLabel="인화 완료"
-                onAction={() => completeSession(item.session_id).catch((err) => flash(err.message, 'err'))}
-              />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section>
-        <div className="section-header">
-          <h3>지난 팀 다시 보기</h3>
-        </div>
-        <div className="history-layout">
-          <div className="history-list">
-            {historySessions.length === 0 ? (
-              <div className="history-empty">아직 지난 세션이 없습니다.</div>
-            ) : (
-              historySessions.map((item) => (
-                <button
-                  key={item.session_id}
-                  className={`history-row ${historySessionId === item.session_id ? 'selected' : ''}`}
-                  onClick={() => setHistorySessionId(item.session_id)}
-                >
-                  <div className="history-row-main">
-                    <strong>{item.session_id}</strong>
-                    <span>{PHASE_LABEL[item.phase] || item.phase}</span>
-                  </div>
-                  <div className="history-row-sub">
-                    사진 {item.shots?.length || 0}장
-                    {item.result_filename ? ` · 결과 ${item.result_filename}` : ''}
-                  </div>
-                </button>
-              ))
-            )}
-          </div>
-          <HistoryDetail session={historySession} />
+        <div className="friendly-empty">
+          결과 확인, AI 재생성, 원본/AI 이미지 히스토리는 상단 `인화 / 지난 팀` 페이지에서 진행합니다.
         </div>
       </section>
 
