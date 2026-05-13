@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import mimetypes
 import shutil
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -21,6 +22,38 @@ class SessionState:
         self.active_capture_session_id: Optional[str] = None
         self._sessions: dict[str, dict] = {}
         self.updated_at: Optional[str] = None
+
+    def load_from_disk(self):
+        self.reset()
+        if not self.sessions_root.exists():
+            return self.to_dict()
+
+        for meta_path in sorted(self.sessions_root.glob("*/meta.json")):
+            session_data = json.loads(meta_path.read_text(encoding="utf-8"))
+            raw_session = {
+                "session_id": session_data["session_id"],
+                "phase": session_data["phase"],
+                "shots": session_data.get("shots", []),
+                "selected_shot_id": session_data.get("selected_shot_id"),
+                "preview_shot_id": session_data.get("preview_shot_id"),
+                "preview_until": session_data.get("preview_until"),
+                "prompt_id": session_data.get("prompt_id"),
+                "result_filename": session_data.get("result_filename"),
+                "result_local_path": session_data.get("result_local_path"),
+                "result_media_type": session_data.get("result_media_type"),
+                "error": session_data.get("error"),
+                "logs": session_data.get("logs", []),
+                "created_at": session_data.get("created_at"),
+                "updated_at": session_data.get("updated_at"),
+            }
+            self._sessions[raw_session["session_id"]] = raw_session
+            if raw_session["phase"] in {"capturing", "reviewing"}:
+                self.active_capture_session_id = raw_session["session_id"]
+
+        latest = self._get_latest_session()
+        if latest:
+            self.updated_at = latest["updated_at"]
+        return self.to_dict()
 
     @property
     def current_session(self) -> Optional[dict]:
@@ -243,6 +276,21 @@ class SessionState:
         self._write_meta(session)
         return self.to_dict()
 
+    def cache_result_file(self, session_id: str, source_filename: str, content: bytes, media_type: str) -> str:
+        session = self._get_session(session_id)
+        suffix = Path(source_filename).suffix
+        if not suffix:
+            suffix = mimetypes.guess_extension(media_type or "") or ".png"
+        local_name = f"result{suffix}"
+        local_path = self._session_dir(session) / local_name
+        local_path.write_bytes(content)
+        session["result_filename"] = source_filename
+        session["result_local_path"] = str(local_path)
+        session["result_media_type"] = media_type
+        self._touch(session)
+        self._write_meta(session)
+        return str(local_path)
+
     def mark_completed(self, session_id: Optional[str] = None):
         if session_id is None:
             ready = self.print_ready_sessions
@@ -306,6 +354,12 @@ class SessionState:
         shot = self.get_shot(shot_id, session_id=session_id)
         return Path(shot["path"]) if shot else None
 
+    def get_session_by_prompt_id(self, prompt_id: str) -> Optional[dict]:
+        for item in self._sessions.values():
+            if item["prompt_id"] == prompt_id:
+                return self._serialize_session(item)
+        return None
+
     def to_dict(self):
         current_session = self.current_session
         return {
@@ -328,6 +382,8 @@ class SessionState:
             "prompt_id": current_session["prompt_id"] if current_session else None,
             "result_filename": current_session["result_filename"] if current_session else None,
             "result_url": current_session["result_url"] if current_session else None,
+            "result_local_path": current_session["result_local_path"] if current_session else None,
+            "result_media_type": current_session["result_media_type"] if current_session else None,
             "error": current_session["error"] if current_session else None,
             "logs": current_session["logs"] if current_session else [],
             "created_at": current_session["created_at"] if current_session else None,
@@ -348,6 +404,8 @@ class SessionState:
             "preview_until": None,
             "prompt_id": None,
             "result_filename": None,
+            "result_local_path": None,
+            "result_media_type": None,
             "error": None,
             "logs": [],
             "created_at": created_at,
@@ -407,6 +465,8 @@ class SessionState:
             "prompt_id": session["prompt_id"],
             "result_filename": session["result_filename"],
             "result_url": f"/api/result/{session['prompt_id']}" if session["prompt_id"] and session["result_filename"] else None,
+            "result_local_path": session["result_local_path"],
+            "result_media_type": session["result_media_type"],
             "error": session["error"],
             "logs": list(session["logs"]),
             "created_at": session["created_at"],

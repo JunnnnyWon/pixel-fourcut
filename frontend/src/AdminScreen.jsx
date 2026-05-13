@@ -1,23 +1,27 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSession } from './useSession'
 import './App.css'
 
 const PHASE_LABEL = {
   idle: '대기 중',
   capturing: '촬영 중',
-  reviewing: '사진 선택 중',
-  queued: 'AI 대기열',
-  processing: 'AI 처리 중',
+  reviewing: '사진 고르기',
+  queued: 'AI 대기',
+  processing: 'AI 만드는 중',
   result_ready: '인화 대기',
   completed: '완료',
   error: '오류',
 }
 
-function SessionCard({ title, session, children, compact = false }) {
+function sessionHeroImage(session) {
   if (!session) return null
-  const heroImage = session.result_url || session.selected_shot?.url || session.preview_shot?.url || session.shots?.[0]?.url
+  return session.result_url || session.selected_shot?.url || session.preview_shot?.url || session.shots?.[0]?.url || null
+}
+
+function QueueCard({ session, title, actionLabel, onAction }) {
+  const heroImage = sessionHeroImage(session)
   return (
-    <div className={`queue-card ${compact ? 'compact' : ''}`}>
+    <div className="queue-card">
       <div className="queue-card-head">
         <div>
           <div className="summary-label">{title}</div>
@@ -26,12 +30,56 @@ function SessionCard({ title, session, children, compact = false }) {
         <span className={`phase-badge phase-${session.phase}`}>{PHASE_LABEL[session.phase] || session.phase}</span>
       </div>
       <div className="queue-card-meta">
-        <span>shots {session.shots?.length || 0}</span>
-        {session.selected_shot && <span>selected {session.selected_shot.filename}</span>}
-        {session.result_filename && <span>result {session.result_filename}</span>}
+        <span>사진 {session.shots?.length || 0}장</span>
+        {session.selected_shot && <span>선택 {session.selected_shot.filename}</span>}
       </div>
       {heroImage && <img src={heroImage} alt={session.session_id} className="queue-card-image" />}
-      {children}
+      {actionLabel && onAction && (
+        <div className="queue-card-actions">
+          <button className="btn-primary secondary" onClick={onAction}>{actionLabel}</button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function HistoryDetail({ session }) {
+  if (!session) {
+    return <div className="history-empty">왼쪽에서 지난 팀을 누르면 자세히 볼 수 있습니다.</div>
+  }
+
+  const heroImage = sessionHeroImage(session)
+  return (
+    <div className="history-detail">
+      <div className="history-detail-head">
+        <div>
+          <div className="summary-label">세션</div>
+          <strong>{session.session_id}</strong>
+        </div>
+        <span className={`phase-badge phase-${session.phase}`}>{PHASE_LABEL[session.phase] || session.phase}</span>
+      </div>
+
+      <div className="history-detail-meta">
+        <span>사진 {session.shots?.length || 0}장</span>
+        {session.selected_shot && <span>선택 {session.selected_shot.filename}</span>}
+        {session.result_filename && <span>결과 {session.result_filename}</span>}
+      </div>
+
+      {heroImage ? (
+        <img src={heroImage} alt={session.session_id} className="history-detail-image" />
+      ) : (
+        <div className="history-empty">표시할 이미지가 없습니다.</div>
+      )}
+
+      {session.shots?.length > 0 && (
+        <div className="history-shot-grid">
+          {session.shots.map((shot) => (
+            <div key={`${session.session_id}-${shot.shot_id}`} className="history-shot">
+              <img src={shot.url} alt={shot.filename} />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -39,7 +87,6 @@ function SessionCard({ title, session, children, compact = false }) {
 export default function AdminScreen() {
   const {
     currentSession,
-    phase,
     shots,
     selectedShotId,
     selectedShot,
@@ -48,6 +95,7 @@ export default function AdminScreen() {
     processingSessions,
     printReadySessions,
     erroredSessions,
+    allSessions,
     selectShot,
     completeSession,
   } = useSession()
@@ -62,6 +110,7 @@ export default function AdminScreen() {
   const [uploadPreview, setUploadPreview] = useState(null)
   const [msg, setMsg] = useState({ text: '', type: 'ok' })
   const [presetsOpen, setPresetsOpen] = useState(false)
+  const [historySessionId, setHistorySessionId] = useState(null)
   const fileInputRef = useRef(null)
   const flashTimerRef = useRef(null)
 
@@ -113,38 +162,47 @@ export default function AdminScreen() {
 
   useEffect(() => () => window.clearTimeout(flashTimerRef.current), [])
 
-  const handleStartSession = async () => {
+  const historySessions = useMemo(() => {
+    return allSessions.filter((item) => item.session_id !== currentSession?.session_id)
+  }, [allSessions, currentSession])
+
+  const historySession = useMemo(() => {
+    if (!historySessions.length) return null
+    return historySessions.find((item) => item.session_id === historySessionId) || historySessions[0]
+  }, [historySessionId, historySessions])
+
+  const handleStartSession = useCallback(async () => {
     try {
-      await request('/api/session/start', { method: 'POST' }, '세션 시작 실패')
-      flash('새 세션을 시작했습니다')
+      await request('/api/session/start', { method: 'POST' }, '새 팀 시작 실패')
+      flash('새 팀을 받았습니다')
     } catch (err) {
       flash(err.message, 'err')
     }
-  }
+  }, [flash, request])
 
-  const handleFinishCapture = async () => {
+  const handleFinishCapture = useCallback(async () => {
     try {
       await request('/api/session/finish-capture', { method: 'POST' }, '촬영 종료 실패')
-      flash('촬영을 종료했습니다')
+      flash('사진 고르기 단계로 넘어갑니다')
     } catch (err) {
       flash(err.message, 'err')
     }
-  }
+  }, [flash, request])
 
-  const handleRunSelected = async () => {
+  const handleRunSelected = useCallback(async () => {
     try {
-      await request('/api/session/run-selected', { method: 'POST' }, 'AI 처리 시작 실패')
-      flash('AI 대기열에 추가했습니다')
+      await request('/api/session/run-selected', { method: 'POST' }, 'AI 시작 실패')
+      flash('AI 그림 만들기를 시작했습니다')
     } catch (err) {
       flash(err.message, 'err')
     }
-  }
+  }, [flash, request])
 
   const handleReset = async () => {
-    if (!confirm('모든 세션과 inbox를 초기화할까요?')) return
+    if (!confirm('모든 세션과 받은 사진을 초기화할까요?')) return
     try {
       await request('/api/session/reset', { method: 'POST' }, '초기화 실패')
-      flash('초기화 완료')
+      flash('전체 초기화 완료')
     } catch (err) {
       flash(err.message, 'err')
     }
@@ -205,7 +263,7 @@ export default function AdminScreen() {
     fd.append('file', uploadFile)
     try {
       await request('/api/upload', { method: 'POST', body: fd }, '이미지 업로드 실패')
-      flash(currentSession?.phase === 'capturing' ? '업로드 완료: 현재 촬영 세션에 편입됩니다' : '업로드 완료: 현재 capture lane이 비어 있습니다')
+      flash(currentSession?.phase === 'capturing' ? '사진이 현재 팀에 추가됩니다' : '지금은 새 팀을 시작한 뒤 업로드해야 합니다')
       setUploadFile(null)
       setUploadPreview(null)
       if (fileInputRef.current) fileInputRef.current.value = ''
@@ -214,7 +272,43 @@ export default function AdminScreen() {
     }
   }
 
-  const canRun = currentSession?.phase === 'reviewing' && !!selectedShotId && !!activePreset && comfyOnline
+  let heroActionKind = 'none'
+  let heroTitle = '지금은 자동 진행 중이에요'
+  let heroDescription = '현재 팀은 대기열 또는 처리 단계에 있습니다. 다음 팀을 받을 준비를 확인하세요.'
+  let heroButtonLabel = '대기 중'
+  let heroDisabled = true
+
+  if (!currentSession) {
+    heroActionKind = 'start'
+    heroTitle = '새 팀을 받을 준비가 됐어요'
+    heroDescription = '버튼 하나만 누르면 다음 팀 촬영을 바로 시작할 수 있어요.'
+    heroButtonLabel = '새 팀 시작'
+    heroDisabled = false
+  } else if (currentSession.phase === 'capturing') {
+    heroActionKind = 'finish'
+    heroTitle = '촬영이 끝났다면 다음으로 넘어가세요'
+    heroDescription = '사진을 다 찍었으면 큰 버튼을 눌러 사진 고르기 단계로 이동합니다.'
+    heroButtonLabel = '촬영 끝내기'
+    heroDisabled = false
+  } else if (currentSession.phase === 'reviewing' && !selectedShot) {
+    heroActionKind = 'select'
+    heroTitle = '마음에 드는 사진을 하나 누르세요'
+    heroDescription = '아래 사진을 한 장 누르면 바로 선택됩니다.'
+    heroButtonLabel = '먼저 사진 선택'
+    heroDisabled = true
+  } else if (currentSession.phase === 'reviewing' && selectedShot) {
+    heroActionKind = 'run'
+    heroTitle = '이 사진으로 AI 그림을 만듭니다'
+    heroDescription = '선택한 사진이 맞으면 버튼을 눌러 AI 대기열에 넣으세요.'
+    heroButtonLabel = 'AI 그림 만들기'
+    heroDisabled = !activePreset || !comfyOnline
+  }
+
+  const handleHeroAction = async () => {
+    if (heroActionKind === 'start') return handleStartSession()
+    if (heroActionKind === 'finish') return handleFinishCapture()
+    if (heroActionKind === 'run') return handleRunSelected()
+  }
 
   return (
     <div className="admin">
@@ -225,112 +319,139 @@ export default function AdminScreen() {
             ComfyUI {comfyOnline ? '연결됨' : '오프라인'}
           </span>
           <span className={`status-chip ${activePreset ? 'ok' : 'warn'}`}>
-            {activePreset ? `프리셋: ${activePreset}` : '프리셋 없음'}
+            {activePreset ? `프리셋 ${activePreset}` : '프리셋 없음'}
           </span>
-          <span className={`phase-badge phase-${phase}`}>{PHASE_LABEL[phase] || phase}</span>
           <div className={`ws-dot ${wsConnected ? 'on' : 'off'}`} />
         </div>
       </div>
 
       {msg.text && <div className={`flash ${msg.type === 'err' ? 'flash-err' : ''}`}>{msg.text}</div>}
 
-      <section>
-        <div className="section-header">
-          <h3>현재 Capture Lane</h3>
+      <section className="hero-action">
+        <div className="hero-copy">
+          <span className="hero-kicker">다음으로 할 일</span>
+          <h2>{heroTitle}</h2>
+          <p>{heroDescription}</p>
+        </div>
+        <div className="hero-actions">
+          <button
+            className="hero-button"
+            disabled={heroDisabled}
+            onClick={handleHeroAction}
+          >
+            {heroButtonLabel}
+          </button>
           <button className="btn-new-guest" onClick={handleReset}>전체 초기화</button>
         </div>
+      </section>
 
-        <div className="session-summary session-summary-four">
-          <div>
-            <span className="summary-label">현재 세션</span>
-            <strong>{currentSession?.session_id || '비어 있음'}</strong>
-          </div>
-          <div>
-            <span className="summary-label">상태</span>
-            <strong>{PHASE_LABEL[currentSession?.phase || 'idle'] || '대기 중'}</strong>
-          </div>
-          <div>
-            <span className="summary-label">처리 대기/중</span>
-            <strong>{processingSessions.length}</strong>
-          </div>
-          <div>
-            <span className="summary-label">출력 대기</span>
-            <strong>{printReadySessions.length}</strong>
-          </div>
+      <section>
+        <div className="section-header">
+          <h3>지금 촬영하는 팀</h3>
         </div>
 
-        <div className="action-row">
-          <button className="btn-primary" onClick={handleStartSession} disabled={!!currentSession}>
-            새 세션 시작
-          </button>
-          <button className="btn-primary secondary" onClick={handleFinishCapture} disabled={currentSession?.phase !== 'capturing'}>
-            촬영 종료
-          </button>
-          <button className="btn-primary" onClick={handleRunSelected} disabled={!canRun}>
-            {currentSession?.phase === 'reviewing' ? 'AI 대기열 추가' : 'AI 대기열 추가'}
-          </button>
-        </div>
-
-        {currentSession ? (
+        {!currentSession ? (
+          <div className="friendly-empty">
+            지금은 촬영 중인 팀이 없습니다. 위의 큰 버튼으로 바로 새 팀을 받을 수 있습니다.
+          </div>
+        ) : (
           <>
-            <div className="capture-lane-header">
-              <span className={`phase-badge phase-${currentSession.phase}`}>{PHASE_LABEL[currentSession.phase] || currentSession.phase}</span>
-              <span className="lane-meta">shots {shots.length}</span>
+            <div className="session-summary session-summary-four">
+              <div>
+                <span className="summary-label">현재 팀</span>
+                <strong>{currentSession.session_id}</strong>
+              </div>
+              <div>
+                <span className="summary-label">상태</span>
+                <strong>{PHASE_LABEL[currentSession.phase] || currentSession.phase}</strong>
+              </div>
+              <div>
+                <span className="summary-label">받은 사진</span>
+                <strong>{shots.length}장</strong>
+              </div>
+              <div>
+                <span className="summary-label">선택한 사진</span>
+                <strong>{selectedShot ? '있음' : '없음'}</strong>
+              </div>
             </div>
 
-            {shots.length === 0 ? (
-              <div className="empty-gallery">촬영된 사진이 아직 없습니다</div>
-            ) : (
-              <div className="admin-gallery">
+            <div className="capture-workspace">
+              <div className="capture-preview-panel">
+                {sessionHeroImage(currentSession) ? (
+                  <img src={sessionHeroImage(currentSession)} alt={currentSession.session_id} className="capture-preview-image" />
+                ) : (
+                  <div className="history-empty">촬영된 사진이 아직 없습니다.</div>
+                )}
+                {currentSession.phase === 'reviewing' && selectedShot && (
+                  <div className="selected-label">이 사진으로 AI를 만들어요</div>
+                )}
+              </div>
+
+              <div className="capture-step-panel">
+                <div className="step-card">
+                  <span className="step-number">1</span>
+                  <div>
+                    <strong>사진이 들어오는지 확인</strong>
+                    <p>카메라나 업로드로 들어온 사진이 아래에 자동으로 쌓입니다.</p>
+                  </div>
+                </div>
+                <div className="step-card">
+                  <span className="step-number">2</span>
+                  <div>
+                    <strong>마음에 드는 사진을 누르기</strong>
+                    <p>사진을 한 장 누르면 바로 선택됩니다.</p>
+                  </div>
+                </div>
+                <div className="step-card">
+                  <span className="step-number">3</span>
+                  <div>
+                    <strong>큰 버튼으로 다음 단계 진행</strong>
+                    <p>촬영 끝내기 또는 AI 그림 만들기를 순서대로 누르면 됩니다.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {shots.length > 0 ? (
+              <div className="shot-picker">
                 {shots.map((shot) => (
-                  <div
+                  <button
                     key={`${currentSession.session_id}-${shot.shot_id}`}
-                    className={`admin-thumb ${selectedShotId === shot.shot_id ? 'selected' : ''}`}
+                    className={`shot-tile ${selectedShotId === shot.shot_id ? 'selected' : ''}`}
                     onClick={() => selectShot(shot.shot_id).catch((err) => flash(err.message, 'err'))}
                   >
                     <img src={shot.url} alt={shot.filename} />
-                    {selectedShotId === shot.shot_id && <div className="thumb-check">✓</div>}
-                  </div>
+                    <span>{selectedShotId === shot.shot_id ? '선택됨' : '누르면 선택'}</span>
+                  </button>
                 ))}
               </div>
-            )}
-
-            {selectedShot && (
-              <div className="selected-panel">
-                <img src={selectedShot.url} alt={selectedShot.filename} />
-                <div>
-                  <div className="summary-label">선택 컷</div>
-                  <strong>{selectedShot.filename}</strong>
-                </div>
-              </div>
+            ) : (
+              <div className="empty-gallery">사진이 들어오면 여기에 보입니다.</div>
             )}
           </>
-        ) : (
-          <div className="empty-gallery">지금은 capture lane이 비어 있습니다. 처리 대기 중인 팀과 별개로 새 팀을 받을 수 있습니다.</div>
         )}
 
         {processingSessions.some((item) => item.phase === 'processing') && (
           <div className="status-bar" style={{ marginTop: 12 }}>
             <div className="spinner" />
-            AI 처리 중...{progress && ` (${progress.value} / ${progress.max})`}
+            AI 그림 만드는 중...{progress && ` (${progress.value} / ${progress.max})`}
           </div>
         )}
       </section>
 
       <section>
         <div className="section-header">
-          <h3>AI 처리 대기 / 진행 중</h3>
+          <h3>기다리는 팀</h3>
         </div>
         {processingSessions.length === 0 ? (
-          <div className="empty-gallery">대기 중인 세션이 없습니다</div>
+          <div className="friendly-empty">지금은 AI를 기다리거나 만드는 팀이 없습니다.</div>
         ) : (
           <div className="queue-grid">
             {processingSessions.map((item) => (
-              <SessionCard
+              <QueueCard
                 key={item.session_id}
-                title={item.phase === 'queued' ? '대기열' : '처리 중'}
+                title={item.phase === 'queued' ? 'AI 기다리는 팀' : 'AI 만드는 팀'}
                 session={item}
-                compact
               />
             ))}
           </div>
@@ -339,26 +460,54 @@ export default function AdminScreen() {
 
       <section>
         <div className="section-header">
-          <h3>출력 대기</h3>
+          <h3>인화할 팀</h3>
         </div>
         {printReadySessions.length === 0 ? (
-          <div className="empty-gallery">출력 대기 세션이 없습니다</div>
+          <div className="friendly-empty">지금은 인화할 팀이 없습니다.</div>
         ) : (
           <div className="queue-grid">
             {printReadySessions.map((item) => (
-              <SessionCard key={item.session_id} title="출력 대기" session={item}>
-                <div className="queue-card-actions">
-                  <button
-                    className="btn-primary"
-                    onClick={() => completeSession(item.session_id).catch((err) => flash(err.message, 'err'))}
-                  >
-                    인화 완료 처리
-                  </button>
-                </div>
-              </SessionCard>
+              <QueueCard
+                key={item.session_id}
+                title="결과 준비 완료"
+                session={item}
+                actionLabel="인화 완료"
+                onAction={() => completeSession(item.session_id).catch((err) => flash(err.message, 'err'))}
+              />
             ))}
           </div>
         )}
+      </section>
+
+      <section>
+        <div className="section-header">
+          <h3>지난 팀 다시 보기</h3>
+        </div>
+        <div className="history-layout">
+          <div className="history-list">
+            {historySessions.length === 0 ? (
+              <div className="history-empty">아직 지난 세션이 없습니다.</div>
+            ) : (
+              historySessions.map((item) => (
+                <button
+                  key={item.session_id}
+                  className={`history-row ${historySessionId === item.session_id ? 'selected' : ''}`}
+                  onClick={() => setHistorySessionId(item.session_id)}
+                >
+                  <div className="history-row-main">
+                    <strong>{item.session_id}</strong>
+                    <span>{PHASE_LABEL[item.phase] || item.phase}</span>
+                  </div>
+                  <div className="history-row-sub">
+                    사진 {item.shots?.length || 0}장
+                    {item.result_filename ? ` · 결과 ${item.result_filename}` : ''}
+                  </div>
+                </button>
+              ))
+            )}
+          </div>
+          <HistoryDetail session={historySession} />
+        </div>
       </section>
 
       {erroredSessions.length > 0 && (
@@ -368,14 +517,16 @@ export default function AdminScreen() {
           </div>
           <div className="queue-grid">
             {erroredSessions.map((item) => (
-              <SessionCard key={item.session_id} title="오류" session={item} compact />
+              <QueueCard key={item.session_id} title="오류" session={item} />
             ))}
           </div>
         </section>
       )}
 
       <section>
-        <h3>이미지 직접 업로드</h3>
+        <div className="section-header">
+          <h3>테스트용 사진 직접 넣기</h3>
+        </div>
         {uploadPreview && <img src={uploadPreview} alt="preview" className="upload-preview" />}
         <div className="form-row" style={{ marginTop: uploadPreview ? 10 : 0 }}>
           <label className="file-label">
@@ -389,7 +540,7 @@ export default function AdminScreen() {
               onChange={handleImageSelect}
             />
           </label>
-          <button className="btn-primary" onClick={handleImageUpload}>업로드</button>
+          <button className="btn-primary" onClick={handleImageUpload}>지금 팀에 넣기</button>
         </div>
       </section>
 

@@ -28,6 +28,13 @@ Important paths:
 - `WATCH_FOLDER`: EOS Utility 또는 수동 업로드 이미지가 들어오는 inbox
 - `PRESETS_FOLDER`: ComfyUI API workflow preset 보관 위치
 - `SESSIONS_FOLDER`: 세션별 shot / result / meta 저장 위치
+- `COMFYUI_HEADERS_JSON`: Runyour 프록시/게이트웨이가 요구하는 추가 헤더(JSON 문자열)
+- `COMFYUI_BEARER_TOKEN`: Runyour 프록시가 Bearer 토큰을 요구할 때 사용
+
+Recommended env profiles:
+
+- `.env.local.example`: 로컬 ComfyUI 테스트용
+- `.env.runyour.example`: Runyour 원격 ComfyUI 연결용
 
 ## Run
 
@@ -53,6 +60,24 @@ start.bat
 6. **AI 처리 시작**
 7. 결과 확인 후 출력
 8. **세션 완료** 또는 **강제 초기화** 후 다음 손님 진행
+
+## Local vs Runyour
+
+### Local Windows test
+
+- `COMFYUI_URL=http://localhost:8188`
+- `workspace/presets/active.json`에 로컬 workflow 사용
+- 테스트 이미지는 `WATCH_FOLDER`에 직접 넣어서 촬영을 시뮬레이션
+
+### Runyour remote GPU
+
+- Runyour AI Cloud에서 GPU 머신을 띄우고 ComfyUI template 사용
+- 필요한 모델 / custom node / workflow 의존성 설치
+- 부스 PC의 `.env`를 `.env.runyour.example` 기준으로 교체
+- `COMFYUI_URL`을 Runyour ComfyUI endpoint로 변경
+- 필요 시 `COMFYUI_HEADERS_JSON` 또는 `COMFYUI_BEARER_TOKEN` 설정
+- 결과 이미지는 원격 ComfyUI만 보지 않고 `workspace/sessions/<session_id>/result.*`로 로컬 캐시됨
+- 따라서 행사 중 원격 GPU 세션이 재시작되더라도 이미 생성된 결과 재확인은 로컬에서 가능
 
 ## Routes
 

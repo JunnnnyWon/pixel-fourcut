@@ -6,7 +6,7 @@ from pathlib import Path
 import websockets
 
 from backend import comfy_client
-from backend.config import COMFYUI_URL, PRESETS_FOLDER
+from backend.config import COMFYUI_URL, PRESETS_FOLDER, get_comfyui_headers
 from backend.session import session
 from backend.watcher import manager
 
@@ -54,7 +54,9 @@ async def run_worker():
         while retries < 5 and not success:
             try:
                 async with websockets.connect(
-                    f"{ws_url}/ws?clientId={client_id}", ping_interval=20
+                    f"{ws_url}/ws?clientId={client_id}",
+                    ping_interval=20,
+                    additional_headers=get_comfyui_headers() or None,
                 ) as ws:
                     async for raw in ws:
                         if isinstance(raw, bytes):
@@ -72,11 +74,18 @@ async def run_worker():
                             })
 
                         elif mtype == "executed" and data.get("prompt_id") == prompt_id:
-                            output_filename = await comfy_client.get_output_image(prompt_id)
-                            if not output_filename:
+                            output_image = await comfy_client.get_output_image_info(prompt_id)
+                            if not output_image:
                                 session.mark_error(session_id, "ComfyUI 결과 파일을 찾지 못했습니다.")
                             else:
-                                session.mark_result_ready(session_id, result_filename=output_filename)
+                                content, media_type = await comfy_client.download_output_image(output_image)
+                                session.cache_result_file(
+                                    session_id,
+                                    source_filename=output_image["filename"],
+                                    content=content,
+                                    media_type=media_type,
+                                )
+                                session.mark_result_ready(session_id, result_filename=output_image["filename"])
                             await manager.broadcast_session()
                             success = True
                             break
@@ -96,9 +105,16 @@ async def run_worker():
                 retries += 1
                 if retries >= 5:
                     try:
-                        output_filename = await comfy_client.get_output_image(prompt_id)
-                        if output_filename:
-                            session.mark_result_ready(session_id, result_filename=output_filename)
+                        output_image = await comfy_client.get_output_image_info(prompt_id)
+                        if output_image:
+                            content, media_type = await comfy_client.download_output_image(output_image)
+                            session.cache_result_file(
+                                session_id,
+                                source_filename=output_image["filename"],
+                                content=content,
+                                media_type=media_type,
+                            )
+                            session.mark_result_ready(session_id, result_filename=output_image["filename"])
                             await manager.broadcast_session()
                             success = True
                         else:

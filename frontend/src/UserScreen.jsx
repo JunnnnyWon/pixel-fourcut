@@ -3,21 +3,21 @@ import { useSession } from './useSession'
 import './App.css'
 
 const PHASE_LABEL = {
-  idle: '대기 중',
-  capturing: '촬영 중',
-  reviewing: '사진 선택 중',
-  queued: 'AI 대기열',
-  processing: 'AI 처리 중',
-  result_ready: '결과 준비 완료',
-  completed: '세션 완료',
-  error: '오류',
+  idle: '기다리는 중',
+  capturing: '사진 찍는 중',
+  reviewing: '사진 고르는 중',
+  queued: 'AI 기다리는 중',
+  processing: 'AI 그림 만드는 중',
+  result_ready: '결과가 나왔어요',
+  completed: '완료',
+  error: '문제가 생겼어요',
 }
 
-function resolveHeroSession(currentSession, processingSessions, printReadySessions) {
+function pickDisplaySession(currentSession, processingSessions, printReadySessions) {
   return currentSession || processingSessions[0] || printReadySessions[0] || null
 }
 
-function resolveHeroImage(session, previewActive) {
+function pickDisplayImage(session, previewActive) {
   if (!session) return null
   if (session.phase === 'result_ready' && session.result_url) return session.result_url
   if (session.phase === 'capturing' && previewActive && session.preview_shot?.url) return session.preview_shot.url
@@ -26,111 +26,89 @@ function resolveHeroImage(session, previewActive) {
 }
 
 export default function UserScreen() {
-  const {
-    currentSession,
-    processingSessions,
-    printReadySessions,
-    previewActive,
-    progress,
-    wsConnected,
-  } = useSession()
+  const { currentSession, processingSessions, printReadySessions, previewActive, progress, wsConnected } = useSession()
 
-  const heroSession = useMemo(
-    () => resolveHeroSession(currentSession, processingSessions, printReadySessions),
+  const displaySession = useMemo(
+    () => pickDisplaySession(currentSession, processingSessions, printReadySessions),
     [currentSession, processingSessions, printReadySessions],
   )
-  const heroImage = resolveHeroImage(heroSession, previewActive)
+  const displayImage = pickDisplayImage(displaySession, previewActive)
+  const statusLabel = PHASE_LABEL[displaySession?.phase || 'idle']
 
   return (
     <div className="screen public-screen">
       <div className="top-bar">
         <span className="brand">픽셀네컷</span>
         <div className="status-inline">
-          <span className={`phase-badge phase-${heroSession?.phase || 'idle'}`}>
-            {PHASE_LABEL[heroSession?.phase || 'idle']}
-          </span>
+          <span className={`phase-badge phase-${displaySession?.phase || 'idle'}`}>{statusLabel}</span>
           <div className={`ws-dot ${wsConnected ? 'on' : 'off'}`} title={wsConnected ? '연결됨' : '연결 끊김'} />
         </div>
       </div>
 
-      <div className="status-card status-card-three">
-        <div>
-          <div className="status-card-label">현재 Capture</div>
-          <div className="status-card-value">{currentSession?.session_id || '비어 있음'}</div>
+      <section className="public-hero">
+        <div className="public-hero-copy">
+          <span className="hero-kicker">지금 상태</span>
+          <h1>{statusLabel}</h1>
+          <p>
+            {!displaySession && '새 팀을 기다리고 있어요.'}
+            {displaySession?.phase === 'capturing' && '카메라 앞에서 포즈를 잡고 사진을 찍고 있어요.'}
+            {displaySession?.phase === 'reviewing' && '찍은 사진 중에서 가장 마음에 드는 사진을 고르고 있어요.'}
+            {displaySession?.phase === 'queued' && '곧 AI 그림 만들기를 시작해요.'}
+            {displaySession?.phase === 'processing' && 'AI가 사진을 그림으로 바꾸고 있어요.'}
+            {displaySession?.phase === 'result_ready' && '결과가 준비됐어요. 곧 인화할 수 있어요.'}
+          </p>
         </div>
-        <div>
-          <div className="status-card-label">AI 대기/진행</div>
-          <div className="status-card-value">{processingSessions.length}</div>
+        <div className="public-hero-stats">
+          <div>
+            <span className="summary-label">촬영 중인 팀</span>
+            <strong>{currentSession ? '있음' : '없음'}</strong>
+          </div>
+          <div>
+            <span className="summary-label">AI 기다리는 팀</span>
+            <strong>{processingSessions.length}</strong>
+          </div>
+          <div>
+            <span className="summary-label">인화 대기 팀</span>
+            <strong>{printReadySessions.length}</strong>
+          </div>
         </div>
-        <div>
-          <div className="status-card-label">출력 대기</div>
-          <div className="status-card-value">{printReadySessions.length}</div>
-        </div>
-      </div>
+      </section>
 
       <div className="preview-area public-preview">
-        {heroImage ? (
-          <img src={heroImage} alt="session" className="preview-img" />
+        {displayImage ? (
+          <img src={displayImage} alt="session" className="preview-img" />
         ) : (
-          <div className="placeholder">
-            현재 진행 중인 세션이 없습니다.
-          </div>
+          <div className="placeholder">현재 보여줄 사진이 없습니다.</div>
         )}
       </div>
 
-      {currentSession?.phase === 'capturing' && previewActive && (
-        <div className="status-bar">현재 촬영 세션의 최신 컷 프리뷰입니다.</div>
+      {displaySession?.phase === 'capturing' && previewActive && (
+        <div className="status-bar">방금 찍은 사진을 잠깐 크게 보여주고 있어요.</div>
       )}
 
       {processingSessions.some((item) => item.phase === 'processing') && (
         <div className="status-bar">
           <div className="spinner" />
-          AI 처리 중...{progress && ` (${progress.value} / ${progress.max})`}
+          AI 그림 만드는 중...{progress && ` (${progress.value} / ${progress.max})`}
         </div>
-      )}
-
-      {printReadySessions.length > 0 && (
-        <div className="status-bar">결과가 준비된 팀이 있습니다. 운영자가 인화를 진행합니다.</div>
       )}
 
       <section className="public-log-section">
         <div className="section-header">
-          <h3>현재 진행 현황</h3>
+          <h3>한눈에 보기</h3>
         </div>
         <div className="public-queue-grid">
           <div className="public-queue-box">
-            <div className="summary-label">촬영 중</div>
-            {currentSession ? (
-              <strong>{currentSession.session_id}</strong>
-            ) : (
-              <span className="muted-text">없음</span>
-            )}
+            <div className="summary-label">사진 찍는 팀</div>
+            <strong>{currentSession ? '진행 중' : '없음'}</strong>
           </div>
           <div className="public-queue-box">
-            <div className="summary-label">AI 처리 대기/중</div>
-            {processingSessions.length === 0 ? (
-              <span className="muted-text">없음</span>
-            ) : (
-              processingSessions.map((item) => (
-                <div key={item.session_id} className="queue-line">
-                  <span>{item.session_id}</span>
-                  <span className={`phase-badge phase-${item.phase}`}>{PHASE_LABEL[item.phase]}</span>
-                </div>
-              ))
-            )}
+            <div className="summary-label">AI 그림 만드는 팀</div>
+            <strong>{processingSessions.length}팀</strong>
           </div>
           <div className="public-queue-box">
-            <div className="summary-label">출력 대기</div>
-            {printReadySessions.length === 0 ? (
-              <span className="muted-text">없음</span>
-            ) : (
-              printReadySessions.map((item) => (
-                <div key={item.session_id} className="queue-line">
-                  <span>{item.session_id}</span>
-                  <span className={`phase-badge phase-${item.phase}`}>{PHASE_LABEL[item.phase]}</span>
-                </div>
-              ))
-            )}
+            <div className="summary-label">결과 준비된 팀</div>
+            <strong>{printReadySessions.length}팀</strong>
           </div>
         </div>
       </section>

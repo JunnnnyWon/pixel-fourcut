@@ -16,6 +16,8 @@ async def lifespan(app: FastAPI):
     Path(WATCH_FOLDER).mkdir(parents=True, exist_ok=True)
     Path(PRESETS_FOLDER).mkdir(parents=True, exist_ok=True)
     Path(SESSIONS_FOLDER).mkdir(parents=True, exist_ok=True)
+    from backend.session import session
+    session.load_from_disk()
     t1 = asyncio.create_task(watch_folder(WATCH_FOLDER))
     t2 = asyncio.create_task(run_worker())
     yield

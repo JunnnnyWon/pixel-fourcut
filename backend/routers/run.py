@@ -52,6 +52,19 @@ def get_session():
     return session.to_dict()
 
 
+@router.get("/api/sessions")
+def list_sessions():
+    return {"sessions": session.all_sessions}
+
+
+@router.get("/api/sessions/{session_id}")
+def get_session_detail(session_id: str):
+    detail = session.get_session(session_id)
+    if not detail:
+        raise HTTPException(404, "세션을 찾을 수 없습니다.")
+    return detail
+
+
 @router.post("/api/session/start")
 async def start_session():
     try:

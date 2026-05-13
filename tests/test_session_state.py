@@ -125,6 +125,31 @@ class SessionStateTests(unittest.TestCase):
             self.assertIn("session-a", ready_ids)
             self.assertEqual(snapshot["current_session"]["session_id"], "session-b")
 
+    def test_load_from_disk_restores_previous_sessions(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            sessions_root = root / "sessions"
+            source = root / "input.jpg"
+            source.write_bytes(b"fake-image")
+
+            original = SessionState(sessions_root)
+            original.start_session(session_id="session-a")
+            shot = original.add_shot_from_file(source, source_name="input.jpg", source_type="watcher")
+            original.finish_capture()
+            original.select_shot(shot["shot_id"])
+            original.mark_queued(prompt_id="prompt-a")
+            original.start_processing_session("session-a")
+            original.cache_result_file("session-a", "result-a.png", b"result-bytes", "image/png")
+            original.mark_result_ready("session-a", result_filename="result-a.png")
+            original.start_session(session_id="session-b")
+
+            restored = SessionState(sessions_root)
+            restored.load_from_disk()
+
+            self.assertEqual(restored.current_session["session_id"], "session-b")
+            self.assertEqual(restored.print_ready_sessions[0]["session_id"], "session-a")
+            self.assertTrue(Path(restored.print_ready_sessions[0]["result_local_path"]).exists())
+
 
 if __name__ == "__main__":
     unittest.main()

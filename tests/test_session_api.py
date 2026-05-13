@@ -96,6 +96,24 @@ class SessionApiTests(unittest.TestCase):
         self.assertEqual(next_session["active_capture_session_id"], next_session["current_session"]["session_id"])
         self.assertEqual(next_session["processing_sessions"][0]["session_id"], first_session_id)
 
+    def test_can_read_session_history_list_and_detail(self):
+        first_session = self.loop.run_until_complete(run_router.start_session())
+        first_session_id = first_session["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+        session.mark_completed(first_session_id)
+
+        listing = run_router.list_sessions()
+        detail = run_router.get_session_detail(first_session_id)
+
+        self.assertTrue(any(item["session_id"] == first_session_id for item in listing["sessions"]))
+        self.assertEqual(detail["session_id"], first_session_id)
+
 
 if __name__ == "__main__":
     unittest.main()
