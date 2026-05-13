@@ -1,5 +1,6 @@
 import asyncio
 import json
+import random
 import uuid
 from pathlib import Path
 
@@ -13,7 +14,7 @@ from backend.watcher import manager
 _queue: asyncio.Queue = asyncio.Queue()
 
 
-async def enqueue_selected(session_id: str) -> str:
+async def enqueue_selected(session_id: str, randomize_seed: bool = False) -> str:
     target_session = session.get_session(session_id)
     if not target_session:
         raise RuntimeError("session_not_found")
@@ -30,7 +31,8 @@ async def enqueue_selected(session_id: str) -> str:
 
     comfy_filename = await comfy_client.upload_image(str(shot_path))
     workflow = json.loads(active.read_text(encoding="utf-8"))
-    patched = comfy_client.patch_workflow(workflow, comfy_filename)
+    seed_override = random.randint(1, 2**31 - 1) if randomize_seed else None
+    patched = comfy_client.patch_workflow(workflow, comfy_filename, seed_override=seed_override)
 
     client_id = str(uuid.uuid4())
     prompt_id = await comfy_client.queue_prompt(patched, client_id)

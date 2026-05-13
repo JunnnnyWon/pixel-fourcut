@@ -191,7 +191,7 @@ async def rerun_session(req: SessionActionRequest):
     if target_session["phase"] in {"queued", "processing"}:
         raise HTTPException(409, "이미 AI 처리 중인 세션입니다.")
     try:
-        prompt_id = await runner.enqueue_selected(session_id=session_id)
+        prompt_id = await runner.enqueue_selected(session_id=session_id, randomize_seed=True)
         await manager.broadcast_session()
         return {"prompt_id": prompt_id, "session": session.to_dict()}
     except FileNotFoundError:

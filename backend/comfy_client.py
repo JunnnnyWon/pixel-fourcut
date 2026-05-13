@@ -19,13 +19,20 @@ async def upload_image(filepath: str) -> str:
         return r.json()["name"]
 
 
-def patch_workflow(workflow: dict, filename: str) -> dict:
-    """Replace LoadImage node input with the given filename."""
+def patch_workflow(workflow: dict, filename: str, seed_override: Optional[int] = None) -> dict:
+    """Replace LoadImage node input and optionally override workflow seeds."""
     import copy
     wf = copy.deepcopy(workflow)
     for node in wf.values():
-        if isinstance(node, dict) and node.get("class_type") == "LoadImage":
-            node["inputs"]["image"] = filename
+        if not isinstance(node, dict):
+            continue
+        inputs = node.get("inputs", {})
+        if node.get("class_type") == "LoadImage":
+            inputs["image"] = filename
+        if seed_override is not None:
+            for key in ("seed", "noise_seed"):
+                if key in inputs:
+                    inputs[key] = seed_override
     return wf
 
 
