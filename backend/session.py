@@ -28,6 +28,7 @@ class SessionState:
         if not self.sessions_root.exists():
             return self.to_dict()
 
+        active_candidates: list[dict] = []
         for meta_path in sorted(self.sessions_root.glob("*/meta.json")):
             session_data = json.loads(meta_path.read_text(encoding="utf-8"))
             raw_session = {
@@ -42,14 +43,30 @@ class SessionState:
                 "result_local_path": session_data.get("result_local_path"),
                 "result_media_type": session_data.get("result_media_type"),
                 "generated_results": session_data.get("generated_results", []),
+                "selected_frame_id": session_data.get("selected_frame_id"),
+                "selected_generated_result_id": session_data.get("selected_generated_result_id"),
+                "print_outputs": session_data.get("print_outputs", []),
                 "error": session_data.get("error"),
                 "logs": session_data.get("logs", []),
                 "created_at": session_data.get("created_at"),
                 "updated_at": session_data.get("updated_at"),
+                "_meta_mtime_ns": meta_path.stat().st_mtime_ns,
             }
             self._sessions[raw_session["session_id"]] = raw_session
             if raw_session["phase"] in {"capturing", "reviewing"}:
-                self.active_capture_session_id = raw_session["session_id"]
+                active_candidates.append(raw_session)
+
+        if active_candidates:
+            latest_active = sorted(
+                active_candidates,
+                key=lambda item: (
+                    item.get("updated_at") or "",
+                    item.get("created_at") or "",
+                    item.get("_meta_mtime_ns") or 0,
+                    item["session_id"],
+                ),
+            )[-1]
+            self.active_capture_session_id = latest_active["session_id"]
 
         latest = self._get_latest_session()
         if latest:
@@ -314,6 +331,42 @@ class SessionState:
         self._write_meta(session)
         return str(local_path)
 
+    def cache_print_file(
+        self,
+        session_id: str,
+        frame_id: str,
+        result_id: str,
+        content: bytes,
+        media_type: str,
+        layout: Optional[dict] = None,
+    ) -> dict:
+        session = self._get_session(session_id)
+        suffix = mimetypes.guess_extension(media_type or "") or ".png"
+        print_index = len(session["print_outputs"]) + 1
+        local_name = f"print-{print_index:03d}{suffix}"
+        prints_dir = self._session_dir(session) / "prints"
+        prints_dir.mkdir(parents=True, exist_ok=True)
+        local_path = prints_dir / local_name
+        local_path.write_bytes(content)
+        print_output = {
+            "print_id": f"print-{print_index:03d}",
+            "filename": local_name,
+            "frame_id": frame_id,
+            "result_id": result_id,
+            "layout": layout or {},
+            "local_path": str(local_path),
+            "media_type": media_type,
+            "url": f"/api/sessions/{session_id}/prints/print-{print_index:03d}",
+            "created_at": self._now(),
+        }
+        session["selected_frame_id"] = frame_id
+        session["selected_generated_result_id"] = result_id
+        session["print_outputs"].append(print_output)
+        self._log(session, "print_composed", f"{local_name} 생성")
+        self._touch(session)
+        self._write_meta(session)
+        return print_output
+
     def discard_session(self, session_id: str):
         session = self._get_session(session_id)
         if self.active_capture_session_id == session_id:
@@ -368,6 +421,18 @@ class SessionState:
         session = self._sessions.get(session_id)
         return self._serialize_session(session) if session else None
 
+    def get_generated_result(self, session_id: str, result_id: str) -> Optional[dict]:
+        session = self._sessions.get(session_id)
+        if not session:
+            return None
+        return next((item for item in session.get("generated_results", []) if item["result_id"] == result_id), None)
+
+    def get_print_output(self, session_id: str, print_id: str) -> Optional[dict]:
+        session = self._sessions.get(session_id)
+        if not session:
+            return None
+        return next((item for item in session.get("print_outputs", []) if item["print_id"] == print_id), None)
+
     def get_shot(self, shot_id: str, session_id: Optional[str] = None) -> Optional[dict]:
         session = self._get_session(session_id) if session_id else self._get_session_for_lookup(shot_id)
         if not session:
@@ -419,6 +484,11 @@ class SessionState:
             "result_url": current_session["result_url"] if current_session else None,
             "result_local_path": current_session["result_local_path"] if current_session else None,
             "result_media_type": current_session["result_media_type"] if current_session else None,
+            "selected_frame_id": current_session["selected_frame_id"] if current_session else None,
+            "selected_generated_result_id": current_session["selected_generated_result_id"] if current_session else None,
+            "selected_generated_result": current_session["selected_generated_result"] if current_session else None,
+            "print_outputs": current_session["print_outputs"] if current_session else [],
+            "latest_print_output": current_session["latest_print_output"] if current_session else None,
             "error": current_session["error"] if current_session else None,
             "logs": current_session["logs"] if current_session else [],
             "created_at": current_session["created_at"] if current_session else None,
@@ -442,6 +512,9 @@ class SessionState:
             "result_local_path": None,
             "result_media_type": None,
             "generated_results": [],
+            "selected_frame_id": None,
+            "selected_generated_result_id": None,
+            "print_outputs": [],
             "error": None,
             "logs": [],
             "created_at": created_at,
@@ -489,6 +562,13 @@ class SessionState:
             return None
         selected_shot = self._get_shot(session, session["selected_shot_id"]) if session["selected_shot_id"] else None
         preview_shot = self._get_shot(session, session["preview_shot_id"]) if session["preview_shot_id"] else None
+        selected_generated_result = None
+        if session.get("selected_generated_result_id"):
+            selected_generated_result = next(
+                (item for item in session.get("generated_results", []) if item["result_id"] == session["selected_generated_result_id"]),
+                None,
+            )
+        latest_print_output = session.get("print_outputs", [])[-1] if session.get("print_outputs") else None
         return {
             "session_id": session["session_id"],
             "phase": session["phase"],
@@ -504,6 +584,11 @@ class SessionState:
             "result_local_path": session["result_local_path"],
             "result_media_type": session["result_media_type"],
             "generated_results": list(session.get("generated_results", [])),
+            "selected_frame_id": session.get("selected_frame_id"),
+            "selected_generated_result_id": session.get("selected_generated_result_id"),
+            "selected_generated_result": selected_generated_result,
+            "print_outputs": list(session.get("print_outputs", [])),
+            "latest_print_output": latest_print_output,
             "error": session["error"],
             "logs": list(session["logs"]),
             "created_at": session["created_at"],

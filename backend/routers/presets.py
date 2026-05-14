@@ -15,7 +15,8 @@ def _ensure_dir():
 @router.get("")
 def list_presets():
     _ensure_dir()
-    active = (_dir / "active.json").resolve()
+    active_path = _dir / "active.json"
+    active = active_path.resolve()
     presets = []
     for f in sorted(_dir.glob("*.json")):
         if f.name == "active.json":
@@ -23,12 +24,14 @@ def list_presets():
         presets.append({"name": f.stem, "active": f.resolve() == active})
     # detect active by content comparison
     active_name = None
-    if (_dir / "active.json").exists():
-        active_data = (_dir / "active.json").read_text(encoding="utf-8")
+    if active_path.exists():
+        active_data = active_path.read_text(encoding="utf-8")
         for f in _dir.glob("*.json"):
             if f.name != "active.json" and f.read_text(encoding="utf-8") == active_data:
                 active_name = f.stem
                 break
+        if active_name is None:
+            active_name = "active"
     return {"presets": [p["name"] for p in presets], "active": active_name}
 
 

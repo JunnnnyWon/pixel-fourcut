@@ -129,6 +129,24 @@ export function useSession() {
     }
   }, [])
 
+  const composePrint = useCallback(async (sessionId, frameId, resultId, layout) => {
+    const response = await fetch('/api/session/compose-print', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: sessionId,
+        frame_id: frameId,
+        result_id: resultId,
+        layout,
+      }),
+    })
+    const data = await response.json().catch(() => ({}))
+    if (!response.ok) {
+      throw new Error(data.detail || '최종 인화본 생성 실패')
+    }
+    return data
+  }, [])
+
   return useMemo(() => {
     const currentSession = state.current_session
     const processingSessions = state.processing_sessions || []
@@ -144,6 +162,7 @@ export function useSession() {
       selectShot,
       completeSession,
       rerunSession,
+      composePrint,
       currentSession,
       processingSessions,
       printReadySessions,
@@ -173,5 +192,6 @@ export function useSession() {
     selectShot,
     completeSession,
     rerunSession,
+    composePrint,
   ])
 }

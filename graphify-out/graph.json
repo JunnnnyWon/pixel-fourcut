@@ -9,7 +9,7 @@
       "source_file": "frontend/vite.config.js",
       "source_location": "L1",
       "id": "frontend_vite_config_js",
-      "community": 15,
+      "community": 21,
       "norm_label": "vite.config.js"
     },
     {
@@ -18,7 +18,7 @@
       "source_file": "frontend/eslint.config.js",
       "source_location": "L1",
       "id": "frontend_eslint_config_js",
-      "community": 16,
+      "community": 22,
       "norm_label": "eslint.config.js"
     },
     {
@@ -49,19 +49,28 @@
       "norm_label": "adminscreen.jsx"
     },
     {
-      "label": "SessionCard()",
+      "label": "sessionHeroImage()",
       "file_type": "code",
       "source_file": "frontend/src/AdminScreen.jsx",
-      "source_location": "L16",
-      "id": "src_adminscreen_sessioncard",
+      "source_location": "L17",
+      "id": "src_adminscreen_sessionheroimage",
       "community": 6,
-      "norm_label": "sessioncard()"
+      "norm_label": "sessionheroimage()"
+    },
+    {
+      "label": "QueueCard()",
+      "file_type": "code",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L22",
+      "id": "src_adminscreen_queuecard",
+      "community": 6,
+      "norm_label": "queuecard()"
     },
     {
       "label": "AdminScreen()",
       "file_type": "code",
       "source_file": "frontend/src/AdminScreen.jsx",
-      "source_location": "L39",
+      "source_location": "L43",
       "id": "src_adminscreen_adminscreen",
       "community": 6,
       "norm_label": "adminscreen()"
@@ -76,22 +85,22 @@
       "norm_label": "userscreen.jsx"
     },
     {
-      "label": "resolveHeroSession()",
+      "label": "pickDisplaySession()",
       "file_type": "code",
       "source_file": "frontend/src/UserScreen.jsx",
       "source_location": "L16",
-      "id": "src_userscreen_resolveherosession",
+      "id": "src_userscreen_pickdisplaysession",
       "community": 6,
-      "norm_label": "resolveherosession()"
+      "norm_label": "pickdisplaysession()"
     },
     {
-      "label": "resolveHeroImage()",
+      "label": "pickDisplayImage()",
       "file_type": "code",
       "source_file": "frontend/src/UserScreen.jsx",
       "source_location": "L20",
-      "id": "src_userscreen_resolveheroimage",
+      "id": "src_userscreen_pickdisplayimage",
       "community": 6,
-      "norm_label": "resolveheroimage()"
+      "norm_label": "pickdisplayimage()"
     },
     {
       "label": "UserScreen()",
@@ -103,12 +112,30 @@
       "norm_label": "userscreen()"
     },
     {
+      "label": "OperatorNav.jsx",
+      "file_type": "code",
+      "source_file": "frontend/src/OperatorNav.jsx",
+      "source_location": "L1",
+      "id": "frontend_src_operatornav_jsx",
+      "community": 19,
+      "norm_label": "operatornav.jsx"
+    },
+    {
+      "label": "OperatorNav()",
+      "file_type": "code",
+      "source_file": "frontend/src/OperatorNav.jsx",
+      "source_location": "L3",
+      "id": "src_operatornav_operatornav",
+      "community": 19,
+      "norm_label": "operatornav()"
+    },
+    {
       "label": "main.jsx",
       "file_type": "code",
       "source_file": "frontend/src/main.jsx",
       "source_location": "L1",
       "id": "frontend_src_main_jsx",
-      "community": 17,
+      "community": 23,
       "norm_label": "main.jsx"
     },
     {
@@ -117,17 +144,143 @@
       "source_file": "frontend/src/App.jsx",
       "source_location": "L1",
       "id": "frontend_src_app_jsx",
-      "community": 14,
+      "community": 20,
       "norm_label": "app.jsx"
     },
     {
       "label": "App()",
       "file_type": "code",
       "source_file": "frontend/src/App.jsx",
-      "source_location": "L5",
+      "source_location": "L6",
       "id": "src_app_app",
-      "community": 14,
+      "community": 20,
       "norm_label": "app()"
+    },
+    {
+      "label": "PrintScreen.jsx",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L1",
+      "id": "frontend_src_printscreen_jsx",
+      "community": 7,
+      "norm_label": "printscreen.jsx"
+    },
+    {
+      "label": "normalizeLayout()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L34",
+      "id": "src_printscreen_normalizelayout",
+      "community": 7,
+      "norm_label": "normalizelayout()"
+    },
+    {
+      "label": "normalizeSlots()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L49",
+      "id": "src_printscreen_normalizeslots",
+      "community": 7,
+      "norm_label": "normalizeslots()"
+    },
+    {
+      "label": "getDefaultResultId()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L66",
+      "id": "src_printscreen_getdefaultresultid",
+      "community": 7,
+      "norm_label": "getdefaultresultid()"
+    },
+    {
+      "label": "getDefaultPrintId()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L71",
+      "id": "src_printscreen_getdefaultprintid",
+      "community": 7,
+      "norm_label": "getdefaultprintid()"
+    },
+    {
+      "label": "slotStyleFromPixels()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L76",
+      "id": "src_printscreen_slotstylefrompixels",
+      "community": 7,
+      "norm_label": "slotstylefrompixels()"
+    },
+    {
+      "label": "scaledPreviewStyle()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L85",
+      "id": "src_printscreen_scaledpreviewstyle",
+      "community": 7,
+      "norm_label": "scaledpreviewstyle()"
+    },
+    {
+      "label": "getCoverSize()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L93",
+      "id": "src_printscreen_getcoversize",
+      "community": 7,
+      "norm_label": "getcoversize()"
+    },
+    {
+      "label": "LayoutControl()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L104",
+      "id": "src_printscreen_layoutcontrol",
+      "community": 7,
+      "norm_label": "layoutcontrol()"
+    },
+    {
+      "label": "PrintPreview()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L133",
+      "id": "src_printscreen_printpreview",
+      "community": 7,
+      "norm_label": "printpreview()"
+    },
+    {
+      "label": "PrintScreen()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L356",
+      "id": "src_printscreen_printscreen",
+      "community": 7,
+      "norm_label": "printscreen()"
+    },
+    {
+      "label": "test_comfy_client.py",
+      "file_type": "code",
+      "source_file": "tests/test_comfy_client.py",
+      "source_location": "L1",
+      "id": "tests_test_comfy_client_py",
+      "community": 17,
+      "norm_label": "test_comfy_client.py"
+    },
+    {
+      "label": "ComfyClientTests",
+      "file_type": "code",
+      "source_file": "tests/test_comfy_client.py",
+      "source_location": "L6",
+      "id": "tests_test_comfy_client_comfyclienttests",
+      "community": 17,
+      "norm_label": "comfyclienttests"
+    },
+    {
+      "label": ".test_patch_workflow_replaces_load_image_and_overrides_seed_inputs()",
+      "file_type": "code",
+      "source_file": "tests/test_comfy_client.py",
+      "source_location": "L7",
+      "id": "tests_test_comfy_client_comfyclienttests_test_patch_workflow_replaces_load_image_and_overrides_seed_inputs",
+      "community": 17,
+      "norm_label": ".test_patch_workflow_replaces_load_image_and_overrides_seed_inputs()"
     },
     {
       "label": "test_session_state.py",
@@ -135,71 +288,107 @@
       "source_file": "tests/test_session_state.py",
       "source_location": "L1",
       "id": "tests_test_session_state_py",
-      "community": 8,
+      "community": 0,
       "norm_label": "test_session_state.py"
     },
     {
       "label": "SessionStateTests",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L8",
+      "source_location": "L10",
       "id": "tests_test_session_state_sessionstatetests",
-      "community": 8,
+      "community": 0,
       "norm_label": "sessionstatetests"
     },
     {
       "label": ".test_start_session_creates_session_and_shots_directory()",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L9",
+      "source_location": "L11",
       "id": "tests_test_session_state_sessionstatetests_test_start_session_creates_session_and_shots_directory",
-      "community": 8,
+      "community": 0,
       "norm_label": ".test_start_session_creates_session_and_shots_directory()"
     },
     {
       "label": ".test_add_shot_copies_file_into_active_session()",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L21",
+      "source_location": "L23",
       "id": "tests_test_session_state_sessionstatetests_test_add_shot_copies_file_into_active_session",
-      "community": 8,
+      "community": 0,
       "norm_label": ".test_add_shot_copies_file_into_active_session()"
     },
     {
       "label": ".test_finish_capture_and_select_shot_updates_review_state()",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L43",
+      "source_location": "L45",
       "id": "tests_test_session_state_sessionstatetests_test_finish_capture_and_select_shot_updates_review_state",
-      "community": 8,
+      "community": 0,
       "norm_label": ".test_finish_capture_and_select_shot_updates_review_state()"
     },
     {
       "label": ".test_mark_processing_and_result_ready()",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L61",
+      "source_location": "L63",
       "id": "tests_test_session_state_sessionstatetests_test_mark_processing_and_result_ready",
-      "community": 8,
+      "community": 0,
       "norm_label": ".test_mark_processing_and_result_ready()"
     },
     {
       "label": ".test_can_start_new_capture_session_while_previous_session_is_processing()",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L83",
+      "source_location": "L85",
       "id": "tests_test_session_state_sessionstatetests_test_can_start_new_capture_session_while_previous_session_is_processing",
-      "community": 8,
+      "community": 0,
       "norm_label": ".test_can_start_new_capture_session_while_previous_session_is_processing()"
     },
     {
       "label": ".test_result_ready_is_written_back_to_original_processing_session()",
       "file_type": "code",
       "source_file": "tests/test_session_state.py",
-      "source_location": "L104",
+      "source_location": "L106",
       "id": "tests_test_session_state_sessionstatetests_test_result_ready_is_written_back_to_original_processing_session",
-      "community": 8,
+      "community": 0,
       "norm_label": ".test_result_ready_is_written_back_to_original_processing_session()"
+    },
+    {
+      "label": ".test_load_from_disk_restores_previous_sessions()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L130",
+      "id": "tests_test_session_state_sessionstatetests_test_load_from_disk_restores_previous_sessions",
+      "community": 0,
+      "norm_label": ".test_load_from_disk_restores_previous_sessions()"
+    },
+    {
+      "label": ".test_load_from_disk_restores_latest_active_capture_session()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L155",
+      "id": "tests_test_session_state_sessionstatetests_test_load_from_disk_restores_latest_active_capture_session",
+      "community": 0,
+      "norm_label": ".test_load_from_disk_restores_latest_active_capture_session()"
+    },
+    {
+      "label": ".test_cache_result_file_accumulates_generated_results()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L179",
+      "id": "tests_test_session_state_sessionstatetests_test_cache_result_file_accumulates_generated_results",
+      "community": 0,
+      "norm_label": ".test_cache_result_file_accumulates_generated_results()"
+    },
+    {
+      "label": ".test_print_outputs_and_frame_selection_persist()",
+      "file_type": "code",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L206",
+      "id": "tests_test_session_state_sessionstatetests_test_print_outputs_and_frame_selection_persist",
+      "community": 0,
+      "norm_label": ".test_print_outputs_and_frame_selection_persist()"
     },
     {
       "label": "test_runner_enqueue.py",
@@ -207,7 +396,7 @@
       "source_file": "tests/test_runner_enqueue.py",
       "source_location": "L1",
       "id": "tests_test_runner_enqueue_py",
-      "community": 10,
+      "community": 11,
       "norm_label": "test_runner_enqueue.py"
     },
     {
@@ -216,7 +405,7 @@
       "source_file": "tests/test_runner_enqueue.py",
       "source_location": "L12",
       "id": "tests_test_runner_enqueue_runnerenqueuetests",
-      "community": 10,
+      "community": 11,
       "norm_label": "runnerenqueuetests"
     },
     {
@@ -225,7 +414,7 @@
       "source_file": "tests/test_runner_enqueue.py",
       "source_location": "L13",
       "id": "tests_test_runner_enqueue_runnerenqueuetests_setup",
-      "community": 10,
+      "community": 11,
       "norm_label": ".setup()"
     },
     {
@@ -234,7 +423,7 @@
       "source_file": "tests/test_runner_enqueue.py",
       "source_location": "L41",
       "id": "tests_test_runner_enqueue_runnerenqueuetests_teardown",
-      "community": 10,
+      "community": 11,
       "norm_label": ".teardown()"
     },
     {
@@ -243,7 +432,7 @@
       "source_file": "tests/test_runner_enqueue.py",
       "source_location": "L50",
       "id": "tests_test_runner_enqueue_runnerenqueuetests_test_enqueue_selected_marks_queued_and_queues_prompt",
-      "community": 10,
+      "community": 11,
       "norm_label": ".test_enqueue_selected_marks_queued_and_queues_prompt()"
     },
     {
@@ -252,7 +441,7 @@
       "source_file": "tests/test_session_api.py",
       "source_location": "L1",
       "id": "tests_test_session_api_py",
-      "community": 9,
+      "community": 8,
       "norm_label": "test_session_api.py"
     },
     {
@@ -261,7 +450,7 @@
       "source_file": "tests/test_session_api.py",
       "source_location": "L16",
       "id": "tests_test_session_api_sessionapitests",
-      "community": 9,
+      "community": 8,
       "norm_label": "sessionapitests"
     },
     {
@@ -270,7 +459,7 @@
       "source_file": "tests/test_session_api.py",
       "source_location": "L17",
       "id": "tests_test_session_api_sessionapitests_setup",
-      "community": 9,
+      "community": 8,
       "norm_label": ".setup()"
     },
     {
@@ -279,7 +468,7 @@
       "source_file": "tests/test_session_api.py",
       "source_location": "L37",
       "id": "tests_test_session_api_sessionapitests_teardown",
-      "community": 9,
+      "community": 8,
       "norm_label": ".teardown()"
     },
     {
@@ -288,7 +477,7 @@
       "source_file": "tests/test_session_api.py",
       "source_location": "L45",
       "id": "tests_test_session_api_sessionapitests_test_start_session_returns_capturing_phase",
-      "community": 9,
+      "community": 8,
       "norm_label": ".test_start_session_returns_capturing_phase()"
     },
     {
@@ -297,26 +486,116 @@
       "source_file": "tests/test_session_api.py",
       "source_location": "L51",
       "id": "tests_test_session_api_sessionapitests_test_finish_capture_and_select_shot",
-      "community": 9,
+      "community": 8,
       "norm_label": ".test_finish_capture_and_select_shot()"
+    },
+    {
+      "label": ".test_finish_capture_rejects_zero_shot_session()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L66",
+      "id": "tests_test_session_api_sessionapitests_test_finish_capture_rejects_zero_shot_session",
+      "community": 8,
+      "norm_label": ".test_finish_capture_rejects_zero_shot_session()"
     },
     {
       "label": ".test_run_selected_requires_selected_shot()",
       "file_type": "code",
       "source_file": "tests/test_session_api.py",
-      "source_location": "L66",
+      "source_location": "L75",
       "id": "tests_test_session_api_sessionapitests_test_run_selected_requires_selected_shot",
-      "community": 9,
+      "community": 8,
       "norm_label": ".test_run_selected_requires_selected_shot()"
     },
     {
       "label": ".test_can_start_new_session_while_previous_one_is_processing()",
       "file_type": "code",
       "source_file": "tests/test_session_api.py",
-      "source_location": "L76",
+      "source_location": "L88",
       "id": "tests_test_session_api_sessionapitests_test_can_start_new_session_while_previous_one_is_processing",
-      "community": 9,
+      "community": 8,
       "norm_label": ".test_can_start_new_session_while_previous_one_is_processing()"
+    },
+    {
+      "label": ".test_can_read_session_history_list_and_detail()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L111",
+      "id": "tests_test_session_api_sessionapitests_test_can_read_session_history_list_and_detail",
+      "community": 8,
+      "norm_label": ".test_can_read_session_history_list_and_detail()"
+    },
+    {
+      "label": ".test_retry_capture_and_discard_current_team()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L129",
+      "id": "tests_test_session_api_sessionapitests_test_retry_capture_and_discard_current_team",
+      "community": 8,
+      "norm_label": ".test_retry_capture_and_discard_current_team()"
+    },
+    {
+      "label": ".test_can_rerun_previous_session()",
+      "file_type": "code",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L149",
+      "id": "tests_test_session_api_sessionapitests_test_can_rerun_previous_session",
+      "community": 8,
+      "norm_label": ".test_can_rerun_previous_session()"
+    },
+    {
+      "label": "test_print_api.py",
+      "file_type": "code",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L1",
+      "id": "tests_test_print_api_py",
+      "community": 12,
+      "norm_label": "test_print_api.py"
+    },
+    {
+      "label": "PrintApiTests",
+      "file_type": "code",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L16",
+      "id": "tests_test_print_api_printapitests",
+      "community": 12,
+      "norm_label": "printapitests"
+    },
+    {
+      "label": ".setUp()",
+      "file_type": "code",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L17",
+      "id": "tests_test_print_api_printapitests_setup",
+      "community": 12,
+      "norm_label": ".setup()"
+    },
+    {
+      "label": ".tearDown()",
+      "file_type": "code",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L51",
+      "id": "tests_test_print_api_printapitests_teardown",
+      "community": 12,
+      "norm_label": ".teardown()"
+    },
+    {
+      "label": ".test_list_frames_returns_available_frame_catalog()",
+      "file_type": "code",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L59",
+      "id": "tests_test_print_api_printapitests_test_list_frames_returns_available_frame_catalog",
+      "community": 12,
+      "norm_label": ".test_list_frames_returns_available_frame_catalog()"
+    },
+    {
+      "label": ".test_compose_print_creates_print_output_and_updates_session()",
+      "file_type": "code",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L65",
+      "id": "tests_test_print_api_printapitests_test_compose_print_creates_print_output_and_updates_session",
+      "community": 12,
+      "norm_label": ".test_compose_print_creates_print_output_and_updates_session()"
     },
     {
       "label": "test_result_router.py",
@@ -324,7 +603,7 @@
       "source_file": "tests/test_result_router.py",
       "source_location": "L1",
       "id": "tests_test_result_router_py",
-      "community": 12,
+      "community": 14,
       "norm_label": "test_result_router.py"
     },
     {
@@ -333,7 +612,7 @@
       "source_file": "tests/test_result_router.py",
       "source_location": "L11",
       "id": "tests_test_result_router_resultroutertests",
-      "community": 12,
+      "community": 14,
       "norm_label": "resultroutertests"
     },
     {
@@ -342,7 +621,7 @@
       "source_file": "tests/test_result_router.py",
       "source_location": "L12",
       "id": "tests_test_result_router_resultroutertests_setup",
-      "community": 12,
+      "community": 14,
       "norm_label": ".setup()"
     },
     {
@@ -351,7 +630,7 @@
       "source_file": "tests/test_result_router.py",
       "source_location": "L33",
       "id": "tests_test_result_router_resultroutertests_teardown",
-      "community": 12,
+      "community": 14,
       "norm_label": ".teardown()"
     },
     {
@@ -360,8 +639,35 @@
       "source_file": "tests/test_result_router.py",
       "source_location": "L39",
       "id": "tests_test_result_router_resultroutertests_test_result_route_prefers_local_cached_file",
-      "community": 12,
+      "community": 14,
       "norm_label": ".test_result_route_prefers_local_cached_file()"
+    },
+    {
+      "label": "test_presets_api.py",
+      "file_type": "code",
+      "source_file": "tests/test_presets_api.py",
+      "source_location": "L1",
+      "id": "tests_test_presets_api_py",
+      "community": 18,
+      "norm_label": "test_presets_api.py"
+    },
+    {
+      "label": "PresetsApiTests",
+      "file_type": "code",
+      "source_file": "tests/test_presets_api.py",
+      "source_location": "L10",
+      "id": "tests_test_presets_api_presetsapitests",
+      "community": 18,
+      "norm_label": "presetsapitests"
+    },
+    {
+      "label": ".test_list_presets_reports_active_when_only_active_json_exists()",
+      "file_type": "code",
+      "source_file": "tests/test_presets_api.py",
+      "source_location": "L11",
+      "id": "tests_test_presets_api_presetsapitests_test_list_presets_reports_active_when_only_active_json_exists",
+      "community": 18,
+      "norm_label": ".test_list_presets_reports_active_when_only_active_json_exists()"
     },
     {
       "label": "test_runner_worker.py",
@@ -369,7 +675,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L1",
       "id": "tests_test_runner_worker_py",
-      "community": 5,
+      "community": 9,
       "norm_label": "test_runner_worker.py"
     },
     {
@@ -378,7 +684,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L13",
       "id": "tests_test_runner_worker_fakewebsocket",
-      "community": 5,
+      "community": 9,
       "norm_label": "_fakewebsocket"
     },
     {
@@ -387,7 +693,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L14",
       "id": "tests_test_runner_worker_fakewebsocket_init",
-      "community": 5,
+      "community": 9,
       "norm_label": ".__init__()"
     },
     {
@@ -396,7 +702,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L18",
       "id": "tests_test_runner_worker_fakewebsocket_aenter",
-      "community": 5,
+      "community": 9,
       "norm_label": ".__aenter__()"
     },
     {
@@ -405,7 +711,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L21",
       "id": "tests_test_runner_worker_fakewebsocket_aexit",
-      "community": 5,
+      "community": 9,
       "norm_label": ".__aexit__()"
     },
     {
@@ -414,7 +720,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L24",
       "id": "tests_test_runner_worker_fakewebsocket_aiter",
-      "community": 5,
+      "community": 9,
       "norm_label": ".__aiter__()"
     },
     {
@@ -423,7 +729,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L27",
       "id": "tests_test_runner_worker_fakewebsocket_anext",
-      "community": 5,
+      "community": 9,
       "norm_label": ".__anext__()"
     },
     {
@@ -432,7 +738,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L37",
       "id": "tests_test_runner_worker_runnerworkertests",
-      "community": 5,
+      "community": 9,
       "norm_label": "runnerworkertests"
     },
     {
@@ -441,7 +747,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L38",
       "id": "tests_test_runner_worker_runnerworkertests_setup",
-      "community": 5,
+      "community": 9,
       "norm_label": ".setup()"
     },
     {
@@ -450,7 +756,7 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L58",
       "id": "tests_test_runner_worker_runnerworkertests_teardown",
-      "community": 5,
+      "community": 9,
       "norm_label": ".teardown()"
     },
     {
@@ -459,8 +765,44 @@
       "source_file": "tests/test_runner_worker.py",
       "source_location": "L66",
       "id": "tests_test_runner_worker_runnerworkertests_test_worker_marks_result_ready_after_executed_message",
-      "community": 5,
+      "community": 9,
       "norm_label": ".test_worker_marks_result_ready_after_executed_message()"
+    },
+    {
+      "label": "test_print_service.py",
+      "file_type": "code",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L1",
+      "id": "tests_test_print_service_py",
+      "community": 15,
+      "norm_label": "test_print_service.py"
+    },
+    {
+      "label": "PrintServiceTests",
+      "file_type": "code",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L10",
+      "id": "tests_test_print_service_printservicetests",
+      "community": 15,
+      "norm_label": "printservicetests"
+    },
+    {
+      "label": ".test_compose_print_places_original_and_ai_images_into_slots()",
+      "file_type": "code",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L11",
+      "id": "tests_test_print_service_printservicetests_test_compose_print_places_original_and_ai_images_into_slots",
+      "community": 15,
+      "norm_label": ".test_compose_print_places_original_and_ai_images_into_slots()"
+    },
+    {
+      "label": ".test_compose_print_applies_scale_and_offsets_per_slot()",
+      "file_type": "code",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L37",
+      "id": "tests_test_print_service_printservicetests_test_compose_print_applies_scale_and_offsets_per_slot",
+      "community": 15,
+      "norm_label": ".test_compose_print_applies_scale_and_offsets_per_slot()"
     },
     {
       "label": "test_config_headers.py",
@@ -468,7 +810,7 @@
       "source_file": "tests/test_config_headers.py",
       "source_location": "L1",
       "id": "tests_test_config_headers_py",
-      "community": 13,
+      "community": 16,
       "norm_label": "test_config_headers.py"
     },
     {
@@ -477,7 +819,7 @@
       "source_file": "tests/test_config_headers.py",
       "source_location": "L7",
       "id": "tests_test_config_headers_comfyheaderconfigtests",
-      "community": 13,
+      "community": 16,
       "norm_label": "comfyheaderconfigtests"
     },
     {
@@ -486,7 +828,7 @@
       "source_file": "tests/test_config_headers.py",
       "source_location": "L8",
       "id": "tests_test_config_headers_comfyheaderconfigtests_test_build_comfyui_headers_merges_json_and_bearer_token",
-      "community": 13,
+      "community": 16,
       "norm_label": ".test_build_comfyui_headers_merges_json_and_bearer_token()"
     },
     {
@@ -495,7 +837,7 @@
       "source_file": "tests/test_config_headers.py",
       "source_location": "L16",
       "id": "tests_test_config_headers_comfyheaderconfigtests_test_build_comfyui_headers_handles_empty_values",
-      "community": 13,
+      "community": 16,
       "norm_label": ".test_build_comfyui_headers_handles_empty_values()"
     },
     {
@@ -504,25 +846,25 @@
       "source_file": "backend/runner.py",
       "source_location": "L1",
       "id": "backend_runner_py",
-      "community": 3,
+      "community": 5,
       "norm_label": "runner.py"
     },
     {
       "label": "enqueue_selected()",
       "file_type": "code",
       "source_file": "backend/runner.py",
-      "source_location": "L16",
+      "source_location": "L17",
       "id": "backend_runner_enqueue_selected",
-      "community": 3,
+      "community": 5,
       "norm_label": "enqueue_selected()"
     },
     {
       "label": "run_worker()",
       "file_type": "code",
       "source_file": "backend/runner.py",
-      "source_location": "L43",
+      "source_location": "L45",
       "id": "backend_runner_run_worker",
-      "community": 3,
+      "community": 5,
       "norm_label": "run_worker()"
     },
     {
@@ -538,7 +880,7 @@
       "label": "get_comfyui_headers()",
       "file_type": "code",
       "source_file": "backend/config.py",
-      "source_location": "L18",
+      "source_location": "L19",
       "id": "backend_config_get_comfyui_headers",
       "community": 4,
       "norm_label": "get_comfyui_headers()"
@@ -580,10 +922,19 @@
       "norm_label": ".reset()"
     },
     {
+      "label": ".load_from_disk()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L26",
+      "id": "backend_session_sessionstate_load_from_disk",
+      "community": 0,
+      "norm_label": ".load_from_disk()"
+    },
+    {
       "label": "current_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L27",
+      "source_location": "L77",
       "id": "backend_session_current_session",
       "community": 1,
       "norm_label": "current_session()"
@@ -592,7 +943,7 @@
       "label": "processing_sessions()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L34",
+      "source_location": "L84",
       "id": "backend_session_processing_sessions",
       "community": 1,
       "norm_label": "processing_sessions()"
@@ -601,7 +952,7 @@
       "label": "print_ready_sessions()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L38",
+      "source_location": "L88",
       "id": "backend_session_print_ready_sessions",
       "community": 1,
       "norm_label": "print_ready_sessions()"
@@ -610,7 +961,7 @@
       "label": "completed_sessions()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L42",
+      "source_location": "L92",
       "id": "backend_session_completed_sessions",
       "community": 1,
       "norm_label": "completed_sessions()"
@@ -619,7 +970,7 @@
       "label": "errored_sessions()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L46",
+      "source_location": "L96",
       "id": "backend_session_errored_sessions",
       "community": 1,
       "norm_label": "errored_sessions()"
@@ -628,7 +979,7 @@
       "label": "all_sessions()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L50",
+      "source_location": "L100",
       "id": "backend_session_all_sessions",
       "community": 1,
       "norm_label": "all_sessions()"
@@ -637,7 +988,7 @@
       "label": "session_id()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L54",
+      "source_location": "L104",
       "id": "backend_session_session_id",
       "community": 1,
       "norm_label": "session_id()"
@@ -646,7 +997,7 @@
       "label": "phase()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L58",
+      "source_location": "L108",
       "id": "backend_session_phase",
       "community": 1,
       "norm_label": "phase()"
@@ -655,7 +1006,7 @@
       "label": "shots()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L62",
+      "source_location": "L112",
       "id": "backend_session_shots",
       "community": 1,
       "norm_label": "shots()"
@@ -664,7 +1015,7 @@
       "label": "selected_shot_id()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L66",
+      "source_location": "L116",
       "id": "backend_session_selected_shot_id",
       "community": 1,
       "norm_label": "selected_shot_id()"
@@ -673,7 +1024,7 @@
       "label": "preview_shot_id()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L70",
+      "source_location": "L120",
       "id": "backend_session_preview_shot_id",
       "community": 1,
       "norm_label": "preview_shot_id()"
@@ -682,7 +1033,7 @@
       "label": "preview_shot()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L74",
+      "source_location": "L124",
       "id": "backend_session_preview_shot",
       "community": 1,
       "norm_label": "preview_shot()"
@@ -691,7 +1042,7 @@
       "label": "preview_until()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L78",
+      "source_location": "L128",
       "id": "backend_session_preview_until",
       "community": 1,
       "norm_label": "preview_until()"
@@ -700,7 +1051,7 @@
       "label": "selected_shot()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L82",
+      "source_location": "L132",
       "id": "backend_session_selected_shot",
       "community": 1,
       "norm_label": "selected_shot()"
@@ -709,7 +1060,7 @@
       "label": "prompt_id()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L86",
+      "source_location": "L136",
       "id": "backend_session_prompt_id",
       "community": 1,
       "norm_label": "prompt_id()"
@@ -718,7 +1069,7 @@
       "label": "result_filename()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L90",
+      "source_location": "L140",
       "id": "backend_session_result_filename",
       "community": 1,
       "norm_label": "result_filename()"
@@ -727,7 +1078,7 @@
       "label": "error()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L94",
+      "source_location": "L144",
       "id": "backend_session_error",
       "community": 1,
       "norm_label": "error()"
@@ -736,7 +1087,7 @@
       "label": "logs()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L98",
+      "source_location": "L148",
       "id": "backend_session_logs",
       "community": 1,
       "norm_label": "logs()"
@@ -745,7 +1096,7 @@
       "label": "selected()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L102",
+      "source_location": "L152",
       "id": "backend_session_selected",
       "community": 1,
       "norm_label": "selected()"
@@ -754,7 +1105,7 @@
       "label": "images()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L107",
+      "source_location": "L157",
       "id": "backend_session_images",
       "community": 1,
       "norm_label": "images()"
@@ -763,7 +1114,7 @@
       "label": "status()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L111",
+      "source_location": "L161",
       "id": "backend_session_status",
       "community": 1,
       "norm_label": "status()"
@@ -772,7 +1123,7 @@
       "label": ".start_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L130",
+      "source_location": "L180",
       "id": "backend_session_sessionstate_start_session",
       "community": 0,
       "norm_label": ".start_session()"
@@ -781,16 +1132,25 @@
       "label": ".finish_capture()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L146",
+      "source_location": "L196",
       "id": "backend_session_sessionstate_finish_capture",
       "community": 0,
       "norm_label": ".finish_capture()"
     },
     {
+      "label": ".retry_capture()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L207",
+      "id": "backend_session_sessionstate_retry_capture",
+      "community": 0,
+      "norm_label": ".retry_capture()"
+    },
+    {
       "label": ".add_shot_from_file()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L155",
+      "source_location": "L217",
       "id": "backend_session_sessionstate_add_shot_from_file",
       "community": 0,
       "norm_label": ".add_shot_from_file()"
@@ -799,7 +1159,7 @@
       "label": ".select_shot()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L192",
+      "source_location": "L254",
       "id": "backend_session_sessionstate_select_shot",
       "community": 0,
       "norm_label": ".select_shot()"
@@ -808,7 +1168,7 @@
       "label": ".mark_queued()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L203",
+      "source_location": "L265",
       "id": "backend_session_sessionstate_mark_queued",
       "community": 0,
       "norm_label": ".mark_queued()"
@@ -817,7 +1177,7 @@
       "label": ".start_processing_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L216",
+      "source_location": "L278",
       "id": "backend_session_sessionstate_start_processing_session",
       "community": 0,
       "norm_label": ".start_processing_session()"
@@ -826,7 +1186,7 @@
       "label": ".mark_processing()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L224",
+      "source_location": "L286",
       "id": "backend_session_sessionstate_mark_processing",
       "community": 0,
       "norm_label": ".mark_processing()"
@@ -835,7 +1195,7 @@
       "label": ".mark_result_ready()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L230",
+      "source_location": "L292",
       "id": "backend_session_sessionstate_mark_result_ready",
       "community": 0,
       "norm_label": ".mark_result_ready()"
@@ -844,16 +1204,34 @@
       "label": ".cache_result_file()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L247",
+      "source_location": "L309",
       "id": "backend_session_sessionstate_cache_result_file",
       "community": 0,
       "norm_label": ".cache_result_file()"
     },
     {
+      "label": ".cache_print_file()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L334",
+      "id": "backend_session_sessionstate_cache_print_file",
+      "community": 0,
+      "norm_label": ".cache_print_file()"
+    },
+    {
+      "label": ".discard_session()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L370",
+      "id": "backend_session_sessionstate_discard_session",
+      "community": 0,
+      "norm_label": ".discard_session()"
+    },
+    {
       "label": ".mark_completed()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L262",
+      "source_location": "L382",
       "id": "backend_session_sessionstate_mark_completed",
       "community": 0,
       "norm_label": ".mark_completed()"
@@ -862,7 +1240,7 @@
       "label": ".mark_error()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L275",
+      "source_location": "L395",
       "id": "backend_session_sessionstate_mark_error",
       "community": 0,
       "norm_label": ".mark_error()"
@@ -871,7 +1249,7 @@
       "label": ".log_event()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L291",
+      "source_location": "L411",
       "id": "backend_session_sessionstate_log_event",
       "community": 0,
       "norm_label": ".log_event()"
@@ -880,16 +1258,34 @@
       "label": ".get_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L300",
+      "source_location": "L420",
       "id": "backend_session_sessionstate_get_session",
       "community": 1,
       "norm_label": ".get_session()"
     },
     {
+      "label": ".get_generated_result()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L424",
+      "id": "backend_session_sessionstate_get_generated_result",
+      "community": 0,
+      "norm_label": ".get_generated_result()"
+    },
+    {
+      "label": ".get_print_output()",
+      "file_type": "code",
+      "source_file": "backend/session.py",
+      "source_location": "L430",
+      "id": "backend_session_sessionstate_get_print_output",
+      "community": 0,
+      "norm_label": ".get_print_output()"
+    },
+    {
       "label": ".get_shot()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L304",
+      "source_location": "L436",
       "id": "backend_session_sessionstate_get_shot",
       "community": 0,
       "norm_label": ".get_shot()"
@@ -898,7 +1294,7 @@
       "label": ".has_source_filename()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L310",
+      "source_location": "L442",
       "id": "backend_session_sessionstate_has_source_filename",
       "community": 0,
       "norm_label": ".has_source_filename()"
@@ -907,7 +1303,7 @@
       "label": ".get_shot_path()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L321",
+      "source_location": "L453",
       "id": "backend_session_sessionstate_get_shot_path",
       "community": 0,
       "norm_label": ".get_shot_path()"
@@ -916,7 +1312,7 @@
       "label": ".get_session_by_prompt_id()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L325",
+      "source_location": "L457",
       "id": "backend_session_sessionstate_get_session_by_prompt_id",
       "community": 1,
       "norm_label": ".get_session_by_prompt_id()"
@@ -925,7 +1321,7 @@
       "label": ".to_dict()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L331",
+      "source_location": "L463",
       "id": "backend_session_sessionstate_to_dict",
       "community": 0,
       "norm_label": ".to_dict()"
@@ -934,7 +1330,7 @@
       "label": "._new_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L364",
+      "source_location": "L501",
       "id": "backend_session_sessionstate_new_session",
       "community": 0,
       "norm_label": "._new_session()"
@@ -943,7 +1339,7 @@
       "label": "._get_latest_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L391",
+      "source_location": "L532",
       "id": "backend_session_sessionstate_get_latest_session",
       "community": 0,
       "norm_label": "._get_latest_session()"
@@ -952,7 +1348,7 @@
       "label": "._get_session_for_capture()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L396",
+      "source_location": "L537",
       "id": "backend_session_sessionstate_get_session_for_capture",
       "community": 0,
       "norm_label": "._get_session_for_capture()"
@@ -961,7 +1357,7 @@
       "label": "._get_session_for_lookup()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L402",
+      "source_location": "L543",
       "id": "backend_session_sessionstate_get_session_for_lookup",
       "community": 0,
       "norm_label": "._get_session_for_lookup()"
@@ -970,7 +1366,7 @@
       "label": "._serialize_sessions()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L411",
+      "source_location": "L552",
       "id": "backend_session_sessionstate_serialize_sessions",
       "community": 1,
       "norm_label": "._serialize_sessions()"
@@ -979,7 +1375,7 @@
       "label": "._serialize_session()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L419",
+      "source_location": "L560",
       "id": "backend_session_sessionstate_serialize_session",
       "community": 1,
       "norm_label": "._serialize_session()"
@@ -988,7 +1384,7 @@
       "label": "._session_dir()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L444",
+      "source_location": "L598",
       "id": "backend_session_sessionstate_session_dir",
       "community": 0,
       "norm_label": "._session_dir()"
@@ -997,7 +1393,7 @@
       "label": "._write_meta()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L447",
+      "source_location": "L601",
       "id": "backend_session_sessionstate_write_meta",
       "community": 0,
       "norm_label": "._write_meta()"
@@ -1006,7 +1402,7 @@
       "label": "._log()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L455",
+      "source_location": "L609",
       "id": "backend_session_sessionstate_log",
       "community": 0,
       "norm_label": "._log()"
@@ -1015,7 +1411,7 @@
       "label": "._touch()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L462",
+      "source_location": "L616",
       "id": "backend_session_sessionstate_touch",
       "community": 0,
       "norm_label": "._touch()"
@@ -1024,7 +1420,7 @@
       "label": "_preview_deadline()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L467",
+      "source_location": "L621",
       "id": "backend_session_preview_deadline",
       "community": 1,
       "norm_label": "_preview_deadline()"
@@ -1033,7 +1429,7 @@
       "label": "_now()",
       "file_type": "code",
       "source_file": "backend/session.py",
-      "source_location": "L471",
+      "source_location": "L625",
       "id": "backend_session_now",
       "community": 0,
       "norm_label": "_now()"
@@ -1044,8 +1440,116 @@
       "source_file": "backend/routers/__init__.py",
       "source_location": "L1",
       "id": "backend_init_py",
-      "community": 18,
+      "community": 24,
       "norm_label": "__init__.py"
+    },
+    {
+      "label": "print_service.py",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L1",
+      "id": "backend_print_service_py",
+      "community": 3,
+      "norm_label": "print_service.py"
+    },
+    {
+      "label": "list_frames()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L20",
+      "id": "backend_print_service_list_frames",
+      "community": 3,
+      "norm_label": "list_frames()"
+    },
+    {
+      "label": "get_frame_path()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L41",
+      "id": "backend_print_service_get_frame_path",
+      "community": 3,
+      "norm_label": "get_frame_path()"
+    },
+    {
+      "label": "compose_print()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L48",
+      "id": "backend_print_service_compose_print",
+      "community": 3,
+      "norm_label": "compose_print()"
+    },
+    {
+      "label": "_paste_cover()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L74",
+      "id": "backend_print_service_paste_cover",
+      "community": 3,
+      "norm_label": "_paste_cover()"
+    },
+    {
+      "label": "_cover_size()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L101",
+      "id": "backend_print_service_cover_size",
+      "community": 3,
+      "norm_label": "_cover_size()"
+    },
+    {
+      "label": "normalize_layout()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L110",
+      "id": "backend_print_service_normalize_layout",
+      "community": 3,
+      "norm_label": "normalize_layout()"
+    },
+    {
+      "label": "slot_tuple()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L126",
+      "id": "backend_print_service_slot_tuple",
+      "community": 3,
+      "norm_label": "slot_tuple()"
+    },
+    {
+      "label": "get_frame_slots()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L130",
+      "id": "backend_print_service_get_frame_slots",
+      "community": 3,
+      "norm_label": "get_frame_slots()"
+    },
+    {
+      "label": "_get_frame_slots_cached()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L138",
+      "id": "backend_print_service_get_frame_slots_cached",
+      "community": 3,
+      "norm_label": "_get_frame_slots_cached()"
+    },
+    {
+      "label": "bbox_to_slot()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L192",
+      "id": "backend_print_service_bbox_to_slot",
+      "community": 3,
+      "norm_label": "bbox_to_slot()"
+    },
+    {
+      "label": "_default_slots()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L202",
+      "id": "backend_print_service_default_slots",
+      "community": 3,
+      "norm_label": "_default_slots()"
     },
     {
       "label": "watcher.py",
@@ -1053,7 +1557,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L1",
       "id": "backend_watcher_py",
-      "community": 3,
+      "community": 5,
       "norm_label": "watcher.py"
     },
     {
@@ -1062,7 +1566,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L13",
       "id": "backend_watcher_connectionmanager",
-      "community": 3,
+      "community": 5,
       "norm_label": "connectionmanager"
     },
     {
@@ -1071,7 +1575,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L14",
       "id": "backend_watcher_connectionmanager_init",
-      "community": 3,
+      "community": 5,
       "norm_label": ".__init__()"
     },
     {
@@ -1080,7 +1584,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L17",
       "id": "backend_watcher_connectionmanager_connect",
-      "community": 3,
+      "community": 5,
       "norm_label": ".connect()"
     },
     {
@@ -1089,7 +1593,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L21",
       "id": "backend_watcher_connectionmanager_disconnect",
-      "community": 3,
+      "community": 5,
       "norm_label": ".disconnect()"
     },
     {
@@ -1098,7 +1602,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L25",
       "id": "backend_watcher_connectionmanager_broadcast",
-      "community": 3,
+      "community": 5,
       "norm_label": ".broadcast()"
     },
     {
@@ -1107,7 +1611,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L34",
       "id": "backend_watcher_connectionmanager_broadcast_session",
-      "community": 3,
+      "community": 5,
       "norm_label": ".broadcast_session()"
     },
     {
@@ -1116,7 +1620,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L44",
       "id": "backend_watcher_watch_folder",
-      "community": 3,
+      "community": 5,
       "norm_label": "watch_folder()"
     },
     {
@@ -1125,7 +1629,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L62",
       "id": "backend_watcher_ingest_available_files",
-      "community": 3,
+      "community": 5,
       "norm_label": "_ingest_available_files()"
     },
     {
@@ -1134,7 +1638,7 @@
       "source_file": "backend/watcher.py",
       "source_location": "L77",
       "id": "backend_watcher_wait_until_file_stable",
-      "community": 3,
+      "community": 5,
       "norm_label": "_wait_until_file_stable()"
     },
     {
@@ -1168,7 +1672,7 @@
       "label": "queue_prompt()",
       "file_type": "code",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L32",
+      "source_location": "L39",
       "id": "backend_comfy_client_queue_prompt",
       "community": 4,
       "norm_label": "queue_prompt()"
@@ -1177,7 +1681,7 @@
       "label": "get_output_image_info()",
       "file_type": "code",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L46",
+      "source_location": "L53",
       "id": "backend_comfy_client_get_output_image_info",
       "community": 4,
       "norm_label": "get_output_image_info()"
@@ -1186,7 +1690,7 @@
       "label": "get_output_image()",
       "file_type": "code",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L59",
+      "source_location": "L66",
       "id": "backend_comfy_client_get_output_image",
       "community": 4,
       "norm_label": "get_output_image()"
@@ -1195,7 +1699,7 @@
       "label": "download_output_image()",
       "file_type": "code",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L65",
+      "source_location": "L72",
       "id": "backend_comfy_client_download_output_image",
       "community": 4,
       "norm_label": "download_output_image()"
@@ -1210,20 +1714,20 @@
       "norm_label": "upload image to comfyui, return filename as stored by comfyui."
     },
     {
-      "label": "Replace LoadImage node input with the given filename.",
+      "label": "Replace LoadImage node input and optionally override workflow seeds.",
       "file_type": "rationale",
       "source_file": "backend/comfy_client.py",
       "source_location": "L23",
       "id": "backend_comfy_client_rationale_23",
       "community": 4,
-      "norm_label": "replace loadimage node input with the given filename."
+      "norm_label": "replace loadimage node input and optionally override workflow seeds."
     },
     {
       "label": "Submit workflow to ComfyUI queue, return prompt_id.",
       "file_type": "rationale",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L33",
-      "id": "backend_comfy_client_rationale_33",
+      "source_location": "L40",
+      "id": "backend_comfy_client_rationale_40",
       "community": 4,
       "norm_label": "submit workflow to comfyui queue, return prompt_id."
     },
@@ -1231,8 +1735,8 @@
       "label": "Poll history and return the first output image metadata, or None.",
       "file_type": "rationale",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L47",
-      "id": "backend_comfy_client_rationale_47",
+      "source_location": "L54",
+      "id": "backend_comfy_client_rationale_54",
       "community": 4,
       "norm_label": "poll history and return the first output image metadata, or none."
     },
@@ -1240,8 +1744,8 @@
       "label": "Poll history and return the first output image filename, or None.",
       "file_type": "rationale",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L60",
-      "id": "backend_comfy_client_rationale_60",
+      "source_location": "L67",
+      "id": "backend_comfy_client_rationale_67",
       "community": 4,
       "norm_label": "poll history and return the first output image filename, or none."
     },
@@ -1251,7 +1755,7 @@
       "source_file": "backend/main.py",
       "source_location": "L1",
       "id": "backend_main_py",
-      "community": 3,
+      "community": 5,
       "norm_label": "main.py"
     },
     {
@@ -1260,34 +1764,34 @@
       "source_file": "backend/main.py",
       "source_location": "L15",
       "id": "backend_main_lifespan",
-      "community": 3,
+      "community": 5,
       "norm_label": "lifespan()"
     },
     {
       "label": "health()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L35",
+      "source_location": "L38",
       "id": "backend_main_health",
-      "community": 3,
+      "community": 5,
       "norm_label": "health()"
     },
     {
       "label": "ws_watch()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L40",
+      "source_location": "L43",
       "id": "backend_main_ws_watch",
-      "community": 3,
+      "community": 5,
       "norm_label": "ws_watch()"
     },
     {
       "label": "spa_fallback()",
       "file_type": "code",
       "source_file": "backend/main.py",
-      "source_location": "L63",
+      "source_location": "L66",
       "id": "backend_main_spa_fallback",
-      "community": 3,
+      "community": 5,
       "norm_label": "spa_fallback()"
     },
     {
@@ -1303,7 +1807,7 @@
       "label": "RunRequest",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L16",
+      "source_location": "L18",
       "id": "routers_run_runrequest",
       "community": 2,
       "norm_label": "runrequest"
@@ -1311,7 +1815,7 @@
     {
       "label": "BaseModel",
       "file_type": "code",
-      "source_file": "backend/routers/run.py",
+      "source_file": "backend/routers/printing.py",
       "source_location": "",
       "id": "basemodel",
       "community": 2,
@@ -1321,7 +1825,7 @@
       "label": "SelectRequest",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L20",
+      "source_location": "L22",
       "id": "routers_run_selectrequest",
       "community": 2,
       "norm_label": "selectrequest"
@@ -1330,7 +1834,7 @@
       "label": "SelectShotRequest",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L24",
+      "source_location": "L26",
       "id": "routers_run_selectshotrequest",
       "community": 2,
       "norm_label": "selectshotrequest"
@@ -1339,7 +1843,7 @@
       "label": "SessionActionRequest",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L28",
+      "source_location": "L30",
       "id": "routers_run_sessionactionrequest",
       "community": 2,
       "norm_label": "sessionactionrequest"
@@ -1348,7 +1852,7 @@
       "label": "_clear_watch_folder()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L32",
+      "source_location": "L34",
       "id": "routers_run_clear_watch_folder",
       "community": 2,
       "norm_label": "_clear_watch_folder()"
@@ -1357,7 +1861,7 @@
       "label": "_get_active_capture_session_id()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L39",
+      "source_location": "L41",
       "id": "routers_run_get_active_capture_session_id",
       "community": 2,
       "norm_label": "_get_active_capture_session_id()"
@@ -1366,7 +1870,7 @@
       "label": "get_status()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L46",
+      "source_location": "L48",
       "id": "routers_run_get_status",
       "community": 2,
       "norm_label": "get_status()"
@@ -1375,16 +1879,43 @@
       "label": "get_session()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L51",
+      "source_location": "L53",
       "id": "routers_run_get_session",
       "community": 2,
       "norm_label": "get_session()"
     },
     {
+      "label": "list_sessions()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L58",
+      "id": "routers_run_list_sessions",
+      "community": 2,
+      "norm_label": "list_sessions()"
+    },
+    {
+      "label": "get_session_detail()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L63",
+      "id": "routers_run_get_session_detail",
+      "community": 2,
+      "norm_label": "get_session_detail()"
+    },
+    {
+      "label": "get_session_result_detail()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L71",
+      "id": "routers_run_get_session_result_detail",
+      "community": 2,
+      "norm_label": "get_session_result_detail()"
+    },
+    {
       "label": "start_session()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L56",
+      "source_location": "L85",
       "id": "routers_run_start_session",
       "community": 2,
       "norm_label": "start_session()"
@@ -1393,16 +1924,25 @@
       "label": "finish_capture()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L67",
+      "source_location": "L96",
       "id": "routers_run_finish_capture",
       "community": 2,
       "norm_label": "finish_capture()"
     },
     {
+      "label": "retry_capture()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L109",
+      "id": "routers_run_retry_capture",
+      "community": 2,
+      "norm_label": "retry_capture()"
+    },
+    {
       "label": "select_shot()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L78",
+      "source_location": "L120",
       "id": "routers_run_select_shot",
       "community": 2,
       "norm_label": "select_shot()"
@@ -1411,7 +1951,7 @@
       "label": "run_selected()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L91",
+      "source_location": "L133",
       "id": "routers_run_run_selected",
       "community": 2,
       "norm_label": "run_selected()"
@@ -1420,16 +1960,34 @@
       "label": "complete_session()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L111",
+      "source_location": "L153",
       "id": "routers_run_complete_session",
       "community": 2,
       "norm_label": "complete_session()"
     },
     {
+      "label": "discard_session()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L169",
+      "id": "routers_run_discard_session",
+      "community": 2,
+      "norm_label": "discard_session()"
+    },
+    {
+      "label": "rerun_session()",
+      "file_type": "code",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L182",
+      "id": "routers_run_rerun_session",
+      "community": 2,
+      "norm_label": "rerun_session()"
+    },
+    {
       "label": "reset_session()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L127",
+      "source_location": "L204",
       "id": "routers_run_reset_session",
       "community": 2,
       "norm_label": "reset_session()"
@@ -1438,7 +1996,7 @@
       "label": "select_image()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L136",
+      "source_location": "L213",
       "id": "routers_run_select_image",
       "community": 2,
       "norm_label": "select_image()"
@@ -1447,7 +2005,7 @@
       "label": "run_job()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L148",
+      "source_location": "L225",
       "id": "routers_run_run_job",
       "community": 2,
       "norm_label": "run_job()"
@@ -1456,7 +2014,7 @@
       "label": "reset_session_legacy()",
       "file_type": "code",
       "source_file": "backend/routers/run.py",
-      "source_location": "L159",
+      "source_location": "L236",
       "id": "routers_run_reset_session_legacy",
       "community": 2,
       "norm_label": "reset_session_legacy()"
@@ -1467,7 +2025,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L1",
       "id": "backend_routers_upload_py",
-      "community": 7,
+      "community": 10,
       "norm_label": "upload.py"
     },
     {
@@ -1476,7 +2034,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L13",
       "id": "routers_upload_sanitize",
-      "community": 7,
+      "community": 10,
       "norm_label": "_sanitize()"
     },
     {
@@ -1485,7 +2043,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L22",
       "id": "routers_upload_list_images",
-      "community": 7,
+      "community": 10,
       "norm_label": "list_images()"
     },
     {
@@ -1494,7 +2052,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L31",
       "id": "routers_upload_upload_image",
-      "community": 7,
+      "community": 10,
       "norm_label": "upload_image()"
     },
     {
@@ -1503,7 +2061,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L42",
       "id": "routers_upload_serve_input",
-      "community": 7,
+      "community": 10,
       "norm_label": "serve_input()"
     },
     {
@@ -1512,7 +2070,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L50",
       "id": "routers_upload_serve_session_shot",
-      "community": 7,
+      "community": 10,
       "norm_label": "serve_session_shot()"
     },
     {
@@ -1521,7 +2079,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L58",
       "id": "routers_upload_serve_session_shot_scoped",
-      "community": 7,
+      "community": 10,
       "norm_label": "serve_session_shot_scoped()"
     },
     {
@@ -1530,7 +2088,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L14",
       "id": "routers_upload_rationale_14",
-      "community": 7,
+      "community": 10,
       "norm_label": "\u1110\u1161\u110b\u1175\u11b7\u1109\u1173\u1110\u1162\u11b7\u1111\u1173 prefix + \u1110\u1173\u11a8\u1109\u116e\u1106\u116e\u11ab\u110c\u1161 \u110c\u1166\u1100\u1165"
     },
     {
@@ -1539,7 +2097,7 @@
       "source_file": "backend/routers/upload.py",
       "source_location": "L23",
       "id": "routers_upload_rationale_23",
-      "community": 7,
+      "community": 10,
       "norm_label": "\u1112\u1167\u11ab\u110c\u1162 \u1109\u1166\u1109\u1167\u11ab \u1100\u1175\u110c\u116e\u11ab \u110b\u1175\u1106\u1175\u110c\u1175/shot \u1106\u1169\u11a8\u1105\u1169\u11a8 \u1107\u1161\u11ab\u1112\u116a\u11ab"
     },
     {
@@ -1548,7 +2106,7 @@
       "source_file": "backend/routers/presets.py",
       "source_location": "L1",
       "id": "backend_routers_presets_py",
-      "community": 11,
+      "community": 13,
       "norm_label": "presets.py"
     },
     {
@@ -1557,7 +2115,7 @@
       "source_file": "backend/routers/presets.py",
       "source_location": "L11",
       "id": "routers_presets_ensure_dir",
-      "community": 11,
+      "community": 13,
       "norm_label": "_ensure_dir()"
     },
     {
@@ -1566,34 +2124,34 @@
       "source_file": "backend/routers/presets.py",
       "source_location": "L16",
       "id": "routers_presets_list_presets",
-      "community": 11,
+      "community": 13,
       "norm_label": "list_presets()"
     },
     {
       "label": "upload_preset()",
       "file_type": "code",
       "source_file": "backend/routers/presets.py",
-      "source_location": "L36",
+      "source_location": "L39",
       "id": "routers_presets_upload_preset",
-      "community": 11,
+      "community": 13,
       "norm_label": "upload_preset()"
     },
     {
       "label": "activate_preset()",
       "file_type": "code",
       "source_file": "backend/routers/presets.py",
-      "source_location": "L55",
+      "source_location": "L58",
       "id": "routers_presets_activate_preset",
-      "community": 11,
+      "community": 13,
       "norm_label": "activate_preset()"
     },
     {
       "label": "delete_preset()",
       "file_type": "code",
       "source_file": "backend/routers/presets.py",
-      "source_location": "L65",
+      "source_location": "L68",
       "id": "routers_presets_delete_preset",
-      "community": 11,
+      "community": 13,
       "norm_label": "delete_preset()"
     },
     {
@@ -1624,6 +2182,159 @@
       "norm_label": "result()"
     },
     {
+      "label": "printing.py",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L1",
+      "id": "backend_routers_printing_py",
+      "community": 3,
+      "norm_label": "printing.py"
+    },
+    {
+      "label": "SlotLayoutRequest",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L17",
+      "id": "routers_printing_slotlayoutrequest",
+      "community": 3,
+      "norm_label": "slotlayoutrequest"
+    },
+    {
+      "label": "ComposePrintLayoutRequest",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L23",
+      "id": "routers_printing_composeprintlayoutrequest",
+      "community": 3,
+      "norm_label": "composeprintlayoutrequest"
+    },
+    {
+      "label": "ComposePrintRequest",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L28",
+      "id": "routers_printing_composeprintrequest",
+      "community": 3,
+      "norm_label": "composeprintrequest"
+    },
+    {
+      "label": "list_frames()",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L36",
+      "id": "routers_printing_list_frames",
+      "community": 3,
+      "norm_label": "list_frames()"
+    },
+    {
+      "label": "get_frame()",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L41",
+      "id": "routers_printing_get_frame",
+      "community": 3,
+      "norm_label": "get_frame()"
+    },
+    {
+      "label": "get_session_print()",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L49",
+      "id": "routers_printing_get_session_print",
+      "community": 3,
+      "norm_label": "get_session_print()"
+    },
+    {
+      "label": "compose_print()",
+      "file_type": "code",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L60",
+      "id": "routers_printing_compose_print",
+      "community": 3,
+      "norm_label": "compose_print()"
+    },
+    {
+      "label": "scaleLayoutForPreview()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L76",
+      "community": 7,
+      "norm_label": "scalelayoutforpreview()",
+      "id": "src_printscreen_scalelayoutforpreview"
+    },
+    {
+      "label": "_resize_cover()",
+      "file_type": "code",
+      "source_file": "backend/print_service.py",
+      "source_location": "L101",
+      "community": 3,
+      "norm_label": "_resize_cover()",
+      "id": "backend_print_service_resize_cover"
+    },
+    {
+      "label": "transformForSlot()",
+      "file_type": "code",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L52",
+      "community": 7,
+      "norm_label": "transformforslot()",
+      "id": "src_printscreen_transformforslot"
+    },
+    {
+      "label": "SessionCard()",
+      "file_type": "code",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L16",
+      "community": 6,
+      "norm_label": "sessioncard()",
+      "id": "src_adminscreen_sessioncard"
+    },
+    {
+      "label": "resolveHeroSession()",
+      "file_type": "code",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L16",
+      "community": 6,
+      "norm_label": "resolveherosession()",
+      "id": "src_userscreen_resolveherosession"
+    },
+    {
+      "label": "resolveHeroImage()",
+      "file_type": "code",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L20",
+      "community": 6,
+      "norm_label": "resolveheroimage()",
+      "id": "src_userscreen_resolveheroimage"
+    },
+    {
+      "label": "Submit workflow to ComfyUI queue, return prompt_id.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L33",
+      "community": 4,
+      "norm_label": "submit workflow to comfyui queue, return prompt_id.",
+      "id": "backend_comfy_client_rationale_33"
+    },
+    {
+      "label": "Poll history and return the first output image metadata, or None.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L47",
+      "community": 4,
+      "norm_label": "poll history and return the first output image metadata, or none.",
+      "id": "backend_comfy_client_rationale_47"
+    },
+    {
+      "label": "Poll history and return the first output image filename, or None.",
+      "file_type": "rationale",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L60",
+      "community": 4,
+      "norm_label": "poll history and return the first output image filename, or none.",
+      "id": "backend_comfy_client_rationale_60"
+    },
+    {
       "label": "resolveMainImage()",
       "file_type": "code",
       "source_file": "frontend/src/UserScreen.jsx",
@@ -1637,7 +2348,7 @@
       "file_type": "code",
       "source_file": "tests/test_runner_enqueue.py",
       "source_location": "L50",
-      "community": 10,
+      "community": 11,
       "norm_label": ".test_enqueue_selected_marks_processing_and_queues_prompt()",
       "id": "tests_test_runner_enqueue_runnerenqueuetests_test_enqueue_selected_marks_processing_and_queues_prompt"
     },
@@ -1685,6 +2396,17 @@
       "target": "src_usesession_usesession"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_usesession_usesession"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "INFERRED",
@@ -1707,14 +2429,35 @@
       "target": "src_usesession_usesession"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "src_printscreen_printscreen",
+      "target": "src_usesession_usesession"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/AdminScreen.jsx",
-      "source_location": "L16",
+      "source_location": "L17",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_src_adminscreen_jsx",
-      "target": "src_adminscreen_sessioncard"
+      "target": "src_adminscreen_sessionheroimage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_adminscreen_jsx",
+      "target": "src_adminscreen_queuecard"
     },
     {
       "relation": "contains",
@@ -1725,6 +2468,68 @@
       "confidence_score": 1.0,
       "source": "frontend_src_adminscreen_jsx",
       "target": "src_adminscreen_adminscreen"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_adminscreen_jsx",
+      "target": "src_adminscreen_sessioncard"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_adminscreen_queuecard",
+      "target": "src_adminscreen_sessionheroimage"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/AdminScreen.jsx",
+      "source_location": "L348",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_adminscreen_adminscreen",
+      "target": "src_adminscreen_sessionheroimage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_userscreen_jsx",
+      "target": "src_userscreen_pickdisplaysession"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_userscreen_jsx",
+      "target": "src_userscreen_pickdisplayimage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_userscreen_jsx",
+      "target": "src_userscreen_userscreen"
     },
     {
       "relation": "contains",
@@ -1750,21 +2555,22 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "frontend/src/UserScreen.jsx",
-      "source_location": "L27",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "frontend_src_userscreen_jsx",
-      "target": "src_userscreen_userscreen"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "frontend/src/UserScreen.jsx",
       "source_location": "L14",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_src_userscreen_jsx",
       "target": "src_userscreen_resolvemainimage"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/UserScreen.jsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_userscreen_userscreen",
+      "target": "src_userscreen_pickdisplayimage"
     },
     {
       "relation": "calls",
@@ -1791,12 +2597,250 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "frontend/src/OperatorNav.jsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_operatornav_jsx",
+      "target": "src_operatornav_operatornav"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "frontend/src/App.jsx",
       "source_location": "L5",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "frontend_src_app_jsx",
       "target": "src_app_app"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_normalizelayout"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_normalizeslots"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_getdefaultresultid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_getdefaultprintid"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L84",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_slotstylefrompixels"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L85",
+      "weight": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_scaledpreviewstyle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L93",
+      "weight": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_getcoversize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L60",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_layoutcontrol"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L109",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_printpreview"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_printscreen"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_scalelayoutforpreview"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L52",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "frontend_src_printscreen_jsx",
+      "target": "src_printscreen_transformforslot"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L114",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_normalizelayout"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L214",
+      "weight": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_normalizeslots",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L408",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_printscreen_printscreen",
+      "target": "src_printscreen_normalizeslots"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L243",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_slotstylefrompixels"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L279",
+      "weight": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_scaledpreviewstyle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L226",
+      "weight": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_getcoversize",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L171",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_scalelayoutforpreview"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "frontend/src/PrintScreen.jsx",
+      "source_location": "L125",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_printscreen_printpreview",
+      "target": "src_printscreen_transformforslot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_comfy_client.py",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_comfy_client_py",
+      "target": "tests_test_comfy_client_comfyclienttests"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_comfy_client.py",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_comfy_client_comfyclienttests",
+      "target": "tests_test_comfy_client_comfyclienttests_test_patch_workflow_replaces_load_image_and_overrides_seed_inputs"
     },
     {
       "relation": "contains",
@@ -1867,6 +2911,46 @@
       "confidence_score": 1.0,
       "source": "tests_test_session_state_sessionstatetests",
       "target": "tests_test_session_state_sessionstatetests_test_result_ready_is_written_back_to_original_processing_session"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_load_from_disk_restores_previous_sessions"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L155",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_load_from_disk_restores_latest_active_capture_session"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L155",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_cache_result_file_accumulates_generated_results"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L182",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_state_sessionstatetests",
+      "target": "tests_test_session_state_sessionstatetests_test_print_outputs_and_frame_selection_persist"
     },
     {
       "relation": "uses",
@@ -1942,6 +3026,50 @@
       "source_location": "L111",
       "weight": 1.0,
       "source": "tests_test_session_state_sessionstatetests_test_result_ready_is_written_back_to_original_processing_session",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_load_from_disk_restores_previous_sessions",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L162",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_load_from_disk_restores_latest_active_capture_session",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L162",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_cache_result_file_accumulates_generated_results",
+      "target": "backend_session_sessionstate"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "tests/test_session_state.py",
+      "source_location": "L189",
+      "weight": 1.0,
+      "source": "tests_test_session_state_sessionstatetests_test_print_outputs_and_frame_selection_persist",
       "target": "backend_session_sessionstate"
     },
     {
@@ -2048,6 +3176,16 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "tests/test_session_api.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_finish_capture_rejects_zero_shot_session"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
       "source_location": "L61",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -2063,6 +3201,86 @@
       "confidence_score": 1.0,
       "source": "tests_test_session_api_sessionapitests",
       "target": "tests_test_session_api_sessionapitests_test_can_start_new_session_while_previous_one_is_processing"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L111",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_can_read_session_history_list_and_detail"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L129",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_retry_capture_and_discard_current_team"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_session_api.py",
+      "source_location": "L149",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_session_api_sessionapitests",
+      "target": "tests_test_session_api_sessionapitests_test_can_rerun_previous_session"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_api_py",
+      "target": "tests_test_print_api_printapitests"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_api_printapitests",
+      "target": "tests_test_print_api_printapitests_setup"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L51",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_api_printapitests",
+      "target": "tests_test_print_api_printapitests_teardown"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L59",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_api_printapitests",
+      "target": "tests_test_print_api_printapitests_test_list_frames_returns_available_frame_catalog"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_api.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_api_printapitests",
+      "target": "tests_test_print_api_printapitests_test_compose_print_creates_print_output_and_updates_session"
     },
     {
       "relation": "contains",
@@ -2103,6 +3321,26 @@
       "confidence_score": 1.0,
       "source": "tests_test_result_router_resultroutertests",
       "target": "tests_test_result_router_resultroutertests_test_result_route_prefers_local_cached_file"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_presets_api.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_presets_api_py",
+      "target": "tests_test_presets_api_presetsapitests"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_presets_api.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_presets_api_presetsapitests",
+      "target": "tests_test_presets_api_presetsapitests_test_list_presets_reports_active_when_only_active_json_exists"
     },
     {
       "relation": "contains",
@@ -2203,6 +3441,36 @@
       "confidence_score": 1.0,
       "source": "tests_test_runner_worker_runnerworkertests",
       "target": "tests_test_runner_worker_runnerworkertests_test_worker_marks_result_ready_after_executed_message"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_service_py",
+      "target": "tests_test_print_service_printservicetests"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_service_printservicetests",
+      "target": "tests_test_print_service_printservicetests_test_compose_print_places_original_and_ai_images_into_slots"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "tests/test_print_service.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "tests_test_print_service_printservicetests",
+      "target": "tests_test_print_service_printservicetests_test_compose_print_applies_scale_and_offsets_per_slot"
     },
     {
       "relation": "contains",
@@ -2615,6 +3883,16 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/session.py",
+      "source_location": "L26",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_load_from_disk"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
       "source_location": "L73",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -2630,6 +3908,16 @@
       "confidence_score": 1.0,
       "source": "backend_session_sessionstate",
       "target": "backend_session_sessionstate_finish_capture"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L193",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_retry_capture"
     },
     {
       "relation": "method",
@@ -2705,6 +3993,26 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "backend/session.py",
+      "source_location": "L320",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_cache_print_file"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L354",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_discard_session"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
       "source_location": "L154",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -2740,6 +4048,26 @@
       "confidence_score": 1.0,
       "source": "backend_session_sessionstate",
       "target": "backend_session_sessionstate_get_session"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L408",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_get_generated_result"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L414",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate",
+      "target": "backend_session_sessionstate_get_print_output"
     },
     {
       "relation": "method",
@@ -2907,11 +4235,44 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/session.py",
+      "source_location": "L27",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_load_from_disk",
+      "target": "backend_session_sessionstate_reset"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
       "source_location": "L74",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "backend_session_sessionstate_start_session",
       "target": "backend_session_sessionstate_reset"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_load_from_disk",
+      "target": "backend_session_sessionstate_to_dict"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_load_from_disk",
+      "target": "backend_session_sessionstate_get_latest_session"
     },
     {
       "relation": "calls",
@@ -3098,6 +4459,61 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "backend_session_sessionstate_finish_capture",
+      "target": "backend_session_sessionstate_to_dict"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L194",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_retry_capture",
+      "target": "backend_session_sessionstate_get_session_for_capture"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_retry_capture",
+      "target": "backend_session_sessionstate_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L199",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_retry_capture",
+      "target": "backend_session_sessionstate_touch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L200",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_retry_capture",
+      "target": "backend_session_sessionstate_write_meta"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L201",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_retry_capture",
       "target": "backend_session_sessionstate_to_dict"
     },
     {
@@ -3468,6 +4884,17 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/session.py",
+      "source_location": "L314",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_cache_result_file",
+      "target": "backend_session_now"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
       "source_location": "L258",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -3484,6 +4911,83 @@
       "confidence_score": 1.0,
       "source": "backend_session_sessionstate_cache_result_file",
       "target": "backend_session_sessionstate_write_meta"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_cache_print_file",
+      "target": "backend_session_sessionstate_session_dir"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L344",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_cache_print_file",
+      "target": "backend_session_now"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L349",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_cache_print_file",
+      "target": "backend_session_sessionstate_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L350",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_cache_print_file",
+      "target": "backend_session_sessionstate_touch"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L351",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_cache_print_file",
+      "target": "backend_session_sessionstate_write_meta"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L358",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_discard_session",
+      "target": "backend_session_sessionstate_session_dir"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/session.py",
+      "source_location": "L362",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_session_sessionstate_discard_session",
+      "target": "backend_session_sessionstate_get_latest_session"
     },
     {
       "relation": "calls",
@@ -3763,6 +5267,280 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L14",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_list_frames"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L34",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_get_frame_path"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_compose_print"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_paste_cover"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_cover_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L110",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_normalize_layout"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L130",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_slot_tuple"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L134",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_get_frame_slots"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L142",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_get_frame_slots_cached"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L196",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_bbox_to_slot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L206",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_default_slots"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L70",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_py",
+      "target": "backend_print_service_resize_cover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_list_frames",
+      "target": "backend_print_service_get_frame_slots"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_get_frame_path",
+      "target": "backend_print_service_list_frames"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "routers_printing_get_frame",
+      "target": "backend_print_service_get_frame_path"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "routers_printing_compose_print",
+      "target": "backend_print_service_get_frame_path"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L56",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_compose_print",
+      "target": "backend_print_service_normalize_layout"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_compose_print",
+      "target": "backend_print_service_get_frame_slots"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L55",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_compose_print",
+      "target": "backend_print_service_paste_cover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_compose_print",
+      "target": "backend_print_service_slot_tuple"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "backend_print_service_paste_cover",
+      "target": "backend_print_service_cover_size",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_paste_cover",
+      "target": "backend_print_service_resize_cover"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_get_frame_slots",
+      "target": "backend_print_service_default_slots"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L138",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_get_frame_slots",
+      "target": "backend_print_service_get_frame_slots_cached"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L188",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_get_frame_slots_cached",
+      "target": "backend_print_service_default_slots"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/print_service.py",
+      "source_location": "L191",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_print_service_get_frame_slots_cached",
+      "target": "backend_print_service_bbox_to_slot"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "backend/watcher.py",
       "source_location": "L12",
       "weight": 1.0,
@@ -4011,6 +5789,16 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/comfy_client.py",
+      "source_location": "L40",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_comfy_client_rationale_40",
+      "target": "backend_comfy_client_queue_prompt"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
       "source_location": "L33",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -4032,10 +5820,10 @@
       "relation": "rationale_for",
       "confidence": "EXTRACTED",
       "source_file": "backend/comfy_client.py",
-      "source_location": "L47",
+      "source_location": "L54",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "backend_comfy_client_rationale_47",
+      "source": "backend_comfy_client_rationale_54",
       "target": "backend_comfy_client_get_output_image_info"
     },
     {
@@ -4048,6 +5836,26 @@
       "weight": 1.0,
       "source": "routers_result_result",
       "target": "backend_comfy_client_get_output_image_info"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L47",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_comfy_client_rationale_47",
+      "target": "backend_comfy_client_get_output_image_info"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/comfy_client.py",
+      "source_location": "L67",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_comfy_client_rationale_67",
+      "target": "backend_comfy_client_get_output_image"
     },
     {
       "relation": "rationale_for",
@@ -4215,6 +6023,36 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "backend/routers/run.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_list_sessions"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_get_session_detail"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L71",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_get_session_result_detail"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
       "source_location": "L45",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -4230,6 +6068,16 @@
       "confidence_score": 1.0,
       "source": "backend_routers_run_py",
       "target": "routers_run_finish_capture"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_retry_capture"
     },
     {
       "relation": "contains",
@@ -4260,6 +6108,26 @@
       "confidence_score": 1.0,
       "source": "backend_routers_run_py",
       "target": "routers_run_complete_session"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L169",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_discard_session"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L182",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_run_py",
+      "target": "routers_run_rerun_session"
     },
     {
       "relation": "contains",
@@ -4342,6 +6210,36 @@
       "target": "basemodel"
     },
     {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_printing_slotlayoutrequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_printing_composeprintlayoutrequest",
+      "target": "basemodel"
+    },
+    {
+      "relation": "inherits",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_printing_composeprintrequest",
+      "target": "basemodel"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -4372,6 +6270,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "routers_run_finish_capture",
+      "target": "routers_run_get_active_capture_session_id"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L111",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_run_retry_capture",
       "target": "routers_run_get_active_capture_session_id"
     },
     {
@@ -4423,10 +6332,43 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "backend/routers/run.py",
+      "source_location": "L64",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_run_get_session_detail",
+      "target": "routers_run_get_session"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L72",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_run_get_session_result_detail",
+      "target": "routers_run_get_session"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
       "source_location": "L93",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "routers_run_run_selected",
+      "target": "routers_run_get_session"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/run.py",
+      "source_location": "L186",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routers_run_rerun_session",
       "target": "routers_run_get_session"
     },
     {
@@ -4699,8 +6641,78 @@
       "confidence_score": 1.0,
       "source": "backend_routers_result_py",
       "target": "routers_result_result"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_slotlayoutrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_composeprintlayoutrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_composeprintrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_list_frames"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_get_frame"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L37",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_get_session_print"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "backend/routers/printing.py",
+      "source_location": "L48",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "backend_routers_printing_py",
+      "target": "routers_printing_compose_print"
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "13bdc39ff7eea81bc6b696fd84f72ac810b3ae87"
+  "built_at_commit": "51aaab1c04f0cef3db34d4022ffc31a0839f0e90"
 }

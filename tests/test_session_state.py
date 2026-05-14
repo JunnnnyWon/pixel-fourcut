@@ -2,6 +2,8 @@ import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from PIL import Image
+
 from backend.session import SessionState
 
 
@@ -150,6 +152,30 @@ class SessionStateTests(unittest.TestCase):
             self.assertEqual(restored.print_ready_sessions[0]["session_id"], "session-a")
             self.assertTrue(Path(restored.print_ready_sessions[0]["result_local_path"]).exists())
 
+    def test_load_from_disk_restores_latest_active_capture_session(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            sessions_root = root / "sessions"
+            source = root / "input.jpg"
+            source.write_bytes(b"fake-image")
+
+            original = SessionState(sessions_root)
+            original.start_session(session_id="session-current-001")
+            shot_a = original.add_shot_from_file(source, source_name="a.jpg", source_type="watcher")
+            original.finish_capture()
+            original.select_shot(shot_a["shot_id"])
+
+            original.active_capture_session_id = None
+            original.start_session(session_id="session-20260514-123318-415861")
+            shot_b = original.add_shot_from_file(source, source_name="b.jpg", source_type="watcher")
+            original.finish_capture()
+            original.select_shot(shot_b["shot_id"])
+
+            restored = SessionState(sessions_root)
+            restored.load_from_disk()
+
+            self.assertEqual(restored.current_session["session_id"], "session-20260514-123318-415861")
+
     def test_cache_result_file_accumulates_generated_results(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -176,6 +202,49 @@ class SessionStateTests(unittest.TestCase):
             self.assertEqual(len(detail["generated_results"]), 2)
             self.assertEqual(detail["generated_results"][0]["source_filename"], "result-a.png")
             self.assertEqual(detail["generated_results"][1]["source_filename"], "result-b.png")
+
+    def test_print_outputs_and_frame_selection_persist(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            sessions_root = root / "sessions"
+            source = root / "input.jpg"
+            source.write_bytes(b"fake-image")
+
+            state = SessionState(sessions_root)
+            state.start_session(session_id="session-a")
+            shot = state.add_shot_from_file(source, source_name="input.jpg", source_type="watcher")
+            state.finish_capture()
+            state.select_shot(shot["shot_id"])
+            state.mark_queued(prompt_id="prompt-a")
+            state.start_processing_session("session-a")
+            state.cache_result_file("session-a", "result-a.png", b"result-bytes", "image/png")
+            state.mark_result_ready("session-a", result_filename="result-a.png")
+
+            composite = Image.new("RGBA", (1200, 1800), (255, 255, 255, 255))
+            composite_bytes = root / "composite.png"
+            composite.save(composite_bytes)
+
+            state.cache_print_file(
+                "session-a",
+                frame_id="frame-01-signature-white",
+                result_id="result-001",
+                content=composite_bytes.read_bytes(),
+                media_type="image/png",
+                layout={
+                    "original": {"scale": 0.95, "offset_x": 12, "offset_y": -8},
+                    "ai": {"scale": 1.1, "offset_x": -4, "offset_y": 14},
+                },
+            )
+
+            restored = SessionState(sessions_root)
+            restored.load_from_disk()
+            detail = restored.get_session("session-a")
+
+            self.assertEqual(detail["selected_frame_id"], "frame-01-signature-white")
+            self.assertEqual(detail["selected_generated_result_id"], "result-001")
+            self.assertEqual(len(detail["print_outputs"]), 1)
+            self.assertEqual(detail["print_outputs"][0]["layout"]["ai"]["offset_y"], 14)
+            self.assertTrue(Path(detail["print_outputs"][0]["local_path"]).exists())
 
 
 if __name__ == "__main__":

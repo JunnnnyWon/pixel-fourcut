@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse
 from backend.config import PRESETS_FOLDER, SESSIONS_FOLDER, WATCH_FOLDER
 from backend.watcher import manager, watch_folder
 from backend.runner import run_worker
-from backend.routers import presets, upload, run, result
+from backend.routers import presets, upload, run, result, printing
 
 
 @asynccontextmanager
@@ -31,6 +31,7 @@ app.include_router(presets.router)
 app.include_router(upload.router)
 app.include_router(run.router)
 app.include_router(result.router)
+app.include_router(printing.router)
 
 
 @app.get("/health")
