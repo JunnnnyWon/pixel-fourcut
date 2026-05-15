@@ -277,13 +277,16 @@ function PrintPreview({
                 alt="원본 미리보기"
                 className="print-preview-photo"
                 style={scaledPreviewStyle(resolvedLayout.original, previewScale, previewImageSize.original)}
-                onLoad={(event) => setImageDimensions((current) => ({
-                  ...current,
-                  original: {
-                    width: event.currentTarget.naturalWidth,
-                    height: event.currentTarget.naturalHeight,
-                  },
-                }))}
+                onLoad={(event) => {
+                  const { naturalWidth, naturalHeight } = event.currentTarget
+                  setImageDimensions((current) => ({
+                    ...current,
+                    original: {
+                      width: naturalWidth,
+                      height: naturalHeight,
+                    },
+                  }))
+                }}
                 onPointerDown={(event) => beginDrag('original', event)}
                 onWheel={(event) => handleWheel('original', event)}
               />
@@ -316,13 +319,16 @@ function PrintPreview({
                 alt="AI 미리보기"
                 className="print-preview-photo"
                 style={scaledPreviewStyle(resolvedLayout.ai, previewScale, previewImageSize.ai)}
-                onLoad={(event) => setImageDimensions((current) => ({
-                  ...current,
-                  ai: {
-                    width: event.currentTarget.naturalWidth,
-                    height: event.currentTarget.naturalHeight,
-                  },
-                }))}
+                onLoad={(event) => {
+                  const { naturalWidth, naturalHeight } = event.currentTarget
+                  setImageDimensions((current) => ({
+                    ...current,
+                    ai: {
+                      width: naturalWidth,
+                      height: naturalHeight,
+                    },
+                  }))
+                }}
                 onPointerDown={(event) => beginDrag('ai', event)}
                 onWheel={(event) => handleWheel('ai', event)}
               />

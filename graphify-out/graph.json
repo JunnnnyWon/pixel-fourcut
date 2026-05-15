@@ -250,7 +250,7 @@
       "label": "PrintScreen()",
       "file_type": "code",
       "source_file": "frontend/src/PrintScreen.jsx",
-      "source_location": "L356",
+      "source_location": "L362",
       "id": "src_printscreen_printscreen",
       "community": 7,
       "norm_label": "printscreen()"
@@ -2670,9 +2670,9 @@
       "source_file": "frontend/src/PrintScreen.jsx",
       "source_location": "L85",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_printscreen_jsx",
-      "target": "src_printscreen_scaledpreviewstyle",
-      "confidence_score": 1.0
+      "target": "src_printscreen_scaledpreviewstyle"
     },
     {
       "relation": "contains",
@@ -2680,9 +2680,9 @@
       "source_file": "frontend/src/PrintScreen.jsx",
       "source_location": "L93",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "frontend_src_printscreen_jsx",
-      "target": "src_printscreen_getcoversize",
-      "confidence_score": 1.0
+      "target": "src_printscreen_getcoversize"
     },
     {
       "relation": "contains",
@@ -2752,9 +2752,9 @@
       "source_file": "frontend/src/PrintScreen.jsx",
       "source_location": "L214",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_printscreen_printpreview",
-      "target": "src_printscreen_normalizeslots",
-      "confidence_score": 1.0
+      "target": "src_printscreen_normalizeslots"
     },
     {
       "relation": "calls",
@@ -2785,9 +2785,9 @@
       "source_file": "frontend/src/PrintScreen.jsx",
       "source_location": "L279",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_printscreen_printpreview",
-      "target": "src_printscreen_scaledpreviewstyle",
-      "confidence_score": 1.0
+      "target": "src_printscreen_scaledpreviewstyle"
     },
     {
       "relation": "calls",
@@ -2796,9 +2796,9 @@
       "source_file": "frontend/src/PrintScreen.jsx",
       "source_location": "L226",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_printscreen_printpreview",
-      "target": "src_printscreen_getcoversize",
-      "confidence_score": 1.0
+      "target": "src_printscreen_getcoversize"
     },
     {
       "relation": "calls",
@@ -5310,9 +5310,9 @@
       "source_file": "backend/print_service.py",
       "source_location": "L101",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_print_service_py",
-      "target": "backend_print_service_cover_size",
-      "confidence_score": 1.0
+      "target": "backend_print_service_cover_size"
     },
     {
       "relation": "contains",
@@ -5479,9 +5479,9 @@
       "source_file": "backend/print_service.py",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "backend_print_service_paste_cover",
-      "target": "backend_print_service_cover_size",
-      "confidence_score": 1.0
+      "target": "backend_print_service_cover_size"
     },
     {
       "relation": "calls",
@@ -6714,5 +6714,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "51aaab1c04f0cef3db34d4022ffc31a0839f0e90"
+  "built_at_commit": "d6e7e4c5a204b7d041b8f5e3ec07e759ce0c6c82"
 }

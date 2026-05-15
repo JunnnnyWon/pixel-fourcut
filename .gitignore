@@ -16,3 +16,6 @@ workspace/
 
 # Logs
 *.log
+
+# Graphify cache
+graphify-out/cache/
