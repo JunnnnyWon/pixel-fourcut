@@ -46,7 +46,7 @@ class SessionApiTests(unittest.TestCase):
         body = self.loop.run_until_complete(run_router.start_session())
 
         self.assertEqual(body["phase"], "capturing")
-        self.assertTrue(body["session_id"].startswith("session-"))
+        self.assertRegex(body["session_id"], r"^\d{8}_\d{2}_\d{2}(?:_\d{2})?$")
 
     def test_finish_capture_and_select_shot(self):
         self.loop.run_until_complete(run_router.start_session())

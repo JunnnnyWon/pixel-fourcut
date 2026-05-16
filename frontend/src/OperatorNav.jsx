@@ -7,7 +7,10 @@ export default function OperatorNav() {
         촬영 관리
       </NavLink>
       <NavLink to="/print" className={({ isActive }) => `operator-nav-link ${isActive ? 'active' : ''}`}>
-        인화 / 지난 팀
+        인화
+      </NavLink>
+      <NavLink to="/history" className={({ isActive }) => `operator-nav-link ${isActive ? 'active' : ''}`}>
+        지난 팀
       </NavLink>
       <NavLink to="/" className={({ isActive }) => `operator-nav-link ${isActive ? 'active' : ''}`}>
         공용 화면

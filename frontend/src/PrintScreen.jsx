@@ -1,18 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import GalleryLightbox from './GalleryLightbox'
 import OperatorNav from './OperatorNav'
+import {
+  applyDragDelta,
+  applyResizeDelta,
+  getCoverSize,
+  getScalePercent,
+  scaleFromPercent,
+} from './printLayoutMath'
 import { useSession } from './useSession'
+import { PHASE_LABEL } from './sessionViewUtils'
 import './App.css'
-
-const PHASE_LABEL = {
-  idle: '대기 중',
-  capturing: '촬영 중',
-  reviewing: '사진 고르기',
-  queued: 'AI 대기',
-  processing: 'AI 만드는 중',
-  result_ready: '인화 대기',
-  completed: '완료',
-  error: '오류',
-}
 
 const DEFAULT_LAYOUT = {
   original: { scale: 1, offset_x: 0, offset_y: 0 },
@@ -84,20 +82,9 @@ function slotStyleFromPixels(slot) {
 
 function scaledPreviewStyle(layout, previewScale, imageSize) {
   return {
-    width: `${imageSize.width * layout.scale}px`,
-    height: `${imageSize.height * layout.scale}px`,
+    width: `${imageSize.width * previewScale * layout.scale}px`,
+    height: `${imageSize.height * previewScale * layout.scale}px`,
     transform: `translate(calc(-50% + ${layout.offset_x * previewScale}px), calc(-50% + ${layout.offset_y * previewScale}px))`,
-  }
-}
-
-function getCoverSize(source, target) {
-  if (!source?.width || !source?.height || !target?.width || !target?.height) {
-    return { width: target.width, height: target.height }
-  }
-  const scale = Math.max(target.width / source.width, target.height / source.height)
-  return {
-    width: source.width * scale,
-    height: source.height * scale,
   }
 }
 
@@ -115,14 +102,14 @@ function LayoutControl({ title, layout, isActive, onSelect, onScaleStep, onCente
           <button className="btn-primary secondary" onClick={onSelect}>
             {isActive ? '선택 중' : '선택'}
           </button>
-          <button className="btn-primary secondary" onClick={() => onScaleStep(-0.05)}>축소</button>
-          <button className="btn-primary secondary" onClick={() => onScaleStep(0.05)}>확대</button>
+          <button className="btn-primary secondary" onClick={() => onScaleStep(-5)}>축소</button>
+          <button className="btn-primary secondary" onClick={() => onScaleStep(5)}>확대</button>
           <button className="btn-primary secondary" onClick={onCenter}>가운데 정렬</button>
           <button className="btn-primary secondary" onClick={onReset}>기본값</button>
         </div>
       </div>
       <div className="layout-metrics">
-        <span>크기 {Math.round(layout.scale * 100)}%</span>
+        <span>확대 {getScalePercent(layout.scale)}%</span>
         <span>X {layout.offset_x}px</span>
         <span>Y {layout.offset_y}px</span>
       </div>
@@ -163,33 +150,40 @@ function PrintPreview({
 
   useEffect(() => {
     if (!dragging && !resizing) return undefined
-    const currentSlots = normalizeSlots(slots)
 
     const handleMove = (event) => {
       if (dragging) {
-        onDragSlot(dragging.slotKey, {
-          offset_x: dragging.originOffsetX + Math.round((event.clientX - dragging.startX) / previewScale),
-          offset_y: dragging.originOffsetY + Math.round((event.clientY - dragging.startY) / previewScale),
-        })
+        onDragSlot(dragging.slotKey, applyDragDelta(
+          {
+            offset_x: dragging.originOffsetX,
+            offset_y: dragging.originOffsetY,
+          },
+          event.clientX - dragging.startX,
+          event.clientY - dragging.startY,
+          previewScale,
+        ))
         return
       }
 
       if (resizing) {
-        const localX = (event.clientX - resizing.slotRect.left - resizing.slotRect.width / 2) / previewScale
-        const localY = (event.clientY - resizing.slotRect.top - resizing.slotRect.height / 2) / previewScale
-        const source = imageDimensions[resizing.slotKey]
-        const slot = currentSlots[resizing.slotKey]
-        const { width, height } = getCoverSize(source, slot)
-        const scaleX = Math.abs(localX - resizing.oppositeX) / width
-        const scaleY = Math.abs(localY - resizing.oppositeY) / height
-        const nextScale = Math.max(0.6, Math.min(1.6, Number(Math.max(scaleX, scaleY).toFixed(2))))
-        const nextOffsetX = Math.round(resizing.oppositeX + resizing.sx * width * nextScale / 2)
-        const nextOffsetY = Math.round(resizing.oppositeY + resizing.sy * height * nextScale / 2)
-        onDragSlot(resizing.slotKey, {
-          scale: nextScale,
-          offset_x: nextOffsetX,
-          offset_y: nextOffsetY,
-        })
+        onDragSlot(resizing.slotKey, applyResizeDelta({
+          origin: {
+            offset_x: resizing.originOffsetX,
+            offset_y: resizing.originOffsetY,
+          },
+          handle: {
+            sx: resizing.sx,
+            sy: resizing.sy,
+          },
+          baseSize: {
+            width: resizing.baseWidth,
+            height: resizing.baseHeight,
+          },
+          startScale: resizing.startScale,
+          deltaX: event.clientX - resizing.startX,
+          deltaY: event.clientY - resizing.startY,
+          previewScale,
+        }))
       }
     }
 
@@ -204,7 +198,7 @@ function PrintPreview({
       window.removeEventListener('pointermove', handleMove)
       window.removeEventListener('pointerup', handleUp)
     }
-  }, [dragging, imageDimensions, onDragSlot, previewScale, resizing, slots])
+  }, [dragging, onDragSlot, previewScale, resizing])
 
   if (!frameUrl) {
     return <div className="history-empty">프레임을 선택하면 미리보기가 나타납니다.</div>
@@ -212,19 +206,9 @@ function PrintPreview({
 
   const resolvedLayout = normalizeLayout(layout)
   const resolvedSlots = normalizeSlots(slots)
-  const previewSlotSize = {
-    original: {
-      width: resolvedSlots.original.width * previewScale,
-      height: resolvedSlots.original.height * previewScale,
-    },
-    ai: {
-      width: resolvedSlots.ai.width * previewScale,
-      height: resolvedSlots.ai.height * previewScale,
-    },
-  }
-  const previewImageSize = {
-    original: getCoverSize(imageDimensions.original, previewSlotSize.original),
-    ai: getCoverSize(imageDimensions.ai, previewSlotSize.ai),
+  const imageBaseSize = {
+    original: getCoverSize(imageDimensions.original, resolvedSlots.original),
+    ai: getCoverSize(imageDimensions.ai, resolvedSlots.ai),
   }
 
   const beginDrag = (slotKey, event) => {
@@ -243,26 +227,26 @@ function PrintPreview({
   const handleWheel = (slotKey, event) => {
     event.preventDefault()
     onSelectSlot(slotKey)
-    onScaleSlot(slotKey, event.deltaY < 0 ? 0.05 : -0.05)
+    onScaleSlot(slotKey, event.deltaY < 0 ? 5 : -5)
   }
 
   const beginResize = (slotKey, handle, event) => {
     event.preventDefault()
     event.stopPropagation()
-    const slotRect = event.currentTarget.closest('.print-preview-slot')?.getBoundingClientRect()
-    if (!slotRect) return
-    const current = resolvedLayout[slotKey]
-    const { width, height } = previewImageSize[slotKey]
-    const halfWidth = width * current.scale / 2
-    const halfHeight = height * current.scale / 2
     onSelectSlot(slotKey)
+    const baseSize = imageBaseSize[slotKey]
+    const currentScale = resolvedLayout[slotKey].scale
     setResizing({
       slotKey,
       sx: handle.sx,
       sy: handle.sy,
-      slotRect,
-      oppositeX: current.offset_x - handle.sx * halfWidth,
-      oppositeY: current.offset_y - handle.sy * halfHeight,
+      startX: event.clientX,
+      startY: event.clientY,
+      originOffsetX: resolvedLayout[slotKey].offset_x,
+      originOffsetY: resolvedLayout[slotKey].offset_y,
+      baseWidth: baseSize.width,
+      baseHeight: baseSize.height,
+      startScale: currentScale,
     })
   }
 
@@ -276,7 +260,7 @@ function PrintPreview({
                 src={originalUrl}
                 alt="원본 미리보기"
                 className="print-preview-photo"
-                style={scaledPreviewStyle(resolvedLayout.original, previewScale, previewImageSize.original)}
+                style={scaledPreviewStyle(resolvedLayout.original, previewScale, imageBaseSize.original)}
                 onLoad={(event) => {
                   const { naturalWidth, naturalHeight } = event.currentTarget
                   setImageDimensions((current) => ({
@@ -295,7 +279,7 @@ function PrintPreview({
           {activeSlot === 'original' && originalUrl ? (
             <div
               className="print-preview-selection"
-              style={scaledPreviewStyle(resolvedLayout.original, previewScale, previewImageSize.original)}
+              style={scaledPreviewStyle(resolvedLayout.original, previewScale, imageBaseSize.original)}
               onPointerDown={(event) => beginDrag('original', event)}
               onWheel={(event) => handleWheel('original', event)}
             >
@@ -318,7 +302,7 @@ function PrintPreview({
                 src={aiUrl}
                 alt="AI 미리보기"
                 className="print-preview-photo"
-                style={scaledPreviewStyle(resolvedLayout.ai, previewScale, previewImageSize.ai)}
+                style={scaledPreviewStyle(resolvedLayout.ai, previewScale, imageBaseSize.ai)}
                 onLoad={(event) => {
                   const { naturalWidth, naturalHeight } = event.currentTarget
                   setImageDimensions((current) => ({
@@ -337,7 +321,7 @@ function PrintPreview({
           {activeSlot === 'ai' && aiUrl ? (
             <div
               className="print-preview-selection"
-              style={scaledPreviewStyle(resolvedLayout.ai, previewScale, previewImageSize.ai)}
+              style={scaledPreviewStyle(resolvedLayout.ai, previewScale, imageBaseSize.ai)}
               onPointerDown={(event) => beginDrag('ai', event)}
               onWheel={(event) => handleWheel('ai', event)}
             >
@@ -365,9 +349,7 @@ export default function PrintScreen() {
     processingSessions,
     completedSessions,
     erroredSessions,
-    allSessions,
     completeSession,
-    rerunSession,
     composePrint,
   } = useSession()
   const [selectedSessionId, setSelectedSessionId] = useState(null)
@@ -380,6 +362,7 @@ export default function PrintScreen() {
   const [selectedPrintChoice, setSelectedPrintChoice] = useState(null)
   const [layoutDrafts, setLayoutDrafts] = useState({})
   const [activeSlot, setActiveSlot] = useState('original')
+  const [lightbox, setLightbox] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -413,9 +396,9 @@ export default function PrintScreen() {
   }, [completedSessions, erroredSessions, printReadySessions, processingSessions])
 
   const selectedSession = useMemo(() => {
-    if (!allSessions.length) return null
-    return allSessions.find((item) => item.session_id === selectedSessionId) || sessionPool[0] || allSessions[0]
-  }, [allSessions, selectedSessionId, sessionPool])
+    if (!sessionPool.length) return null
+    return sessionPool.find((item) => item.session_id === selectedSessionId) || sessionPool[0]
+  }, [selectedSessionId, sessionPool])
 
   const selectedFrameId = useMemo(() => {
     if (!selectedSession) return null
@@ -485,9 +468,10 @@ export default function PrintScreen() {
     })
   }
 
-  const adjustSlotScale = (slotKey, delta) => {
-    const nextScale = Math.max(0.6, Math.min(1.6, activeLayout[slotKey].scale + delta))
-    updateSlotLayout(slotKey, { scale: Number(nextScale.toFixed(2)) })
+  const adjustSlotScale = (slotKey, deltaPercent) => {
+    const currentPercent = getScalePercent(activeLayout[slotKey].scale)
+    const nextPercent = Math.max(0, Math.min(100, currentPercent + deltaPercent))
+    updateSlotLayout(slotKey, { scale: scaleFromPercent(nextPercent) })
   }
 
   const handleCenterSlot = (slotKey) => {
@@ -512,16 +496,6 @@ export default function PrintScreen() {
     }
   }
 
-  const handleRerun = async () => {
-    if (!selectedSession) return
-    setComposeError('')
-    try {
-      await rerunSession(selectedSession.session_id)
-    } catch (error) {
-      setComposeError(error.message || 'AI 재생성 실패')
-    }
-  }
-
   const handleComplete = async () => {
     if (!selectedSession) return
     setComposeError('')
@@ -538,10 +512,29 @@ export default function PrintScreen() {
     setSelectedResultChoice(printOutput.result_id)
   }
 
+  const openGallery = (title, items, index = 0) => {
+    setLightbox({
+      title,
+      items: items.map((item) => ({
+        url: item.url,
+        label: item.source_filename || item.filename || item.shot_id || item.result_id || item.print_id,
+      })),
+      index,
+    })
+  }
+
+  const shiftGallery = (delta) => {
+    setLightbox((current) => {
+      if (!current) return current
+      const nextIndex = (current.index + delta + current.items.length) % current.items.length
+      return { ...current, index: nextIndex }
+    })
+  }
+
   return (
     <div className="admin">
       <div className="admin-topbar">
-        <span className="brand">픽셀네컷 인화</span>
+        <span className="brand">픽셀네컷 인화 작업실</span>
       </div>
       <OperatorNav />
 
@@ -599,7 +592,9 @@ export default function PrintScreen() {
                 <h3>선택된 원본 컷</h3>
               </div>
               {selectedSession.selected_shot ? (
-                <img src={selectedSession.selected_shot.url} alt={selectedSession.selected_shot.filename} className="history-detail-image print-primary-image" />
+                <button className="image-button" onClick={() => openGallery('원본 사진', selectedSession.shots || [], (selectedSession.shots || []).findIndex((item) => item.shot_id === selectedSession.selected_shot.shot_id))}>
+                  <img src={selectedSession.selected_shot.url} alt={selectedSession.selected_shot.filename} className="history-detail-image print-primary-image" />
+                </button>
               ) : (
                 <div className="history-empty">선택된 원본 컷이 없습니다.</div>
               )}
@@ -608,15 +603,14 @@ export default function PrintScreen() {
                 <h3>선택된 AI 결과</h3>
               </div>
               {selectedResult ? (
-                <img src={selectedResult.url} alt={selectedResult.filename} className="history-detail-image print-primary-image" />
+                <button className="image-button" onClick={() => openGallery('AI 결과', selectedSession.generated_results || [], (selectedSession.generated_results || []).findIndex((item) => item.result_id === selectedResult.result_id))}>
+                  <img src={selectedResult.url} alt={selectedResult.filename} className="history-detail-image print-primary-image" />
+                </button>
               ) : (
                 <div className="history-empty">AI 결과를 먼저 선택하세요.</div>
               )}
 
               <div className="action-row">
-                <button className="btn-primary secondary" onClick={handleRerun}>
-                  AI 다시 만들기
-                </button>
                 <button
                   className="btn-primary"
                   disabled={!['result_ready', 'completed'].includes(selectedSession.phase)}
@@ -631,12 +625,20 @@ export default function PrintScreen() {
               <div className="section-header compact">
                 <h3>AI 결과 선택</h3>
               </div>
+              {(selectedSession.generated_results || []).length > 0 ? (
+                <div className="action-row" style={{ marginBottom: 10 }}>
+                  <button className="btn-primary secondary" onClick={() => openGallery('AI 결과', selectedSession.generated_results || [], 0)}>
+                    AI 결과 전체화면 보기
+                  </button>
+                </div>
+              ) : null}
               <div className="result-history-grid selectable-grid">
-                {(selectedSession.generated_results || []).map((result) => (
+                {(selectedSession.generated_results || []).map((result, index) => (
                   <button
                     key={`${selectedSession.session_id}-${result.result_id}`}
                     className={`result-history-card result-pick ${selectedResultId === result.result_id ? 'selected' : ''}`}
-                      onClick={() => setSelectedResultChoice(result.result_id)}
+                    onClick={() => setSelectedResultChoice(result.result_id)}
+                    onDoubleClick={() => openGallery('AI 결과', selectedSession.generated_results || [], index)}
                   >
                     <img src={result.url} alt={result.filename} className="history-detail-image result-thumb" />
                     <div className="history-row-sub">{result.filename}</div>
@@ -723,7 +725,9 @@ export default function PrintScreen() {
               </div>
               {selectedPrintOutput ? (
                 <>
-                  <img src={selectedPrintOutput.url} alt={selectedPrintOutput.filename} className="history-detail-image print-final-preview" />
+                  <button className="image-button" onClick={() => openGallery('인화본', selectedSession.print_outputs || [], (selectedSession.print_outputs || []).findIndex((item) => item.print_id === selectedPrintOutput.print_id))}>
+                    <img src={selectedPrintOutput.url} alt={selectedPrintOutput.filename} className="history-detail-image print-final-preview" />
+                  </button>
                   <div className="history-row-sub">
                     {selectedPrintOutput.filename} · 프레임 {selectedPrintOutput.frame_id} · 원본 scale {Math.round((selectedPrintOutput.layout?.original?.scale ?? 1) * 100)}%
                   </div>
@@ -735,15 +739,23 @@ export default function PrintScreen() {
               <div className="section-header compact">
                 <h3>저장된 인화본</h3>
               </div>
+              {(selectedSession.print_outputs || []).length > 0 ? (
+                <div className="action-row" style={{ marginBottom: 10 }}>
+                  <button className="btn-primary secondary" onClick={() => openGallery('인화본', selectedSession.print_outputs || [], 0)}>
+                    인화본 전체화면 보기
+                  </button>
+                </div>
+              ) : null}
               <div className="print-output-grid">
                 {(selectedSession.print_outputs || []).length === 0 ? (
                   <div className="history-empty">아직 저장된 인화본이 없습니다.</div>
                 ) : (
-                  selectedSession.print_outputs.map((printOutput) => (
+                  selectedSession.print_outputs.map((printOutput, index) => (
                     <button
                       key={`${selectedSession.session_id}-${printOutput.print_id}`}
                       className={`result-history-card result-pick ${selectedPrintId === printOutput.print_id ? 'selected' : ''}`}
                       onClick={() => handleSelectPrintOutput(printOutput)}
+                      onDoubleClick={() => openGallery('인화본', selectedSession.print_outputs || [], index)}
                     >
                       <img src={printOutput.url} alt={printOutput.filename} className="history-detail-image result-thumb" />
                       <div className="history-row-sub">{printOutput.filename}</div>
@@ -756,28 +768,17 @@ export default function PrintScreen() {
         )}
       </section>
 
-      <section>
-        <div className="section-header">
-          <h3>지난 팀 목록</h3>
-        </div>
-        <div className="history-list">
-          {allSessions.map((session) => (
-            <button
-              key={session.session_id}
-              className={`history-row ${selectedSession?.session_id === session.session_id ? 'selected' : ''}`}
-              onClick={() => setSelectedSessionId(session.session_id)}
-            >
-              <div className="history-row-main">
-                <strong>{session.session_id}</strong>
-                <span>{PHASE_LABEL[session.phase] || session.phase}</span>
-              </div>
-              <div className="history-row-sub">
-                사진 {session.shots?.length || 0}장 · AI 결과 {(session.generated_results || []).length}개 · 인화본 {(session.print_outputs || []).length}개
-              </div>
-            </button>
-          ))}
-        </div>
-      </section>
+      {lightbox ? (
+        <GalleryLightbox
+          items={lightbox.items}
+          index={lightbox.index}
+          title={lightbox.title}
+          onClose={() => setLightbox(null)}
+          onPrev={() => shiftGallery(-1)}
+          onNext={() => shiftGallery(1)}
+          onSelect={(index) => setLightbox((current) => current ? { ...current, index } : current)}
+        />
+      ) : null}
     </div>
   )
 }

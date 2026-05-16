@@ -181,9 +181,9 @@ class SessionState:
         if self.active_capture_session_id:
             raise RuntimeError("capture_session_already_active")
         if not session_id:
-            session_id = f"session-{datetime.now().strftime('%Y%m%d-%H%M%S-%f')}"
+            session_id = self._generate_session_id()
         while session_id in self._sessions:
-            session_id = f"{session_id}-next"
+            session_id = self._next_session_id(session_id)
 
         session = self._new_session(session_id)
         self._sessions[session_id] = session
@@ -624,6 +624,17 @@ class SessionState:
     @staticmethod
     def _now() -> str:
         return datetime.now().isoformat(timespec="seconds")
+
+    @staticmethod
+    def _generate_session_id() -> str:
+        return datetime.now().strftime("%Y%m%d_%H_%M")
+
+    @staticmethod
+    def _next_session_id(session_id: str) -> str:
+        prefix, separator, suffix = session_id.rpartition("_")
+        if separator and suffix.isdigit() and len(suffix) == 2 and prefix.count("_") >= 2:
+            return f"{prefix}_{int(suffix) + 1:02d}"
+        return f"{session_id}_01"
 
 
 session = SessionState()

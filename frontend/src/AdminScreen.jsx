@@ -1,23 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import OperatorNav from './OperatorNav'
 import { useSession } from './useSession'
+import { getAdminHeroState } from './adminHeroState'
+import GalleryLightbox from './GalleryLightbox'
+import { PHASE_LABEL, sessionHeroImage, sessionSummaryText } from './sessionViewUtils'
 import './App.css'
-
-const PHASE_LABEL = {
-  idle: '대기 중',
-  capturing: '촬영 중',
-  reviewing: '사진 고르기',
-  queued: 'AI 대기',
-  processing: 'AI 만드는 중',
-  result_ready: '인화 대기',
-  completed: '완료',
-  error: '오류',
-}
-
-function sessionHeroImage(session) {
-  if (!session) return null
-  return session.result_url || session.selected_shot?.url || session.preview_shot?.url || session.shots?.[0]?.url || null
-}
 
 function QueueCard({ session, title }) {
   const heroImage = sessionHeroImage(session)
@@ -50,7 +37,9 @@ export default function AdminScreen() {
     wsConnected,
     processingSessions,
     erroredSessions,
+    allSessions,
     selectShot,
+    rerunSession,
   } = useSession()
 
   const [presets, setPresets] = useState([])
@@ -63,6 +52,8 @@ export default function AdminScreen() {
   const [uploadPreview, setUploadPreview] = useState(null)
   const [msg, setMsg] = useState({ text: '', type: 'ok' })
   const [presetsOpen, setPresetsOpen] = useState(false)
+  const [selectedManageSessionId, setSelectedManageSessionId] = useState(null)
+  const [lightbox, setLightbox] = useState(null)
   const fileInputRef = useRef(null)
   const flashTimerRef = useRef(null)
 
@@ -239,46 +230,52 @@ export default function AdminScreen() {
     }
   }
 
-  let heroActionKind = 'none'
-  let heroTitle = '지금은 자동 진행 중이에요'
-  let heroDescription = '현재 팀은 대기열 또는 처리 단계에 있습니다. 다음 팀을 받을 준비를 확인하세요.'
-  let heroButtonLabel = '대기 중'
-  let heroDisabled = true
-
-  if (!currentSession) {
-    heroActionKind = 'start'
-    heroTitle = '새 팀을 받을 준비가 됐어요'
-    heroDescription = '버튼 하나만 누르면 다음 팀 촬영을 바로 시작할 수 있어요.'
-    heroButtonLabel = '새 팀 시작'
-    heroDisabled = false
-  } else if (currentSession.phase === 'capturing') {
-    heroActionKind = 'finish'
-    heroTitle = '촬영이 끝났다면 다음으로 넘어가세요'
-    heroDescription = '사진을 다 찍었으면 큰 버튼을 눌러 사진 고르기 단계로 이동합니다.'
-    heroButtonLabel = '촬영 끝내기'
-    heroDisabled = false
-  } else if (currentSession.phase === 'reviewing' && !selectedShot) {
-    heroActionKind = 'select'
-    heroTitle = '마음에 드는 사진을 하나 누르세요'
-    heroDescription = '아래 사진을 한 장 누르면 바로 선택됩니다.'
-    heroButtonLabel = '먼저 사진 선택'
-    heroDisabled = true
-  } else if (currentSession.phase === 'reviewing' && selectedShot) {
-    heroActionKind = 'run'
-    heroTitle = '이 사진으로 AI 그림을 만듭니다'
-    heroDescription = '선택한 사진이 맞으면 버튼을 눌러 AI 대기열에 넣으세요.'
-    heroButtonLabel = 'AI 그림 만들기'
-    heroDisabled = !activePreset || !comfyOnline
-  }
+  const heroState = getAdminHeroState({
+    currentSession,
+    selectedShot,
+    activePreset,
+    comfyOnline,
+  })
 
   const handleHeroAction = async () => {
-    if (heroActionKind === 'start') return handleStartSession()
-    if (heroActionKind === 'finish') return handleFinishCapture()
-    if (heroActionKind === 'run') return handleRunSelected()
+    if (heroState.actionKind === 'start') return handleStartSession()
+    if (heroState.actionKind === 'finish') return handleFinishCapture()
+    if (heroState.actionKind === 'run' && !heroState.disabled) return handleRunSelected()
+  }
+
+  const manageableSessions = allSessions.filter((item) => (item.generated_results || []).length > 0)
+  const selectedManageSession = manageableSessions.find((item) => item.session_id === selectedManageSessionId) || manageableSessions[0] || null
+
+  const openGallery = (title, items, index = 0) => {
+    setLightbox({
+      title,
+      items: items.map((item) => ({
+        url: item.url,
+        label: item.source_filename || item.filename || item.shot_id || item.result_id,
+      })),
+      index,
+    })
+  }
+
+  const shiftGallery = (delta) => {
+    setLightbox((current) => {
+      if (!current) return current
+      const nextIndex = (current.index + delta + current.items.length) % current.items.length
+      return { ...current, index: nextIndex }
+    })
+  }
+
+  const handleRerunSession = async (sessionId) => {
+    try {
+      await rerunSession(sessionId)
+      flash('AI 재생성을 시작했습니다')
+    } catch (err) {
+      flash(err.message, 'err')
+    }
   }
 
   return (
-    <div className="admin">
+    <div className="admin admin-wide">
       <div className="admin-topbar">
         <span className="brand">픽셀네컷 관리자</span>
         <div className="admin-status-row">
@@ -298,16 +295,16 @@ export default function AdminScreen() {
       <section className="hero-action">
         <div className="hero-copy">
           <span className="hero-kicker">다음으로 할 일</span>
-          <h2>{heroTitle}</h2>
-          <p>{heroDescription}</p>
+          <h2>{heroState.title}</h2>
+          <p>{heroState.description}</p>
         </div>
         <div className="hero-actions">
           <button
             className="hero-button"
-            disabled={heroDisabled}
+            disabled={heroState.disabled}
             onClick={handleHeroAction}
           >
-            {heroButtonLabel}
+            {heroState.buttonLabel}
           </button>
           <button className="btn-new-guest" onClick={handleReset}>전체 초기화</button>
         </div>
@@ -346,13 +343,22 @@ export default function AdminScreen() {
             <div className="capture-workspace">
               <div className="capture-preview-panel">
                 {sessionHeroImage(currentSession) ? (
-                  <img src={sessionHeroImage(currentSession)} alt={currentSession.session_id} className="capture-preview-image" />
+                  <button className="image-button" onClick={() => openGallery('현재 대표 이미지', [currentSession.selected_shot || currentSession.preview_shot || currentSession.shots?.[0]].filter(Boolean), 0)}>
+                    <img src={sessionHeroImage(currentSession)} alt={currentSession.session_id} className="capture-preview-image" />
+                  </button>
                 ) : (
                   <div className="history-empty">촬영된 사진이 아직 없습니다.</div>
                 )}
                 {currentSession.phase === 'reviewing' && selectedShot && (
                   <div className="selected-label">이 사진으로 AI를 만들어요</div>
                 )}
+                {shots.length > 0 ? (
+                  <div className="action-row" style={{ marginTop: 10 }}>
+                    <button className="btn-primary secondary" onClick={() => openGallery('촬영 사진', shots, 0)}>
+                      촬영 사진 전체화면 보기
+                    </button>
+                  </div>
+                ) : null}
               </div>
 
               <div className="capture-step-panel">
@@ -367,7 +373,7 @@ export default function AdminScreen() {
                   <span className="step-number">2</span>
                   <div>
                     <strong>마음에 드는 사진을 누르기</strong>
-                    <p>사진을 한 장 누르면 바로 선택됩니다.</p>
+                    <p>사진을 한 장 누르면 바로 선택되고, 전체화면으로도 넘겨가며 볼 수 있습니다.</p>
                   </div>
                 </div>
                 <div className="step-card">
@@ -413,6 +419,18 @@ export default function AdminScreen() {
         )}
       </section>
 
+      {lightbox ? (
+        <GalleryLightbox
+          items={lightbox.items}
+          index={lightbox.index}
+          title={lightbox.title}
+          onClose={() => setLightbox(null)}
+          onPrev={() => shiftGallery(-1)}
+          onNext={() => shiftGallery(1)}
+          onSelect={(index) => setLightbox((current) => current ? { ...current, index } : current)}
+        />
+      ) : null}
+
       <section>
         <div className="section-header">
           <h3>기다리는 팀</h3>
@@ -434,11 +452,85 @@ export default function AdminScreen() {
 
       <section>
         <div className="section-header">
-          <h3>인화는 인화 페이지에서 진행</h3>
+          <h3>AI 결과 관리</h3>
         </div>
-        <div className="friendly-empty">
-          결과 확인, AI 재생성, 원본/AI 이미지 히스토리는 상단 `인화 / 지난 팀` 페이지에서 진행합니다.
-        </div>
+        {manageableSessions.length === 0 ? (
+          <div className="friendly-empty">아직 AI 결과가 생성된 팀이 없습니다.</div>
+        ) : (
+          <div className="history-layout">
+            <div className="history-list">
+              {manageableSessions.map((session) => (
+                <button
+                  key={session.session_id}
+                  className={`history-row ${selectedManageSession?.session_id === session.session_id ? 'selected' : ''}`}
+                  onClick={() => setSelectedManageSessionId(session.session_id)}
+                >
+                  <div className="history-row-main">
+                    <strong>{session.session_id}</strong>
+                    <span>{PHASE_LABEL[session.phase] || session.phase}</span>
+                  </div>
+                  <div className="history-row-sub">{sessionSummaryText(session)}</div>
+                </button>
+              ))}
+            </div>
+
+            <div className="history-detail history-detail-wide">
+              {selectedManageSession ? (
+                <>
+                  <div className="history-detail-head">
+                    <div>
+                      <div className="summary-label">재생성 대상 세션</div>
+                      <strong>{selectedManageSession.session_id}</strong>
+                    </div>
+                    <div className="action-row">
+                      <span className={`phase-badge phase-${selectedManageSession.phase}`}>{PHASE_LABEL[selectedManageSession.phase] || selectedManageSession.phase}</span>
+                      <button className="btn-primary" onClick={() => handleRerunSession(selectedManageSession.session_id)}>
+                        AI 다시 만들기
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="desktop-gallery-grid">
+                    <div>
+                      <div className="section-header compact">
+                        <h3>촬영 사진</h3>
+                      </div>
+                      <div className="shot-picker gallery-grid">
+                        {(selectedManageSession.shots || []).map((shot, index) => (
+                          <button key={shot.shot_id} className="shot-tile" onClick={() => openGallery('촬영 사진', selectedManageSession.shots, index)}>
+                            <img src={shot.url} alt={shot.filename} />
+                            <span>{shot.source_filename || shot.filename}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="section-header compact">
+                        <h3>AI 결과</h3>
+                      </div>
+                      {(selectedManageSession.generated_results || []).length > 0 ? (
+                        <div className="action-row" style={{ marginBottom: 10 }}>
+                          <button className="btn-primary secondary" onClick={() => openGallery('AI 결과', selectedManageSession.generated_results, 0)}>
+                            AI 결과 전체화면 보기
+                          </button>
+                        </div>
+                      ) : null}
+                      <div className="result-history-grid selectable-grid">
+                        {(selectedManageSession.generated_results || []).map((result, index) => (
+                          <button key={result.result_id} className="result-history-card result-pick" onClick={() => openGallery('AI 결과', selectedManageSession.generated_results, index)}>
+                            <img src={result.url} alt={result.filename} className="history-detail-image result-thumb" />
+                            <div className="history-row-sub">{result.source_filename || result.filename}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+        )}
       </section>
 
       {erroredSessions.length > 0 && (

@@ -1,6 +1,7 @@
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from unittest.mock import patch
 
 from PIL import Image
 
@@ -19,6 +20,24 @@ class SessionStateTests(unittest.TestCase):
             self.assertEqual(snapshot["session_id"], "session-test-001")
             self.assertEqual(snapshot["shots"], [])
             self.assertTrue((sessions_root / "session-test-001" / "shots").exists())
+
+    def test_start_session_generates_datetime_session_id_with_suffix_on_collision(self):
+        with TemporaryDirectory() as tmpdir:
+            sessions_root = Path(tmpdir) / "sessions"
+            state = SessionState(sessions_root)
+
+            with patch("backend.session.datetime") as mocked_datetime:
+                fixed_now = unittest.mock.Mock()
+                fixed_now.strftime.return_value = "20260515_20_30"
+                fixed_now.isoformat.return_value = "2026-05-15T20:30:00"
+                mocked_datetime.now.return_value = fixed_now
+
+                first = state.start_session()
+                state.active_capture_session_id = None
+                second = state.start_session()
+
+            self.assertEqual(first["session_id"], "20260515_20_30")
+            self.assertEqual(second["session_id"], "20260515_20_30_01")
 
     def test_add_shot_copies_file_into_active_session(self):
         with TemporaryDirectory() as tmpdir:
