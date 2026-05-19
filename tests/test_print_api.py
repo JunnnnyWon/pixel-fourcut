@@ -87,6 +87,128 @@ class PrintApiTests(unittest.TestCase):
         self.assertEqual(detail["print_outputs"][0]["layout"]["ai"]["scale"], 1.1)
         self.assertTrue(Path(detail["print_outputs"][0]["local_path"]).exists())
 
+    def test_list_printers_returns_backend_printer_catalog(self):
+        with patch("backend.routers.printing.get_printers", return_value=[{"name": "SELPHY-LEFT"}]):
+            payload = printing_router.list_printers()
+
+        self.assertEqual(payload["printers"][0]["name"], "SELPHY-LEFT")
+
+    def test_printer_diagnostics_returns_service_snapshot(self):
+        with patch("backend.routers.printing.get_printer_diagnostics", return_value={"visible_printers": [], "hidden_printers": []}):
+            payload = printing_router.printer_diagnostics()
+
+        self.assertIn("visible_printers", payload)
+
+    def test_printer_capabilities_returns_service_snapshot(self):
+        with patch("backend.routers.printing.get_printer_capabilities", return_value={"preferred_paper": {"name": "Postcard"}}):
+            payload = printing_router.printer_capabilities("SELPHY-LEFT")
+
+        self.assertEqual(payload["preferred_paper"]["name"], "Postcard")
+
+    def test_send_to_printer_records_printer_job(self):
+        response = self.loop.run_until_complete(
+            printing_router.compose_print(
+                printing_router.ComposePrintRequest(
+                    session_id="session-a",
+                    frame_id="frame-test",
+                    result_id="result-001",
+                )
+            )
+        )
+
+        with patch("backend.routers.printing.send_image_to_printer", return_value={"status": "sent", "windows_job_id": 41, "job_status": "Spooling", "paper_name": "Postcard", "paper_width": 394, "paper_height": 583}) as send_image:
+            payload = self.loop.run_until_complete(
+                printing_router.send_to_printer(
+                    printing_router.SendPrintRequest(
+                        session_id="session-a",
+                        print_id=response["print_output"]["print_id"],
+                        printer_name="SELPHY-LEFT",
+                        copies=2,
+                    )
+                )
+            )
+
+        detail = session.get_session("session-a")
+
+        send_image.assert_called_once()
+        self.assertEqual(payload["printer_job"]["printer_name"], "SELPHY-LEFT")
+        self.assertEqual(payload["printer_job"]["windows_job_id"], 41)
+        self.assertEqual(detail["latest_printer_job"]["copies"], 2)
+        self.assertEqual(detail["print_outputs"][0]["windows_job_id"], 41)
+        self.assertEqual(detail["print_outputs"][0]["job_status"], "Spooling")
+        self.assertEqual(detail["print_outputs"][0]["paper_name"], "Postcard")
+
+    def test_refresh_printer_jobs_updates_live_job_status(self):
+        response = self.loop.run_until_complete(
+            printing_router.compose_print(
+                printing_router.ComposePrintRequest(
+                    session_id="session-a",
+                    frame_id="frame-test",
+                    result_id="result-001",
+                )
+            )
+        )
+        session.record_printer_job(
+            "session-a",
+            print_id=response["print_output"]["print_id"],
+            printer_name="SELPHY-LEFT",
+            copies=1,
+            windows_job_id=41,
+        )
+
+        with patch("backend.routers.printing.get_print_job", return_value={
+            "windows_job_id": 41,
+            "printer_name": "SELPHY-LEFT",
+            "document_name": "print-001.png",
+            "job_status": "Printing",
+            "submitted_time": "2026-05-18T10:00:00",
+        }):
+            payload = self.loop.run_until_complete(
+                printing_router.refresh_printer_jobs("session-a")
+            )
+
+        detail = session.get_session("session-a")
+
+        self.assertEqual(payload["printer_jobs"][0]["job_status"], "Printing")
+        self.assertEqual(detail["print_outputs"][0]["job_status"], "Printing")
+
+    def test_refresh_printer_jobs_marks_missing_jobs(self):
+        response = self.loop.run_until_complete(
+            printing_router.compose_print(
+                printing_router.ComposePrintRequest(
+                    session_id="session-a",
+                    frame_id="frame-test",
+                    result_id="result-001",
+                )
+            )
+        )
+        session.record_printer_job(
+            "session-a",
+            print_id=response["print_output"]["print_id"],
+            printer_name="SELPHY-LEFT",
+            copies=1,
+            windows_job_id=41,
+        )
+
+        with patch("backend.routers.printing.get_print_job", return_value=None):
+            payload = self.loop.run_until_complete(
+                printing_router.refresh_printer_jobs("session-a")
+            )
+
+        detail = session.get_session("session-a")
+
+        self.assertEqual(payload["printer_jobs"][0]["status"], "completed_or_missing")
+        self.assertEqual(detail["print_outputs"][0]["status"], "completed_or_missing")
+
+    def test_send_printer_test_page_dispatches_without_session(self):
+        with patch("backend.routers.printing.send_image_to_printer", return_value={"status": "sent", "printer_name": "SELPHY-LEFT"}) as send_image:
+            payload = printing_router.send_printer_test_page(
+                printing_router.TestPrintRequest(printer_name="SELPHY-LEFT", copies=1)
+            )
+
+        send_image.assert_called_once()
+        self.assertEqual(payload["dispatch"]["printer_name"], "SELPHY-LEFT")
+
 
 if __name__ == "__main__":
     unittest.main()

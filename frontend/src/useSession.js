@@ -105,11 +105,11 @@ export function useSession() {
     }
   }, [])
 
-  const completeSession = useCallback(async (sessionId) => {
+  const completeSession = useCallback(async (sessionId, printId = null) => {
     const response = await fetch('/api/session/complete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ session_id: sessionId }),
+      body: JSON.stringify({ session_id: sessionId, print_id: printId }),
     })
     if (!response.ok) {
       const data = await response.json().catch(() => ({}))

@@ -222,6 +222,34 @@ class SessionStateTests(unittest.TestCase):
             self.assertEqual(detail["generated_results"][0]["source_filename"], "result-a.png")
             self.assertEqual(detail["generated_results"][1]["source_filename"], "result-b.png")
 
+    def test_cache_result_file_persists_source_shot_metadata(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            sessions_root = root / "sessions"
+            source = root / "input.jpg"
+            source.write_bytes(b"fake-image")
+
+            state = SessionState(sessions_root)
+            state.start_session(session_id="session-a")
+            shot = state.add_shot_from_file(source, source_name="input.jpg", source_type="watcher")
+            state.finish_capture()
+            state.select_shot(shot["shot_id"])
+            state.mark_queued(prompt_id="prompt-a")
+            state.start_processing_session("session-a")
+            state.cache_result_file(
+                "session-a",
+                "result-a.png",
+                b"one",
+                "image/png",
+                source_shot_id=shot["shot_id"],
+            )
+
+            detail = state.get_session("session-a")
+
+            self.assertEqual(detail["selected_generated_result_id"], "result-001")
+            self.assertEqual(detail["generated_results"][0]["source_shot_id"], shot["shot_id"])
+            self.assertEqual(detail["generated_results"][0]["source_shot_filename"], "input.jpg")
+
     def test_print_outputs_and_frame_selection_persist(self):
         with TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -264,6 +292,56 @@ class SessionStateTests(unittest.TestCase):
             self.assertEqual(len(detail["print_outputs"]), 1)
             self.assertEqual(detail["print_outputs"][0]["layout"]["ai"]["offset_y"], 14)
             self.assertTrue(Path(detail["print_outputs"][0]["local_path"]).exists())
+
+    def test_record_printer_job_persists_print_dispatch_history(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            sessions_root = root / "sessions"
+            source = root / "input.jpg"
+            source.write_bytes(b"fake-image")
+
+            state = SessionState(sessions_root)
+            state.start_session(session_id="session-a")
+            shot = state.add_shot_from_file(source, source_name="input.jpg", source_type="watcher")
+            state.finish_capture()
+            state.select_shot(shot["shot_id"])
+            state.mark_queued(prompt_id="prompt-a")
+            state.start_processing_session("session-a")
+            state.cache_result_file("session-a", "result-a.png", b"result-bytes", "image/png")
+            state.mark_result_ready("session-a", result_filename="result-a.png")
+
+            composite = Image.new("RGBA", (1200, 1800), (255, 255, 255, 255))
+            composite_path = root / "composite.png"
+            composite.save(composite_path)
+            print_output = state.cache_print_file(
+                "session-a",
+                frame_id="frame-01-signature-white",
+                result_id="result-001",
+                content=composite_path.read_bytes(),
+                media_type="image/png",
+            )
+
+            printer_job = state.record_printer_job(
+                "session-a",
+                print_id=print_output["print_id"],
+                printer_name="SELPHY-LEFT",
+                copies=2,
+                windows_job_id=41,
+                job_status="Spooling",
+                paper_name="Postcard",
+                paper_width=394,
+                paper_height=583,
+            )
+            detail = state.get_session("session-a")
+
+            self.assertEqual(printer_job["printer_name"], "SELPHY-LEFT")
+            self.assertEqual(printer_job["copies"], 2)
+            self.assertEqual(printer_job["windows_job_id"], 41)
+            self.assertEqual(detail["latest_printer_job"]["printer_name"], "SELPHY-LEFT")
+            self.assertEqual(detail["print_outputs"][0]["last_printer_name"], "SELPHY-LEFT")
+            self.assertEqual(detail["print_outputs"][0]["windows_job_id"], 41)
+            self.assertEqual(detail["print_outputs"][0]["job_status"], "Spooling")
+            self.assertEqual(detail["print_outputs"][0]["paper_name"], "Postcard")
 
 
 if __name__ == "__main__":

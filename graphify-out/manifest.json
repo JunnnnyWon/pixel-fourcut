@@ -7,53 +7,97 @@
     "mtime": 1778474082.911139,
     "hash": "3aa4b57d7f08181d86bde52a4dcb7f22"
   },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/adminHeroState.js": {
+    "mtime": 1778847027.9146478,
+    "hash": "f46bdcd2eb87ed84dd9dd977c046cb9f"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/printLayoutMath.test.js": {
+    "mtime": 1778851222.8011494,
+    "hash": "9ca8cd63b2c29dfee32e76d9fda6e68f"
+  },
   "/Users/junnnny/Desktop/pixel_AI/frontend/src/useSession.js": {
-    "mtime": 1778732224.4669282,
-    "hash": "d2770c85d2d271fe134801b73ed4692f"
+    "mtime": 1779085946.1492913,
+    "hash": "f8f2eb5551fc200b653914c5b57b7f5c"
   },
   "/Users/junnnny/Desktop/pixel_AI/frontend/src/AdminScreen.jsx": {
-    "mtime": 1778667275.1221714,
-    "hash": "d0f5c863dac3d3a3a5c0fe91ee4ebbba"
+    "mtime": 1779025576.461435,
+    "hash": "e1dba16069c85759d73bf40abff8c5fa"
   },
-  "/Users/junnnny/Desktop/pixel_AI/frontend/src/UserScreen.jsx": {
-    "mtime": 1778654442.4626238,
-    "hash": "876b2ea930445f6ae38876a42ae2d1ae"
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/sessionViewUtils.js": {
+    "mtime": 1778848799.528225,
+    "hash": "65335312793b50b46dde27d4e8b564c7"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/adminHeroState.test.js": {
+    "mtime": 1778847027.915008,
+    "hash": "2c3c59d53852ebb669a09572ece133e5"
   },
   "/Users/junnnny/Desktop/pixel_AI/frontend/src/OperatorNav.jsx": {
-    "mtime": 1778667043.5386543,
-    "hash": "406b16dcb09c36e812d591daac4245a1"
+    "mtime": 1779025532.1300733,
+    "hash": "77be215d7be0bec94fb772b697e8183b"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/printLayoutMath.js": {
+    "mtime": 1778851222.8008132,
+    "hash": "95f3232b6207722d728211824d2d3b2e"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/printQueueUtils.js": {
+    "mtime": 1779025497.1332688,
+    "hash": "5fb525ed2c84f7e23d64360972c1d16c"
   },
   "/Users/junnnny/Desktop/pixel_AI/frontend/src/main.jsx": {
     "mtime": 1778588275.811914,
     "hash": "e925e09aa9a973414c6809ff9f4cae1c"
   },
   "/Users/junnnny/Desktop/pixel_AI/frontend/src/App.jsx": {
-    "mtime": 1778667097.361497,
-    "hash": "2aeaa13a309d40d194088f7da83248d0"
+    "mtime": 1779025532.1328611,
+    "hash": "8447b1a107e3cf71b6464b660b632a5e"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/GalleryLightbox.jsx": {
+    "mtime": 1779025532.130658,
+    "hash": "6b9c28043d474cda151ab15d62c8682a"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/HistoryScreen.jsx": {
+    "mtime": 1779089469.8808515,
+    "hash": "eb21acbc6f61077dc8fb9bf5cd71308d"
   },
   "/Users/junnnny/Desktop/pixel_AI/frontend/src/PrintScreen.jsx": {
-    "mtime": 1778765295.2393951,
-    "hash": "4a4c1075e7b326b31f759835599f6598"
+    "mtime": 1779169588.2606103,
+    "hash": "2b1129b4870280293aa3f454f15e1a0d"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/frontend/src/printQueueUtils.test.js": {
+    "mtime": 1779025497.1343908,
+    "hash": "e48774cf1d2a2746c14e8f30b8dbea70"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/setup/download_models.py": {
+    "mtime": 1779013423.5414546,
+    "hash": "42d2c9eb6405cedcc0623354eefc3ea6"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/setup/__init__.py": {
+    "mtime": 1779013423.5413015,
+    "hash": "ffa075ccbe341d7f87990caa1ccbf79b"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_comfy_client.py": {
     "mtime": 1778673914.1201088,
     "hash": "b56df0ab75d2bab0ee1cb4b11ecaaa90"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_session_state.py": {
-    "mtime": 1778731884.6259203,
-    "hash": "2f2902cbdd0a580298ab49c669fba842"
+    "mtime": 1779090462.6839912,
+    "hash": "af375d119551a65c093711e74e7b785f"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/tests/test_bootstrap_models.py": {
+    "mtime": 1779013423.539538,
+    "hash": "19eca36b1aa27b080c18b7166a60b7e0"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_runner_enqueue.py": {
-    "mtime": 1778603644.8130546,
-    "hash": "071ea0e4d224ffe9fbb692d24901caf4"
+    "mtime": 1779025420.7486446,
+    "hash": "02ab9b1deb21516ddbe51709b732974a"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_session_api.py": {
-    "mtime": 1778667275.1214304,
-    "hash": "5519517024cf37df0c564e1d9db896cb"
+    "mtime": 1779086162.9331858,
+    "hash": "1f0c6458ba879c60460ded6516ec289b"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_print_api.py": {
-    "mtime": 1778731864.00178,
-    "hash": "76130611af2ab6af4781b2186ef4e9ca"
+    "mtime": 1779090462.68377,
+    "hash": "dde5f17fd3b9adfd4b57d57546c62d68"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_result_router.py": {
     "mtime": 1778651609.2635927,
@@ -64,28 +108,36 @@
     "hash": "ac3f97350ab95b5f7c5e86943db0dde3"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_runner_worker.py": {
-    "mtime": 1778651592.4247715,
-    "hash": "bcfffd9e7e29b97dbae44844c07201e7"
+    "mtime": 1779027339.7046878,
+    "hash": "152820a677ef4ca8ab6ac50cf14492ec"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/tests/test_printer_service.py": {
+    "mtime": 1779090462.6834166,
+    "hash": "a90844f6f855810a34eaf5b076238dcb"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_print_service.py": {
     "mtime": 1778736150.6201794,
     "hash": "a840014f1e0be9bd0d4dd23f6a6d49d4"
   },
   "/Users/junnnny/Desktop/pixel_AI/tests/test_config_headers.py": {
-    "mtime": 1778651291.064024,
-    "hash": "cf32e463210a61d3511a4a6aa121f3e6"
+    "mtime": 1779023722.4002507,
+    "hash": "119836e39cc5b321d001b68117c41af0"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/runner.py": {
-    "mtime": 1778673965.3685148,
-    "hash": "48f09b1d05a5821fefa298519f75d60a"
+    "mtime": 1779027264.2869341,
+    "hash": "93839b372f2a987548c781baf62a6b4e"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/config.py": {
-    "mtime": 1778717411.900675,
-    "hash": "3e0060ba62178897e22fe62d5025dd7e"
+    "mtime": 1779084933.5231216,
+    "hash": "36b428bab5c2f91e49d6a4e4bd6acdec"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/backend/printer_service.py": {
+    "mtime": 1779090403.0597765,
+    "hash": "829047e3f3d1490028958f0e85bb45a7"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/session.py": {
-    "mtime": 1778732012.0253792,
-    "hash": "770eadffaa90113b6562478115252493"
+    "mtime": 1779090433.7421436,
+    "hash": "1507bdf102f5adc0375bfe2cbd7cf37d"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/__init__.py": {
     "mtime": 1778474018.581598,
@@ -108,8 +160,8 @@
     "hash": "5a7ed28dc87837bc620ea094c1dbffc1"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/routers/run.py": {
-    "mtime": 1778673977.2773666,
-    "hash": "c523ee8d11a635ce24920fc677919097"
+    "mtime": 1779086051.96293,
+    "hash": "fa51c02fc4f1348871131eda86a0ac4c"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/routers/upload.py": {
     "mtime": 1778603868.9656224,
@@ -128,15 +180,35 @@
     "hash": "882d39c2ff770d9ea72646f822b591c0"
   },
   "/Users/junnnny/Desktop/pixel_AI/backend/routers/printing.py": {
-    "mtime": 1778732152.608185,
-    "hash": "1850102782f26fd62da992532052b287"
+    "mtime": 1779090433.7425704,
+    "hash": "ab591a75f76b4d5c2264c8fcc8e14edc"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/scripts/windows/finalize_cp1500_setup.ps1": {
+    "mtime": 1779089985.2072556,
+    "hash": "a42153e89e71568e5bdb23c1a122ed62"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/scripts/windows/send_selected_print.ps1": {
+    "mtime": 1779090173.162323,
+    "hash": "42fa9da69c182a49c3c68f9e2d1e5cd7"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/scripts/windows/verify_print_completion.ps1": {
+    "mtime": 1779090284.4747884,
+    "hash": "7cca4cae18e28275bf38d28c8ee324da"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/scripts/windows/provision_cp1500_printers.ps1": {
+    "mtime": 1779089597.979605,
+    "hash": "bbac3cc04faa7f717304f1ec6e1a0757"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/scripts/windows/verify_cp1500_printers.ps1": {
+    "mtime": 1779087879.3590944,
+    "hash": "6447802c1851feff956c6b38b5f93c69"
   },
   "/Users/junnnny/Desktop/pixel_AI/requirements.txt": {
     "mtime": 1778845891.2412386,
     "hash": "8608729c7ea7abeabbf1b7f0d058cbe3"
   },
   "/Users/junnnny/Desktop/pixel_AI/README.md": {
-    "mtime": 1778651647.4471872,
+    "mtime": 1779010399.268053,
     "hash": "09ff726251b67d34e51f662cab001b11"
   },
   "/Users/junnnny/Desktop/pixel_AI/AGENTS.md": {
@@ -158,6 +230,10 @@
   "/Users/junnnny/Desktop/pixel_AI/docs/frame-design-spec.md": {
     "mtime": 1778684322.5886734,
     "hash": "4974ab0cddef0ff1eaf841f3af204de8"
+  },
+  "/Users/junnnny/Desktop/pixel_AI/docs/printer-ops.md": {
+    "mtime": 1779090284.475082,
+    "hash": "11e8af1cbe810003ef587be27301a66a"
   },
   "/Users/junnnny/Desktop/pixel_AI/docs/superpowers/plans/2026-05-13-booth-session-flow.md": {
     "mtime": 1778598457.008908,

@@ -7,13 +7,15 @@ load_dotenv()
 
 _base = Path(__file__).parent.parent
 
-COMFYUI_URL    = os.getenv("COMFYUI_URL",    "http://localhost:8188")
+COMFYUI_URL    = os.getenv("COMFYUI_URL",    "http://localhost:8188").rstrip("/")
 COMFYUI_HEADERS_JSON = os.getenv("COMFYUI_HEADERS_JSON", "")
 COMFYUI_BEARER_TOKEN = os.getenv("COMFYUI_BEARER_TOKEN", "")
 WATCH_FOLDER   = os.getenv("WATCH_FOLDER",   str(_base / "workspace" / "input"))
 PRESETS_FOLDER = os.getenv("PRESETS_FOLDER", str(_base / "workspace" / "presets"))
 SESSIONS_FOLDER = os.getenv("SESSIONS_FOLDER", str(_base / "workspace" / "sessions"))
 FRAMES_FOLDER = os.getenv("FRAMES_FOLDER", str(_base / "frontend" / "src" / "assets" / "frames"))
+PRINTER_NAME_ALLOWLIST = [item.strip() for item in os.getenv("PRINTER_NAME_ALLOWLIST", "").split(",") if item.strip()]
+SHOW_VIRTUAL_PRINTERS = os.getenv("SHOW_VIRTUAL_PRINTERS", "").lower() in {"1", "true", "yes", "on"}
 
 
 def get_comfyui_headers() -> dict[str, str]:

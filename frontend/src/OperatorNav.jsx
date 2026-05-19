@@ -12,9 +12,6 @@ export default function OperatorNav() {
       <NavLink to="/history" className={({ isActive }) => `operator-nav-link ${isActive ? 'active' : ''}`}>
         지난 팀
       </NavLink>
-      <NavLink to="/" className={({ isActive }) => `operator-nav-link ${isActive ? 'active' : ''}`}>
-        공용 화면
-      </NavLink>
     </nav>
   )
 }

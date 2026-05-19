@@ -29,6 +29,7 @@ class SelectShotRequest(BaseModel):
 
 class SessionActionRequest(BaseModel):
     session_id: Optional[str] = None
+    print_id: Optional[str] = None
 
 
 def _clear_watch_folder():
@@ -129,6 +130,16 @@ async def select_shot(req: SelectShotRequest):
     return snapshot
 
 
+@router.post("/api/sessions/{session_id}/select-shot")
+async def select_session_shot(session_id: str, req: SelectShotRequest):
+    try:
+        snapshot = session.select_shot(req.shot_id, session_id=session_id)
+    except KeyError:
+        raise HTTPException(404, "선택한 컷을 찾을 수 없습니다.")
+    await manager.broadcast_session()
+    return snapshot
+
+
 @router.post("/api/session/run-selected")
 async def run_selected():
     session_id = _get_active_capture_session_id()
@@ -157,6 +168,14 @@ async def complete_session(req: SessionActionRequest):
         if not ready:
             raise HTTPException(409, "완료 처리할 result_ready 세션이 없습니다.")
         session_id = ready[0]["session_id"]
+    target_session = session.get_session(session_id)
+    if not target_session:
+        raise HTTPException(404, "세션을 찾을 수 없습니다.")
+    print_id = req.print_id or (target_session.get("latest_print_output") or {}).get("print_id")
+    if not print_id:
+        raise HTTPException(409, "완료 처리 전에 최종 인화본을 먼저 만들어야 합니다.")
+    if not session.has_printer_job(session_id, print_id=print_id):
+        raise HTTPException(409, "프린터로 출력한 뒤 완료 처리할 수 있습니다.")
     try:
         snapshot = session.mark_completed(session_id=session_id)
     except KeyError:

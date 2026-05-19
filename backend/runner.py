@@ -3,6 +3,7 @@ import json
 import random
 import uuid
 from pathlib import Path
+from typing import Optional
 
 import websockets
 
@@ -12,6 +13,27 @@ from backend.session import session
 from backend.watcher import manager
 
 _queue: asyncio.Queue = asyncio.Queue()
+WS_IDLE_HISTORY_POLL_SECONDS = 5
+
+
+async def _finalize_prompt_result(session_id: str, prompt_id: str, source_shot_id: Optional[str]) -> bool:
+    output_image = await comfy_client.get_output_image_info(prompt_id)
+    if not output_image:
+        session.mark_error(session_id, "ComfyUI 결과 파일을 찾지 못했습니다.")
+        await manager.broadcast_session()
+        return False
+
+    content, media_type = await comfy_client.download_output_image(output_image)
+    session.cache_result_file(
+        session_id,
+        source_filename=output_image["filename"],
+        content=content,
+        media_type=media_type,
+        source_shot_id=source_shot_id,
+    )
+    session.mark_result_ready(session_id, result_filename=output_image["filename"])
+    await manager.broadcast_session()
+    return True
 
 
 async def enqueue_selected(session_id: str, randomize_seed: bool = False) -> str:
@@ -29,6 +51,7 @@ async def enqueue_selected(session_id: str, randomize_seed: bool = False) -> str
     if not active.exists():
         raise FileNotFoundError("active_preset_missing")
 
+    source_shot_id = target_session["selected_shot_id"]
     comfy_filename = await comfy_client.upload_image(str(shot_path))
     workflow = json.loads(active.read_text(encoding="utf-8"))
     seed_override = random.randint(1, 2**31 - 1) if randomize_seed else None
@@ -38,7 +61,7 @@ async def enqueue_selected(session_id: str, randomize_seed: bool = False) -> str
     prompt_id = await comfy_client.queue_prompt(patched, client_id)
 
     session.mark_queued(prompt_id, session_id=session_id)
-    await _queue.put((session_id, prompt_id, client_id))
+    await _queue.put((session_id, prompt_id, client_id, source_shot_id))
     return prompt_id
 
 
@@ -46,7 +69,7 @@ async def run_worker():
     ws_url = COMFYUI_URL.replace("http://", "ws://").replace("https://", "wss://")
 
     while True:
-        session_id, prompt_id, client_id = await _queue.get()
+        session_id, prompt_id, client_id, source_shot_id = await _queue.get()
         session.start_processing_session(session_id)
         await manager.broadcast_session()
 
@@ -60,7 +83,15 @@ async def run_worker():
                     ping_interval=20,
                     additional_headers=get_comfyui_headers() or None,
                 ) as ws:
-                    async for raw in ws:
+                    while True:
+                        try:
+                            raw = await asyncio.wait_for(ws.recv(), timeout=WS_IDLE_HISTORY_POLL_SECONDS)
+                        except asyncio.TimeoutError:
+                            if await comfy_client.get_output_image_info(prompt_id):
+                                success = await _finalize_prompt_result(session_id, prompt_id, source_shot_id)
+                                break
+                            continue
+
                         if isinstance(raw, bytes):
                             continue
                         msg = json.loads(raw)
@@ -76,20 +107,11 @@ async def run_worker():
                             })
 
                         elif mtype == "executed" and data.get("prompt_id") == prompt_id:
-                            output_image = await comfy_client.get_output_image_info(prompt_id)
-                            if not output_image:
-                                session.mark_error(session_id, "ComfyUI 결과 파일을 찾지 못했습니다.")
-                            else:
-                                content, media_type = await comfy_client.download_output_image(output_image)
-                                session.cache_result_file(
-                                    session_id,
-                                    source_filename=output_image["filename"],
-                                    content=content,
-                                    media_type=media_type,
-                                )
-                                session.mark_result_ready(session_id, result_filename=output_image["filename"])
-                            await manager.broadcast_session()
-                            success = True
+                            success = await _finalize_prompt_result(session_id, prompt_id, source_shot_id)
+                            break
+
+                        elif mtype == "execution_success" and data.get("prompt_id") == prompt_id:
+                            success = await _finalize_prompt_result(session_id, prompt_id, source_shot_id)
                             break
 
                         elif mtype == "execution_error" and data.get("prompt_id") == prompt_id:
@@ -107,17 +129,7 @@ async def run_worker():
                 retries += 1
                 if retries >= 5:
                     try:
-                        output_image = await comfy_client.get_output_image_info(prompt_id)
-                        if output_image:
-                            content, media_type = await comfy_client.download_output_image(output_image)
-                            session.cache_result_file(
-                                session_id,
-                                source_filename=output_image["filename"],
-                                content=content,
-                                media_type=media_type,
-                            )
-                            session.mark_result_ready(session_id, result_filename=output_image["filename"])
-                            await manager.broadcast_session()
+                        if await _finalize_prompt_result(session_id, prompt_id, source_shot_id):
                             success = True
                         else:
                             session.mark_error(session_id, f"ComfyUI 연결 실패: {exc}")

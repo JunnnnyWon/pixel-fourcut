@@ -107,6 +107,7 @@ export default function HistoryScreen() {
                       <button key={result.result_id} className="result-history-card result-pick" onClick={() => openGallery('AI 결과', selectedSession.generated_results, index)}>
                         <img src={result.url} alt={result.filename} className="history-detail-image result-thumb" />
                         <div className="history-row-sub">{result.source_filename || result.filename}</div>
+                        <div className="history-row-sub">소스 컷: {result.source_shot_filename || '기록 없음'}</div>
                       </button>
                     ))}
                   </div>
@@ -122,10 +123,36 @@ export default function HistoryScreen() {
                         <button key={printOutput.print_id} className="result-history-card result-pick" onClick={() => openGallery('인화본', selectedSession.print_outputs, index)}>
                           <img src={printOutput.url} alt={printOutput.filename} className="history-detail-image result-thumb" />
                           <div className="history-row-sub">{printOutput.filename}</div>
+                          {printOutput.last_printer_name ? (
+                            <div className="history-row-sub">{printOutput.last_printer_name} · {printOutput.copies || 1}장</div>
+                          ) : null}
+                          {printOutput.windows_job_id ? (
+                            <div className="history-row-sub">Job {printOutput.windows_job_id}{printOutput.job_status ? ` · ${printOutput.job_status}` : ''}</div>
+                          ) : null}
                         </button>
                       ))
                     )}
                   </div>
+
+                  <div className="section-header compact">
+                    <h3>프린터 출력 이력</h3>
+                  </div>
+                  {(selectedSession.printer_jobs || []).length === 0 ? (
+                    <div className="history-empty">기록된 프린터 출력 이력이 없습니다.</div>
+                  ) : (
+                    <div className="printer-job-list">
+                      {selectedSession.printer_jobs.map((job) => (
+                        <div key={job.printer_job_id} className="history-row-sub printer-job-row">
+                          <span>{job.printer_name}</span>
+                          <span>{job.print_id}</span>
+                          <span>{job.copies}장</span>
+                          <span>{job.job_status || job.status}</span>
+                          <span>{job.windows_job_id ? `Job ${job.windows_job_id}` : '-'}</span>
+                          <span>{job.submitted_time || '-'}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </>
               )}
             </div>

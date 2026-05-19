@@ -13,7 +13,10 @@ from backend.session import session
 class _FakeWebSocket:
     def __init__(self, prompt_id):
         self.prompt_id = prompt_id
-        self._sent = False
+        self.messages = [json.dumps({
+            "type": "executed",
+            "data": {"prompt_id": prompt_id},
+        })]
 
     async def __aenter__(self):
         return self
@@ -21,17 +24,25 @@ class _FakeWebSocket:
     async def __aexit__(self, exc_type, exc, tb):
         return False
 
-    def __aiter__(self):
-        return self
+    async def recv(self):
+        if not self.messages:
+            raise asyncio.TimeoutError
+        return self.messages.pop(0)
 
-    async def __anext__(self):
-        if self._sent:
-            raise StopAsyncIteration
-        self._sent = True
-        return json.dumps({
-            "type": "executed",
+
+class _FakeSuccessWebSocket(_FakeWebSocket):
+    def __init__(self, prompt_id):
+        self.prompt_id = prompt_id
+        self.messages = [json.dumps({
+            "type": "execution_success",
             "data": {"prompt_id": self.prompt_id},
-        })
+        })]
+
+
+class _FakeIdleWebSocket(_FakeWebSocket):
+    def __init__(self, prompt_id):
+        self.prompt_id = prompt_id
+        self.messages = []
 
 
 class RunnerWorkerTests(unittest.TestCase):
@@ -65,7 +76,7 @@ class RunnerWorkerTests(unittest.TestCase):
 
     def test_worker_marks_result_ready_after_executed_message(self):
         async def scenario():
-            await runner._queue.put(("session-test-001", "prompt-123", "client-1"))
+            await runner._queue.put(("session-test-001", "prompt-123", "client-1", "shot-001"))
             with patch("backend.runner.websockets.connect", return_value=_FakeWebSocket("prompt-123")), \
                  patch("backend.runner.comfy_client.get_output_image_info", AsyncMock(return_value={"filename": "result.png", "subfolder": "", "type": "output"})), \
                  patch("backend.runner.comfy_client.download_output_image", AsyncMock(return_value=(b"png-bytes", "image/png"))), \
@@ -76,9 +87,49 @@ class RunnerWorkerTests(unittest.TestCase):
                 ready_session = session.get_session("session-test-001")
                 self.assertEqual(ready_session["phase"], "result_ready")
                 self.assertEqual(ready_session["result_filename"], "result.png")
+                self.assertEqual(ready_session["generated_results"][0]["source_shot_id"], "shot-001")
+                self.assertEqual(ready_session["generated_results"][0]["source_shot_filename"], "input.jpg")
                 self.assertTrue(Path(ready_session["result_local_path"]).exists())
                 self.assertEqual(Path(ready_session["result_local_path"]).read_bytes(), b"png-bytes")
                 broadcast_session.assert_awaited()
+                worker.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await worker
+
+        self.loop.run_until_complete(scenario())
+
+    def test_worker_marks_result_ready_after_execution_success_message(self):
+        async def scenario():
+            await runner._queue.put(("session-test-001", "prompt-123", "client-1", "shot-001"))
+            with patch("backend.runner.websockets.connect", return_value=_FakeSuccessWebSocket("prompt-123")), \
+                 patch("backend.runner.comfy_client.get_output_image_info", AsyncMock(return_value={"filename": "result.png", "subfolder": "", "type": "output"})), \
+                 patch("backend.runner.comfy_client.download_output_image", AsyncMock(return_value=(b"png-bytes", "image/png"))), \
+                 patch("backend.runner.manager.broadcast_session", AsyncMock()):
+
+                worker = asyncio.create_task(runner.run_worker())
+                await asyncio.wait_for(runner._queue.join(), timeout=2)
+                ready_session = session.get_session("session-test-001")
+                self.assertEqual(ready_session["phase"], "result_ready")
+                self.assertEqual(ready_session["generated_results"][0]["source_shot_id"], "shot-001")
+                worker.cancel()
+                with contextlib.suppress(asyncio.CancelledError):
+                    await worker
+
+        self.loop.run_until_complete(scenario())
+
+    def test_worker_polls_history_when_websocket_stays_idle(self):
+        async def scenario():
+            await runner._queue.put(("session-test-001", "prompt-123", "client-1", "shot-001"))
+            with patch("backend.runner.WS_IDLE_HISTORY_POLL_SECONDS", 0.01), \
+                 patch("backend.runner.websockets.connect", return_value=_FakeIdleWebSocket("prompt-123")), \
+                 patch("backend.runner.comfy_client.get_output_image_info", AsyncMock(return_value={"filename": "result.png", "subfolder": "", "type": "output"})), \
+                 patch("backend.runner.comfy_client.download_output_image", AsyncMock(return_value=(b"png-bytes", "image/png"))), \
+                 patch("backend.runner.manager.broadcast_session", AsyncMock()):
+
+                worker = asyncio.create_task(runner.run_worker())
+                await asyncio.wait_for(runner._queue.join(), timeout=2)
+                ready_session = session.get_session("session-test-001")
+                self.assertEqual(ready_session["phase"], "result_ready")
                 worker.cancel()
                 with contextlib.suppress(asyncio.CancelledError):
                     await worker
