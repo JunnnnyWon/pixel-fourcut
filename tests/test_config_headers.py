@@ -1,5 +1,6 @@
 import unittest
 from unittest.mock import patch
+import importlib
 
 from backend import config
 
@@ -19,6 +20,14 @@ class ComfyHeaderConfigTests(unittest.TestCase):
             headers = config.get_comfyui_headers()
 
         self.assertEqual(headers, {})
+
+    def test_comfyui_url_is_normalized_without_trailing_slash(self):
+        with patch.dict("os.environ", {"COMFYUI_URL": "http://100.104.216.121:8188/"}, clear=False):
+            reloaded = importlib.reload(config)
+            try:
+                self.assertEqual(reloaded.COMFYUI_URL, "http://100.104.216.121:8188")
+            finally:
+                importlib.reload(config)
 
 
 if __name__ == "__main__":

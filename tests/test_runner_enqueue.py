@@ -60,6 +60,8 @@ class RunnerEnqueueTests(unittest.TestCase):
         self.assertEqual(processing_session["phase"], "queued")
         self.assertEqual(processing_session["prompt_id"], "prompt-123")
         self.assertEqual(runner._queue.qsize(), 1)
+        queued_item = asyncio.run(runner._queue.get())
+        self.assertEqual(queued_item[3], "shot-001")
         upload_image.assert_awaited_once()
         patch_workflow.assert_called_once()
         queue_prompt.assert_awaited_once()

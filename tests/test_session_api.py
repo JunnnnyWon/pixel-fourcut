@@ -165,6 +165,115 @@ class SessionApiTests(unittest.TestCase):
 
         self.assertEqual(rerun["prompt_id"], "prompt-rerun")
 
+    def test_complete_session_requires_print_output_first(self):
+        started = self.loop.run_until_complete(run_router.start_session())
+        session_id = started["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+        session.mark_queued("prompt-a")
+        session.start_processing_session(session_id)
+        session.cache_result_file(session_id, "result.png", b"png", "image/png")
+        session.mark_result_ready(session_id, result_filename="result.png")
+
+        with self.assertRaises(HTTPException) as exc:
+            self.loop.run_until_complete(
+                run_router.complete_session(run_router.SessionActionRequest(session_id=session_id))
+            )
+
+        self.assertEqual(exc.exception.status_code, 409)
+        self.assertIn("최종 인화본을 먼저", str(exc.exception.detail))
+
+    def test_complete_session_requires_printer_dispatch(self):
+        started = self.loop.run_until_complete(run_router.start_session())
+        session_id = started["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+        session.mark_queued("prompt-a")
+        session.start_processing_session(session_id)
+        session.cache_result_file(session_id, "result.png", b"png", "image/png")
+        session.mark_result_ready(session_id, result_filename="result.png")
+        print_output = session.cache_print_file(
+            session_id,
+            frame_id="frame-01-signature-white",
+            result_id="result-001",
+            content=b"png",
+            media_type="image/png",
+        )
+
+        with self.assertRaises(HTTPException) as exc:
+            self.loop.run_until_complete(
+                run_router.complete_session(
+                    run_router.SessionActionRequest(session_id=session_id, print_id=print_output["print_id"])
+                )
+            )
+
+        self.assertEqual(exc.exception.status_code, 409)
+        self.assertIn("프린터로 출력한 뒤", str(exc.exception.detail))
+
+    def test_complete_session_succeeds_after_printer_dispatch(self):
+        started = self.loop.run_until_complete(run_router.start_session())
+        session_id = started["session_id"]
+        source = Path(self.tmpdir.name) / "input.jpg"
+        source.write_bytes(b"fake-image")
+        shot = session.add_shot_from_file(source, source_name="input.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot["shot_id"]))
+        )
+        session.mark_queued("prompt-a")
+        session.start_processing_session(session_id)
+        session.cache_result_file(session_id, "result.png", b"png", "image/png")
+        session.mark_result_ready(session_id, result_filename="result.png")
+        print_output = session.cache_print_file(
+            session_id,
+            frame_id="frame-01-signature-white",
+            result_id="result-001",
+            content=b"png",
+            media_type="image/png",
+        )
+        session.record_printer_job(session_id, print_id=print_output["print_id"], printer_name="SELPHY-LEFT")
+
+        response = self.loop.run_until_complete(
+            run_router.complete_session(
+                run_router.SessionActionRequest(session_id=session_id, print_id=print_output["print_id"])
+            )
+        )
+
+        completed = next(item for item in response["completed_sessions"] if item["session_id"] == session_id)
+        self.assertEqual(completed["phase"], "completed")
+
+    def test_can_reselect_shot_for_existing_session(self):
+        started = self.loop.run_until_complete(run_router.start_session())
+        session_id = started["session_id"]
+        source_a = Path(self.tmpdir.name) / "input-a.jpg"
+        source_b = Path(self.tmpdir.name) / "input-b.jpg"
+        source_a.write_bytes(b"fake-image-a")
+        source_b.write_bytes(b"fake-image-b")
+        shot_a = session.add_shot_from_file(source_a, source_name="input-a.jpg", source_type="test")
+        shot_b = session.add_shot_from_file(source_b, source_name="input-b.jpg", source_type="test")
+        self.loop.run_until_complete(run_router.finish_capture())
+        self.loop.run_until_complete(
+            run_router.select_shot(run_router.SelectShotRequest(shot_id=shot_a["shot_id"]))
+        )
+        session.mark_completed(session_id)
+
+        response = self.loop.run_until_complete(
+            run_router.select_session_shot(session_id, run_router.SelectShotRequest(shot_id=shot_b["shot_id"]))
+        )
+
+        self.assertEqual(response["selected_shot_id"], shot_b["shot_id"])
+        self.assertEqual(response["selected_shot"]["source_filename"], "input-b.jpg")
+
 
 if __name__ == "__main__":
     unittest.main()
