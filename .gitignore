@@ -1,21 +1,41 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 .venv/
 venv/
+*.egg-info/
+.pytest_cache/
 
 # Env
 .env
+.env.*
+!.env.example
+!.env.local.example
+!.env.runyour.example
 
 # Node
 frontend/node_modules/
 frontend/dist/
+frontend/.vite/
 
-# Workspace (로컬 테스트 데이터)
+# Workspace (로컬 런타임 데이터)
 workspace/
+DSLR이미지/
+DSLR*/
+DSLR_images/
 
 # Logs
 *.log
+server.*.log
 
-# Graphify cache
-graphify-out/cache/
+# Graphify (generated knowledge graph)
+graphify-out/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
