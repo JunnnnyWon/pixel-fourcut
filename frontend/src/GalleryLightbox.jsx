@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-export default function GalleryLightbox({ items, index, title, onClose, onPrev, onNext, onSelect }) {
+export default function GalleryLightbox({ items, index, title, onClose, onPrev, onNext }) {
   const activeItem = items[index] || null
 
   useEffect(() => {
@@ -33,19 +33,6 @@ export default function GalleryLightbox({ items, index, title, onClose, onPrev, 
           <button className="gallery-nav" onClick={onPrev} type="button" aria-label="이전 이미지">‹</button>
           <img src={activeItem.url} alt={activeItem.label} className="gallery-lightbox-image" />
           <button className="gallery-nav" onClick={onNext} type="button" aria-label="다음 이미지">›</button>
-        </div>
-
-        <div className="gallery-lightbox-strip">
-          {items.map((item, itemIndex) => (
-            <button
-              key={`${item.url}-${itemIndex}`}
-              className={`gallery-thumb ${itemIndex === index ? 'selected' : ''}`}
-              onClick={() => onSelect(itemIndex)}
-              type="button"
-            >
-              <img src={item.url} alt={item.label} />
-            </button>
-          ))}
         </div>
       </div>
     </div>

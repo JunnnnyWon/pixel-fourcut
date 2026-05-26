@@ -53,6 +53,7 @@ export default function AdminScreen() {
   const [msg, setMsg] = useState({ text: '', type: 'ok' })
   const [presetsOpen, setPresetsOpen] = useState(false)
   const [selectedManageSessionId, setSelectedManageSessionId] = useState(null)
+  const [selectedManageShotChoice, setSelectedManageShotChoice] = useState(null)
   const [lightbox, setLightbox] = useState(null)
   const fileInputRef = useRef(null)
   const flashTimerRef = useRef(null)
@@ -243,8 +244,16 @@ export default function AdminScreen() {
     if (heroState.actionKind === 'run' && !heroState.disabled) return handleRunSelected()
   }
 
-  const manageableSessions = allSessions.filter((item) => (item.generated_results || []).length > 0)
+  const manageableSessions = allSessions.filter((item) => (item.shots || []).length > 0 && item.phase !== 'capturing')
   const selectedManageSession = manageableSessions.find((item) => item.session_id === selectedManageSessionId) || manageableSessions[0] || null
+  const selectedManageShotId =
+    (selectedManageShotChoice && selectedManageSession?.shots?.some((shot) => shot.shot_id === selectedManageShotChoice)
+      ? selectedManageShotChoice
+      : null) ||
+    selectedManageSession?.selected_shot_id ||
+    selectedManageSession?.shots?.[0]?.shot_id ||
+    null
+  const selectedManageShot = selectedManageSession?.shots?.find((shot) => shot.shot_id === selectedManageShotId) || null
 
   const openGallery = (title, items, index = 0) => {
     setLightbox({
@@ -269,6 +278,20 @@ export default function AdminScreen() {
     try {
       await rerunSession(sessionId)
       flash('AI 재생성을 시작했습니다')
+    } catch (err) {
+      flash(err.message, 'err')
+    }
+  }
+
+  const handleManageShotSelect = async (sessionId, shotId) => {
+    try {
+      await request(`/api/sessions/${encodeURIComponent(sessionId)}/select-shot`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ shot_id: shotId }),
+      }, '촬영 사진 선택 변경 실패')
+      setSelectedManageShotChoice(shotId)
+      flash('AI 재제작에 사용할 촬영 사진을 바꿨습니다')
     } catch (err) {
       flash(err.message, 'err')
     }
@@ -452,10 +475,10 @@ export default function AdminScreen() {
 
       <section>
         <div className="section-header">
-          <h3>AI 결과 관리</h3>
+          <h3>AI 결과 / 재제작 관리</h3>
         </div>
         {manageableSessions.length === 0 ? (
-          <div className="friendly-empty">아직 AI 결과가 생성된 팀이 없습니다.</div>
+          <div className="friendly-empty">촬영 사진이 있는 세션이 아직 없습니다.</div>
         ) : (
           <div className="history-layout">
             <div className="history-list">
@@ -479,27 +502,38 @@ export default function AdminScreen() {
                 <>
                   <div className="history-detail-head">
                     <div>
-                      <div className="summary-label">재생성 대상 세션</div>
+                      <div className="summary-label">재제작 대상 세션</div>
                       <strong>{selectedManageSession.session_id}</strong>
                     </div>
                     <div className="action-row">
                       <span className={`phase-badge phase-${selectedManageSession.phase}`}>{PHASE_LABEL[selectedManageSession.phase] || selectedManageSession.phase}</span>
                       <button className="btn-primary" onClick={() => handleRerunSession(selectedManageSession.session_id)}>
-                        AI 다시 만들기
+                        {selectedManageShot ? `${selectedManageShot.source_filename || selectedManageShot.filename}로 AI 다시 만들기` : 'AI 다시 만들기'}
                       </button>
                     </div>
+                  </div>
+
+                  <div className="history-detail-meta">
+                    <span>촬영 사진 {selectedManageSession.shots?.length || 0}장</span>
+                    <span>AI 결과 {(selectedManageSession.generated_results || []).length}개</span>
+                    {selectedManageShot ? <span>다음 AI 소스: {selectedManageShot.source_filename || selectedManageShot.filename}</span> : null}
                   </div>
 
                   <div className="desktop-gallery-grid">
                     <div>
                       <div className="section-header compact">
-                        <h3>촬영 사진</h3>
+                        <h3>촬영 사진 선택</h3>
                       </div>
                       <div className="shot-picker gallery-grid">
                         {(selectedManageSession.shots || []).map((shot, index) => (
-                          <button key={shot.shot_id} className="shot-tile" onClick={() => openGallery('촬영 사진', selectedManageSession.shots, index)}>
+                          <button
+                            key={shot.shot_id}
+                            className={`shot-tile ${selectedManageShotId === shot.shot_id ? 'selected' : ''}`}
+                            onClick={() => handleManageShotSelect(selectedManageSession.session_id, shot.shot_id)}
+                            onDoubleClick={() => openGallery('촬영 사진', selectedManageSession.shots, index)}
+                          >
                             <img src={shot.url} alt={shot.filename} />
-                            <span>{shot.source_filename || shot.filename}</span>
+                            <span>{selectedManageShotId === shot.shot_id ? '재제작 소스로 선택됨' : (shot.source_filename || shot.filename)}</span>
                           </button>
                         ))}
                       </div>
@@ -515,12 +549,13 @@ export default function AdminScreen() {
                             AI 결과 전체화면 보기
                           </button>
                         </div>
-                      ) : null}
+                      ) : <div className="history-empty">아직 AI 결과가 없습니다. 위에서 촬영 사진을 고르고 다시 만들 수 있습니다.</div>}
                       <div className="result-history-grid selectable-grid">
                         {(selectedManageSession.generated_results || []).map((result, index) => (
                           <button key={result.result_id} className="result-history-card result-pick" onClick={() => openGallery('AI 결과', selectedManageSession.generated_results, index)}>
                             <img src={result.url} alt={result.filename} className="history-detail-image result-thumb" />
                             <div className="history-row-sub">{result.source_filename || result.filename}</div>
+                            <div className="history-row-sub">소스 컷: {result.source_shot_filename || '기록 없음'}</div>
                           </button>
                         ))}
                       </div>

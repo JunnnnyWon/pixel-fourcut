@@ -46,6 +46,7 @@ class SessionState:
                 "selected_frame_id": session_data.get("selected_frame_id"),
                 "selected_generated_result_id": session_data.get("selected_generated_result_id"),
                 "print_outputs": session_data.get("print_outputs", []),
+                "printer_jobs": session_data.get("printer_jobs", []),
                 "error": session_data.get("error"),
                 "logs": session_data.get("logs", []),
                 "created_at": session_data.get("created_at"),
@@ -306,8 +307,16 @@ class SessionState:
         self._write_meta(session)
         return self.to_dict()
 
-    def cache_result_file(self, session_id: str, source_filename: str, content: bytes, media_type: str) -> str:
+    def cache_result_file(
+        self,
+        session_id: str,
+        source_filename: str,
+        content: bytes,
+        media_type: str,
+        source_shot_id: Optional[str] = None,
+    ) -> str:
         session = self._get_session(session_id)
+        source_shot = self._get_shot(session, source_shot_id) if source_shot_id else None
         suffix = Path(source_filename).suffix
         if not suffix:
             suffix = mimetypes.guess_extension(media_type or "") or ".png"
@@ -318,10 +327,14 @@ class SessionState:
         session["result_filename"] = source_filename
         session["result_local_path"] = str(local_path)
         session["result_media_type"] = media_type
+        result_id = f"result-{result_index:03d}"
+        session["selected_generated_result_id"] = result_id
         session["generated_results"].append({
-            "result_id": f"result-{result_index:03d}",
+            "result_id": result_id,
             "filename": local_name,
             "source_filename": source_filename,
+            "source_shot_id": source_shot_id,
+            "source_shot_filename": source_shot["source_filename"] if source_shot else None,
             "local_path": str(local_path),
             "media_type": media_type,
             "url": f"/api/sessions/{session_id}/results/result-{result_index:03d}",
@@ -366,6 +379,90 @@ class SessionState:
         self._touch(session)
         self._write_meta(session)
         return print_output
+
+    def record_printer_job(
+        self,
+        session_id: str,
+        print_id: str,
+        printer_name: str,
+        copies: int = 1,
+        status: str = "sent",
+        windows_job_id: Optional[int] = None,
+        job_status: Optional[str] = None,
+        document_name: Optional[str] = None,
+        submitted_time: Optional[str] = None,
+    ) -> dict:
+        session = self._get_session(session_id)
+        print_output = self.get_print_output(session_id, print_id)
+        if not print_output:
+            raise KeyError("print_output_not_found")
+
+        printer_job = {
+            "printer_job_id": f"printer-job-{len(session.get('printer_jobs', [])) + 1:03d}",
+            "print_id": print_id,
+            "printer_name": printer_name,
+            "copies": max(1, int(copies)),
+            "status": status,
+            "windows_job_id": windows_job_id,
+            "job_status": job_status,
+            "document_name": document_name,
+            "submitted_time": submitted_time,
+            "created_at": self._now(),
+        }
+        session["printer_jobs"].append(printer_job)
+        print_output["last_printer_name"] = printer_name
+        print_output["last_printed_at"] = printer_job["created_at"]
+        print_output["copies"] = printer_job["copies"]
+        print_output["status"] = status
+        print_output["windows_job_id"] = windows_job_id
+        print_output["job_status"] = job_status
+        print_output["document_name"] = document_name
+        print_output["submitted_time"] = submitted_time
+        self._log(session, "printer_job_sent", f"{print_id} -> {printer_name} ({copies}장)")
+        self._touch(session)
+        self._write_meta(session)
+        return printer_job
+
+    def update_printer_job(
+        self,
+        session_id: str,
+        printer_job_id: str,
+        *,
+        status: Optional[str] = None,
+        job_status: Optional[str] = None,
+        document_name: Optional[str] = None,
+        submitted_time: Optional[str] = None,
+    ) -> dict:
+        session = self._get_session(session_id)
+        printer_job = next((job for job in session.get("printer_jobs", []) if job["printer_job_id"] == printer_job_id), None)
+        if not printer_job:
+            raise KeyError("printer_job_not_found")
+
+        if status is not None:
+            printer_job["status"] = status
+        if job_status is not None:
+            printer_job["job_status"] = job_status
+        if document_name is not None:
+            printer_job["document_name"] = document_name
+        if submitted_time is not None:
+            printer_job["submitted_time"] = submitted_time
+
+        print_output = self.get_print_output(session_id, printer_job["print_id"])
+        if print_output:
+            if status is not None:
+                print_output["status"] = status
+            if job_status is not None:
+                print_output["job_status"] = job_status
+            if document_name is not None:
+                print_output["document_name"] = document_name
+            if submitted_time is not None:
+                print_output["submitted_time"] = submitted_time
+            if printer_job.get("windows_job_id") is not None:
+                print_output["windows_job_id"] = printer_job["windows_job_id"]
+
+        self._touch(session)
+        self._write_meta(session)
+        return printer_job
 
     def discard_session(self, session_id: str):
         session = self._get_session(session_id)
@@ -433,6 +530,15 @@ class SessionState:
             return None
         return next((item for item in session.get("print_outputs", []) if item["print_id"] == print_id), None)
 
+    def has_printer_job(self, session_id: str, print_id: Optional[str] = None) -> bool:
+        session = self._sessions.get(session_id)
+        if not session:
+            return False
+        jobs = session.get("printer_jobs", [])
+        if print_id is None:
+            return bool(jobs)
+        return any(job.get("print_id") == print_id for job in jobs)
+
     def get_shot(self, shot_id: str, session_id: Optional[str] = None) -> Optional[dict]:
         session = self._get_session(session_id) if session_id else self._get_session_for_lookup(shot_id)
         if not session:
@@ -489,6 +595,8 @@ class SessionState:
             "selected_generated_result": current_session["selected_generated_result"] if current_session else None,
             "print_outputs": current_session["print_outputs"] if current_session else [],
             "latest_print_output": current_session["latest_print_output"] if current_session else None,
+            "printer_jobs": current_session["printer_jobs"] if current_session else [],
+            "latest_printer_job": current_session["latest_printer_job"] if current_session else None,
             "error": current_session["error"] if current_session else None,
             "logs": current_session["logs"] if current_session else [],
             "created_at": current_session["created_at"] if current_session else None,
@@ -515,6 +623,7 @@ class SessionState:
             "selected_frame_id": None,
             "selected_generated_result_id": None,
             "print_outputs": [],
+            "printer_jobs": [],
             "error": None,
             "logs": [],
             "created_at": created_at,
@@ -569,6 +678,7 @@ class SessionState:
                 None,
             )
         latest_print_output = session.get("print_outputs", [])[-1] if session.get("print_outputs") else None
+        latest_printer_job = session.get("printer_jobs", [])[-1] if session.get("printer_jobs") else None
         return {
             "session_id": session["session_id"],
             "phase": session["phase"],
@@ -589,6 +699,8 @@ class SessionState:
             "selected_generated_result": selected_generated_result,
             "print_outputs": list(session.get("print_outputs", [])),
             "latest_print_output": latest_print_output,
+            "printer_jobs": list(session.get("printer_jobs", [])),
+            "latest_printer_job": latest_printer_job,
             "error": session["error"],
             "logs": list(session["logs"]),
             "created_at": session["created_at"],

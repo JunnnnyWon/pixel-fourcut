@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import GalleryLightbox from './GalleryLightbox'
 import OperatorNav from './OperatorNav'
 import {
@@ -8,6 +8,7 @@ import {
   getScalePercent,
   scaleFromPercent,
 } from './printLayoutMath'
+import { buildPrintSessionPool, nextPrintSessionIdAfterComplete, orderSessionsByCreatedAt } from './printQueueUtils'
 import { useSession } from './useSession'
 import { PHASE_LABEL } from './sessionViewUtils'
 import './App.css'
@@ -357,6 +358,17 @@ export default function PrintScreen() {
   const [frameError, setFrameError] = useState('')
   const [composeError, setComposeError] = useState('')
   const [composeBusy, setComposeBusy] = useState(false)
+  const [printers, setPrinters] = useState([])
+  const [printerDiagnostics, setPrinterDiagnostics] = useState(null)
+  const [printerError, setPrinterError] = useState('')
+  const [printerCapabilities, setPrinterCapabilities] = useState(null)
+  const [selectedPrinterName, setSelectedPrinterName] = useState('')
+  const [printCopies, setPrintCopies] = useState(1)
+  const [printBusy, setPrintBusy] = useState(false)
+  const [printError, setPrintError] = useState('')
+  const [testPrintBusy, setTestPrintBusy] = useState(false)
+  const [printInfo, setPrintInfo] = useState('')
+  const [refreshPrintJobsBusy, setRefreshPrintJobsBusy] = useState(false)
   const [selectedFrameChoice, setSelectedFrameChoice] = useState(null)
   const [selectedResultChoice, setSelectedResultChoice] = useState(null)
   const [selectedPrintChoice, setSelectedPrintChoice] = useState(null)
@@ -391,9 +403,92 @@ export default function PrintScreen() {
     }
   }, [])
 
+  const loadPrinters = useCallback(async () => {
+    const [printerResponse, diagnosticsResponse] = await Promise.all([
+      fetch('/api/printers'),
+      fetch('/api/printers/diagnostics'),
+    ])
+    const printerData = await printerResponse.json().catch(() => ({}))
+    const diagnosticsData = await diagnosticsResponse.json().catch(() => ({}))
+    if (!printerResponse.ok) {
+      throw new Error(printerData.detail || '프린터 목록을 불러오지 못했습니다.')
+    }
+    const nextPrinters = printerData.printers || []
+    setPrinters(nextPrinters)
+    setPrinterDiagnostics(diagnosticsResponse.ok ? diagnosticsData : null)
+    if (nextPrinters.length === 0) {
+      setPrinterCapabilities(null)
+    }
+    setPrinterError('')
+    setSelectedPrinterName((current) => {
+      if (current && nextPrinters.some((printer) => printer.name === current)) {
+        return current
+      }
+      const preferred = nextPrinters.find((printer) => printer.is_available) || nextPrinters[0]
+      return preferred?.name || ''
+    })
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+
+    const run = async () => {
+      try {
+        await loadPrinters()
+      } catch (error) {
+        if (!cancelled) {
+          setPrinterError(error.message || '프린터 목록을 불러오지 못했습니다.')
+        }
+      }
+    }
+
+    run()
+    return () => {
+      cancelled = true
+    }
+  }, [loadPrinters])
+
+  useEffect(() => {
+    let cancelled = false
+    if (!selectedPrinterName) {
+      return () => {
+        cancelled = true
+      }
+    }
+
+    const loadCapabilities = async () => {
+      try {
+        const response = await fetch(`/api/printers/${encodeURIComponent(selectedPrinterName)}/capabilities`)
+        const data = await response.json().catch(() => ({}))
+        if (!response.ok) {
+          throw new Error(data.detail || '프린터 용지 정보를 불러오지 못했습니다.')
+        }
+        if (!cancelled) {
+          setPrinterCapabilities(data)
+        }
+      } catch {
+        if (!cancelled) {
+          setPrinterCapabilities(null)
+        }
+      }
+    }
+
+    loadCapabilities()
+    return () => {
+      cancelled = true
+    }
+  }, [selectedPrinterName])
+
   const sessionPool = useMemo(() => {
-    return [...printReadySessions, ...processingSessions, ...completedSessions, ...erroredSessions]
+    return buildPrintSessionPool({
+      printReadySessions,
+      processingSessions,
+      completedSessions,
+      erroredSessions,
+    })
   }, [completedSessions, erroredSessions, printReadySessions, processingSessions])
+
+  const prioritizedPrintReadySessions = useMemo(() => orderSessionsByCreatedAt(printReadySessions, 'asc'), [printReadySessions])
 
   const selectedSession = useMemo(() => {
     if (!sessionPool.length) return null
@@ -433,6 +528,14 @@ export default function PrintScreen() {
     if (!selectedSession) return null
     return selectedSession.print_outputs?.find((printOutput) => printOutput.print_id === selectedPrintId) || selectedSession.latest_print_output || null
   }, [selectedPrintId, selectedSession])
+  const selectedPrinter = useMemo(
+    () => printers.find((printer) => printer.name === selectedPrinterName) || null,
+    [printers, selectedPrinterName],
+  )
+  const selectedPrintWasSent = useMemo(() => {
+    if (!selectedSession || !selectedPrintOutput) return false
+    return (selectedSession.printer_jobs || []).some((job) => job.print_id === selectedPrintOutput.print_id)
+  }, [selectedPrintOutput, selectedSession])
 
   const selectedFrame = useMemo(() => {
     return frames.find((frame) => frame.frame_id === selectedFrameId) || null
@@ -500,7 +603,9 @@ export default function PrintScreen() {
     if (!selectedSession) return
     setComposeError('')
     try {
-      await completeSession(selectedSession.session_id)
+      const nextSessionId = nextPrintSessionIdAfterComplete(selectedSession.session_id, prioritizedPrintReadySessions)
+      await completeSession(selectedSession.session_id, selectedPrintOutput?.print_id || null)
+      setSelectedSessionId(nextSessionId)
     } catch (error) {
       setComposeError(error.message || '세션 완료 처리 실패')
     }
@@ -510,6 +615,90 @@ export default function PrintScreen() {
     setSelectedPrintChoice(printOutput.print_id)
     setSelectedFrameChoice(printOutput.frame_id)
     setSelectedResultChoice(printOutput.result_id)
+  }
+
+  const handleSendToPrinter = async () => {
+    if (!selectedSession || !selectedPrintOutput || !selectedPrinterName) return
+    setPrintBusy(true)
+    setPrintError('')
+    setPrintInfo('')
+    try {
+      const response = await fetch('/api/session/send-to-printer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          session_id: selectedSession.session_id,
+          print_id: selectedPrintOutput.print_id,
+          printer_name: selectedPrinterName,
+          copies: Math.max(1, Number(printCopies) || 1),
+        }),
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        throw new Error(data.detail || '프린터 출력 전송 실패')
+      }
+      const jobId = data?.printer_job?.windows_job_id
+      setPrintInfo(`출력 전송 완료: ${selectedPrinterName}${jobId ? ` · Job ${jobId}` : ''}`)
+      await loadPrinters().catch(() => {})
+      const refreshResponse = await fetch(`/api/sessions/${encodeURIComponent(selectedSession.session_id)}/printer-jobs/refresh`, {
+        method: 'POST',
+      })
+      if (refreshResponse.ok) {
+        await refreshResponse.json().catch(() => ({}))
+      }
+    } catch (error) {
+      setPrintError(error.message || '프린터 출력 전송 실패')
+    } finally {
+      setPrintBusy(false)
+    }
+  }
+
+  const handleRefreshPrinterJobs = async () => {
+    if (!selectedSession) return
+    setRefreshPrintJobsBusy(true)
+    setPrintError('')
+    setPrintInfo('')
+    try {
+      const response = await fetch(`/api/sessions/${encodeURIComponent(selectedSession.session_id)}/printer-jobs/refresh`, {
+        method: 'POST',
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        throw new Error(data.detail || '출력 상태 새로고침 실패')
+      }
+    } catch (error) {
+      setPrintError(error.message || '출력 상태 새로고침 실패')
+    } finally {
+      setRefreshPrintJobsBusy(false)
+    }
+  }
+
+  const handleSendTestPage = async () => {
+    if (!selectedPrinterName) return
+    setTestPrintBusy(true)
+    setPrintError('')
+    setPrintInfo('')
+    try {
+      const response = await fetch('/api/printers/test-page', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          printer_name: selectedPrinterName,
+          copies: 1,
+        }),
+      })
+      const data = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        throw new Error(data.detail || '테스트 페이지 출력 실패')
+      }
+      const jobId = data?.dispatch?.windows_job_id
+      setPrintInfo(`테스트 페이지 전송 완료: ${selectedPrinterName}${jobId ? ` · Job ${jobId}` : ''}`)
+      await loadPrinters().catch(() => {})
+    } catch (error) {
+      setPrintError(error.message || '테스트 페이지 출력 실패')
+    } finally {
+      setTestPrintBusy(false)
+    }
   }
 
   const openGallery = (title, items, index = 0) => {
@@ -532,7 +721,7 @@ export default function PrintScreen() {
   }
 
   return (
-    <div className="admin">
+    <div className="admin admin-wide">
       <div className="admin-topbar">
         <span className="brand">픽셀네컷 인화 작업실</span>
       </div>
@@ -542,18 +731,18 @@ export default function PrintScreen() {
         <div className="section-header">
           <h3>지금 인화할 팀</h3>
         </div>
-        {printReadySessions.length === 0 ? (
+        {prioritizedPrintReadySessions.length === 0 ? (
           <div className="friendly-empty">인화 대기 팀이 없습니다.</div>
         ) : (
-          <div className="queue-grid">
-            {printReadySessions.map((session) => (
+          <div className="queue-grid print-priority-grid">
+            {prioritizedPrintReadySessions.map((session, index) => (
               <button
                 key={session.session_id}
-                className={`history-row ${selectedSession?.session_id === session.session_id ? 'selected' : ''}`}
+                className={`history-row print-priority-card ${selectedSession?.session_id === session.session_id ? 'selected' : ''}`}
                 onClick={() => setSelectedSessionId(session.session_id)}
               >
                 <div className="history-row-main">
-                  <strong>{session.session_id}</strong>
+                  <strong>{index + 1}. {session.session_id}</strong>
                   <span>{PHASE_LABEL[session.phase]}</span>
                 </div>
                 <div className="history-row-sub">
@@ -572,196 +761,433 @@ export default function PrintScreen() {
         {!selectedSession ? (
           <div className="friendly-empty">세션을 선택하면 원본, AI 결과, 프레임, 인화본을 한 화면에서 관리할 수 있습니다.</div>
         ) : (
-          <div className="history-layout print-layout">
-            <div className="history-detail print-sidebar">
-              <div className="history-detail-head">
-                <div>
-                  <div className="summary-label">선택 세션</div>
-                  <strong>{selectedSession.session_id}</strong>
+          <div className="print-operator-layout">
+            <div className="composition-stage">
+              <div className="print-card print-session-card">
+                <div className="print-stage-header">
+                  <div>
+                    <div className="summary-label">선택 세션</div>
+                    <strong>{selectedSession.session_id}</strong>
+                  </div>
+                  <span className={`phase-badge phase-${selectedSession.phase}`}>{PHASE_LABEL[selectedSession.phase]}</span>
                 </div>
-                <span className={`phase-badge phase-${selectedSession.phase}`}>{PHASE_LABEL[selectedSession.phase]}</span>
-              </div>
-
-              <div className="history-detail-meta">
-                <span>원본 {selectedSession.shots?.length || 0}장</span>
-                <span>AI 결과 {(selectedSession.generated_results || []).length}개</span>
-                <span>인화본 {(selectedSession.print_outputs || []).length}개</span>
-              </div>
-
-              <div className="section-header compact">
-                <h3>선택된 원본 컷</h3>
-              </div>
-              {selectedSession.selected_shot ? (
-                <button className="image-button" onClick={() => openGallery('원본 사진', selectedSession.shots || [], (selectedSession.shots || []).findIndex((item) => item.shot_id === selectedSession.selected_shot.shot_id))}>
-                  <img src={selectedSession.selected_shot.url} alt={selectedSession.selected_shot.filename} className="history-detail-image print-primary-image" />
-                </button>
-              ) : (
-                <div className="history-empty">선택된 원본 컷이 없습니다.</div>
-              )}
-
-              <div className="section-header compact">
-                <h3>선택된 AI 결과</h3>
-              </div>
-              {selectedResult ? (
-                <button className="image-button" onClick={() => openGallery('AI 결과', selectedSession.generated_results || [], (selectedSession.generated_results || []).findIndex((item) => item.result_id === selectedResult.result_id))}>
-                  <img src={selectedResult.url} alt={selectedResult.filename} className="history-detail-image print-primary-image" />
-                </button>
-              ) : (
-                <div className="history-empty">AI 결과를 먼저 선택하세요.</div>
-              )}
-
-              <div className="action-row">
-                <button
-                  className="btn-primary"
-                  disabled={!['result_ready', 'completed'].includes(selectedSession.phase)}
-                  onClick={handleComplete}
-                >
-                  인화 완료 처리
-                </button>
-              </div>
-            </div>
-
-            <div className="history-detail">
-              <div className="section-header compact">
-                <h3>AI 결과 선택</h3>
-              </div>
-              {(selectedSession.generated_results || []).length > 0 ? (
-                <div className="action-row" style={{ marginBottom: 10 }}>
-                  <button className="btn-primary secondary" onClick={() => openGallery('AI 결과', selectedSession.generated_results || [], 0)}>
-                    AI 결과 전체화면 보기
-                  </button>
+                <div className="session-stat-grid">
+                  <div className="session-stat-card">
+                    <span className="summary-label">우선순위</span>
+                    <strong>{
+                      (() => {
+                        const priorityIndex = prioritizedPrintReadySessions.findIndex((item) => item.session_id === selectedSession.session_id)
+                        return priorityIndex >= 0 ? `${priorityIndex + 1}번` : '대기열 외'
+                      })()
+                    }</strong>
+                  </div>
+                  <div className="session-stat-card">
+                    <span className="summary-label">원본 컷</span>
+                    <strong>{selectedSession.shots?.length || 0}장</strong>
+                  </div>
+                  <div className="session-stat-card">
+                    <span className="summary-label">AI 결과</span>
+                    <strong>{(selectedSession.generated_results || []).length}개</strong>
+                  </div>
+                  <div className="session-stat-card">
+                    <span className="summary-label">저장된 인화본</span>
+                    <strong>{(selectedSession.print_outputs || []).length}개</strong>
+                  </div>
                 </div>
-              ) : null}
-              <div className="result-history-grid selectable-grid">
-                {(selectedSession.generated_results || []).map((result, index) => (
-                  <button
-                    key={`${selectedSession.session_id}-${result.result_id}`}
-                    className={`result-history-card result-pick ${selectedResultId === result.result_id ? 'selected' : ''}`}
-                    onClick={() => setSelectedResultChoice(result.result_id)}
-                    onDoubleClick={() => openGallery('AI 결과', selectedSession.generated_results || [], index)}
-                  >
-                    <img src={result.url} alt={result.filename} className="history-detail-image result-thumb" />
-                    <div className="history-row-sub">{result.filename}</div>
-                  </button>
-                ))}
               </div>
 
-              <div className="section-header compact">
-                <h3>프레임 선택</h3>
+              <div className="preview-pair">
+                <div className="print-card preview-card">
+                  <div className="section-header compact">
+                    <h3>선택된 원본 컷</h3>
+                    {selectedSession.selected_shot ? (
+                      <button
+                        className="btn-primary secondary"
+                        onClick={() => openGallery('원본 사진', selectedSession.shots || [], (selectedSession.shots || []).findIndex((item) => item.shot_id === selectedSession.selected_shot.shot_id))}
+                      >
+                        크게 보기
+                      </button>
+                    ) : null}
+                  </div>
+                  {selectedSession.selected_shot ? (
+                    <>
+                      <button className="image-button" onClick={() => openGallery('원본 사진', selectedSession.shots || [], (selectedSession.shots || []).findIndex((item) => item.shot_id === selectedSession.selected_shot.shot_id))}>
+                        <img src={selectedSession.selected_shot.url} alt={selectedSession.selected_shot.filename} className="history-detail-image print-primary-image preview-card-image" />
+                      </button>
+                      <div className="history-row-sub print-card-muted text-ellipsis">{selectedSession.selected_shot.filename}</div>
+                    </>
+                  ) : (
+                    <div className="history-empty">선택된 원본 컷이 없습니다.</div>
+                  )}
+                </div>
+
+                <div className="print-card preview-card">
+                  <div className="section-header compact">
+                    <h3>선택된 AI 결과</h3>
+                    {(selectedSession.generated_results || []).length > 0 ? (
+                      <button className="btn-primary secondary" onClick={() => openGallery('AI 결과', selectedSession.generated_results || [], 0)}>
+                        결과 모아보기
+                      </button>
+                    ) : null}
+                  </div>
+                  {selectedResult ? (
+                    <>
+                      <button className="image-button" onClick={() => openGallery('AI 결과', selectedSession.generated_results || [], (selectedSession.generated_results || []).findIndex((item) => item.result_id === selectedResult.result_id))}>
+                        <img src={selectedResult.url} alt={selectedResult.filename} className="history-detail-image print-primary-image preview-card-image" />
+                      </button>
+                      <div className="history-row-sub print-card-muted text-ellipsis">{selectedResult.filename}</div>
+                      <div className="history-row-sub print-card-muted text-ellipsis">소스 컷: {selectedResult.source_shot_filename || '기록 없음'}</div>
+                    </>
+                  ) : (
+                    <div className="history-empty">AI 결과를 먼저 선택하세요.</div>
+                  )}
+                </div>
               </div>
-              {frameError ? (
-                <div className="friendly-empty">{frameError}</div>
-              ) : (
-                <div className="frame-grid">
-                  {frames.map((frame) => (
+
+              <div className="print-card">
+                <div className="section-header compact">
+                  <h3>AI 결과 선택</h3>
+                </div>
+                <div className="result-history-grid selectable-grid compact-gallery-grid">
+                  {(selectedSession.generated_results || []).map((result, index) => (
                     <button
-                      key={frame.frame_id}
-                      className={`frame-card ${selectedFrameId === frame.frame_id ? 'selected' : ''}`}
-                      onClick={() => setSelectedFrameChoice(frame.frame_id)}
+                      key={`${selectedSession.session_id}-${result.result_id}`}
+                      className={`result-history-card result-pick ${selectedResultId === result.result_id ? 'selected' : ''}`}
+                      onClick={() => setSelectedResultChoice(result.result_id)}
+                      onDoubleClick={() => openGallery('AI 결과', selectedSession.generated_results || [], index)}
                     >
-                      <img src={frame.url} alt={frame.label} className="frame-thumb" />
-                      <span>{frame.label}</span>
+                      <img src={result.url} alt={result.filename} className="history-detail-image result-thumb" />
+                      <div className="history-row-sub text-ellipsis">{result.filename}</div>
+                      <div className="history-row-sub text-ellipsis">소스 컷: {result.source_shot_filename || '기록 없음'}</div>
                     </button>
                   ))}
                 </div>
-              )}
+              </div>
 
-              <div className="compose-panel">
-                <div>
-                  <div className="summary-label">현재 선택</div>
-                  <strong>{selectedFrame?.label || '프레임 없음'}</strong>
-                  <div className="history-row-sub">
-                    위에는 일반 사진, 아래에는 선택한 AI 결과가 들어갑니다.
-                  </div>
+              <div className="print-card">
+                <div className="section-header compact">
+                  <h3>프레임 선택</h3>
                 </div>
-                <button
-                  className="btn-primary compose-button"
-                  disabled={!selectedFrameId || !selectedResultId || composeBusy}
-                  onClick={handleComposePrint}
-                >
-                  {composeBusy ? '최종 인화본 만드는 중...' : '최종 인화본 만들기'}
-                </button>
-              </div>
-              {composeError ? <div className="flash flash-err">{composeError}</div> : null}
-
-              <div className="section-header compact">
-                <h3>최종 인화본 미리보기</h3>
-              </div>
-              <PrintPreview
-                originalUrl={selectedSession.selected_shot?.url}
-                aiUrl={selectedResult?.url}
-                frameUrl={selectedFrame?.url}
-                layout={activeLayout}
-                slots={selectedFrameSlots}
-                activeSlot={activeSlot}
-                onSelectSlot={setActiveSlot}
-                onDragSlot={updateSlotLayout}
-                onScaleSlot={adjustSlotScale}
-              />
-
-              <div className="layout-editor-grid">
-                <LayoutControl
-                  title="일반 사진"
-                  layout={activeLayout.original}
-                  isActive={activeSlot === 'original'}
-                  onSelect={() => setActiveSlot('original')}
-                  onScaleStep={(delta) => adjustSlotScale('original', delta)}
-                  onCenter={() => handleCenterSlot('original')}
-                  onReset={() => handleResetSlot('original')}
-                />
-                <LayoutControl
-                  title="AI 사진"
-                  layout={activeLayout.ai}
-                  isActive={activeSlot === 'ai'}
-                  onSelect={() => setActiveSlot('ai')}
-                  onScaleStep={(delta) => adjustSlotScale('ai', delta)}
-                  onCenter={() => handleCenterSlot('ai')}
-                  onReset={() => handleResetSlot('ai')}
-                />
-              </div>
-
-              <div className="section-header compact">
-                <h3>저장된 최종 인화본</h3>
-              </div>
-              {selectedPrintOutput ? (
-                <>
-                  <button className="image-button" onClick={() => openGallery('인화본', selectedSession.print_outputs || [], (selectedSession.print_outputs || []).findIndex((item) => item.print_id === selectedPrintOutput.print_id))}>
-                    <img src={selectedPrintOutput.url} alt={selectedPrintOutput.filename} className="history-detail-image print-final-preview" />
-                  </button>
-                  <div className="history-row-sub">
-                    {selectedPrintOutput.filename} · 프레임 {selectedPrintOutput.frame_id} · 원본 scale {Math.round((selectedPrintOutput.layout?.original?.scale ?? 1) * 100)}%
-                  </div>
-                </>
-              ) : (
-                <div className="history-empty">프레임과 위치를 조절한 뒤 최종 인화본을 만들면 여기에서 저장본을 확인할 수 있습니다.</div>
-              )}
-
-              <div className="section-header compact">
-                <h3>저장된 인화본</h3>
-              </div>
-              {(selectedSession.print_outputs || []).length > 0 ? (
-                <div className="action-row" style={{ marginBottom: 10 }}>
-                  <button className="btn-primary secondary" onClick={() => openGallery('인화본', selectedSession.print_outputs || [], 0)}>
-                    인화본 전체화면 보기
-                  </button>
-                </div>
-              ) : null}
-              <div className="print-output-grid">
-                {(selectedSession.print_outputs || []).length === 0 ? (
-                  <div className="history-empty">아직 저장된 인화본이 없습니다.</div>
+                {frameError ? (
+                  <div className="friendly-empty">{frameError}</div>
                 ) : (
-                  selectedSession.print_outputs.map((printOutput, index) => (
-                    <button
-                      key={`${selectedSession.session_id}-${printOutput.print_id}`}
-                      className={`result-history-card result-pick ${selectedPrintId === printOutput.print_id ? 'selected' : ''}`}
-                      onClick={() => handleSelectPrintOutput(printOutput)}
-                      onDoubleClick={() => openGallery('인화본', selectedSession.print_outputs || [], index)}
-                    >
-                      <img src={printOutput.url} alt={printOutput.filename} className="history-detail-image result-thumb" />
-                      <div className="history-row-sub">{printOutput.filename}</div>
-                    </button>
-                  ))
+                  <div className="frame-grid compact-gallery-grid">
+                    {frames.map((frame) => (
+                      <button
+                        key={frame.frame_id}
+                        className={`frame-card ${selectedFrameId === frame.frame_id ? 'selected' : ''}`}
+                        onClick={() => setSelectedFrameChoice(frame.frame_id)}
+                      >
+                        <img src={frame.url} alt={frame.label} className="frame-thumb" />
+                        <span>{frame.label}</span>
+                      </button>
+                    ))}
+                  </div>
                 )}
+
+                <div className="compose-panel print-compose-panel">
+                  <div className="print-selection-summary">
+                    <div className="summary-label">현재 선택</div>
+                    <strong>{selectedFrame?.label || '프레임 없음'}</strong>
+                    <div className="history-row-sub">위에는 일반 사진, 아래에는 선택한 AI 결과가 들어갑니다.</div>
+                  </div>
+                  <button
+                    className="btn-primary compose-button"
+                    disabled={!selectedFrameId || !selectedResultId || composeBusy}
+                    onClick={handleComposePrint}
+                  >
+                    {composeBusy ? '최종 인화본 만드는 중...' : '최종 인화본 만들기'}
+                  </button>
+                </div>
+                {composeError ? <div className="flash flash-err">{composeError}</div> : null}
+              </div>
+
+              <div className="print-card">
+                <div className="section-header compact">
+                  <h3>최종 인화본 레이아웃 조정</h3>
+                </div>
+                <PrintPreview
+                  originalUrl={selectedSession.selected_shot?.url}
+                  aiUrl={selectedResult?.url}
+                  frameUrl={selectedFrame?.url}
+                  layout={activeLayout}
+                  slots={selectedFrameSlots}
+                  activeSlot={activeSlot}
+                  onSelectSlot={setActiveSlot}
+                  onDragSlot={updateSlotLayout}
+                  onScaleSlot={adjustSlotScale}
+                />
+
+                <div className="layout-editor-grid">
+                  <LayoutControl
+                    title="일반 사진"
+                    layout={activeLayout.original}
+                    isActive={activeSlot === 'original'}
+                    onSelect={() => setActiveSlot('original')}
+                    onScaleStep={(delta) => adjustSlotScale('original', delta)}
+                    onCenter={() => handleCenterSlot('original')}
+                    onReset={() => handleResetSlot('original')}
+                  />
+                  <LayoutControl
+                    title="AI 사진"
+                    layout={activeLayout.ai}
+                    isActive={activeSlot === 'ai'}
+                    onSelect={() => setActiveSlot('ai')}
+                    onScaleStep={(delta) => adjustSlotScale('ai', delta)}
+                    onCenter={() => handleCenterSlot('ai')}
+                    onReset={() => handleResetSlot('ai')}
+                  />
+                </div>
+              </div>
+
+              <div className="print-card">
+                <div className="section-header compact">
+                  <h3>저장된 인화본</h3>
+                  {(selectedSession.print_outputs || []).length > 0 ? (
+                    <button className="btn-primary secondary" onClick={() => openGallery('인화본', selectedSession.print_outputs || [], 0)}>
+                      전체화면 보기
+                    </button>
+                  ) : null}
+                </div>
+                <div className="print-output-grid compact-gallery-grid">
+                  {(selectedSession.print_outputs || []).length === 0 ? (
+                    <div className="history-empty">아직 저장된 인화본이 없습니다.</div>
+                  ) : (
+                    selectedSession.print_outputs.map((printOutput, index) => (
+                      <button
+                        key={`${selectedSession.session_id}-${printOutput.print_id}`}
+                        className={`result-history-card result-pick ${selectedPrintId === printOutput.print_id ? 'selected' : ''}`}
+                        onClick={() => handleSelectPrintOutput(printOutput)}
+                        onDoubleClick={() => openGallery('인화본', selectedSession.print_outputs || [], index)}
+                      >
+                        <img src={printOutput.url} alt={printOutput.filename} className="history-detail-image result-thumb" />
+                        <div className="history-row-sub text-ellipsis">{printOutput.filename}</div>
+                      </button>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="command-sidebar">
+              <div className="command-sidebar-sticky sidebar-scrollable">
+                <div className="print-card unified-sidebar-card">
+                  <div className="sidebar-section">
+                    <div className="section-header compact">
+                      <h3>출력 대상</h3>
+                    </div>
+                    {selectedPrintOutput ? (
+                      <div className="print-sidebar-stack">
+                        <button className="image-button" onClick={() => openGallery('인화본', selectedSession.print_outputs || [], (selectedSession.print_outputs || []).findIndex((item) => item.print_id === selectedPrintOutput.print_id))}>
+                          <img src={selectedPrintOutput.url} alt={selectedPrintOutput.filename} className="history-detail-image print-final-preview" />
+                        </button>
+                        <div className="print-meta-list">
+                          <div className="print-meta-row">
+                            <span className="summary-label">파일</span>
+                            <strong className="text-ellipsis">{selectedPrintOutput.filename}</strong>
+                          </div>
+                          <div className="print-meta-row">
+                            <span className="summary-label">프레임</span>
+                            <strong>{selectedPrintOutput.frame_id}</strong>
+                          </div>
+                          <div className="print-meta-row">
+                            <span className="summary-label">원본 확대</span>
+                            <strong>{Math.round((selectedPrintOutput.layout?.original?.scale ?? 1) * 100)}%</strong>
+                          </div>
+                          {selectedPrintOutput.last_printer_name ? (
+                            <div className="print-meta-row">
+                              <span className="summary-label">최근 전송</span>
+                              <strong className="text-ellipsis">
+                                {selectedPrintOutput.last_printer_name} · {selectedPrintOutput.copies || 1}장 · {selectedPrintOutput.job_status || selectedPrintOutput.status || 'sent'}
+                                {selectedPrintOutput.windows_job_id ? ` · Job ${selectedPrintOutput.windows_job_id}` : ''}
+                              </strong>
+                            </div>
+                          ) : null}
+                          {selectedPrintOutput.document_name || selectedPrintOutput.submitted_time ? (
+                            <div className="print-meta-row">
+                              <span className="summary-label">스풀 정보</span>
+                              <strong className="text-ellipsis">
+                                {selectedPrintOutput.document_name ? `문서명 ${selectedPrintOutput.document_name}` : '문서명 없음'}
+                                {selectedPrintOutput.submitted_time ? ` · 제출 ${selectedPrintOutput.submitted_time}` : ''}
+                              </strong>
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="history-empty">프레임과 위치를 조절한 뒤 최종 인화본을 만들면 여기에서 확인할 수 있습니다.</div>
+                    )}
+                  </div>
+
+                  <div className="sidebar-divider" />
+
+                  <div className="sidebar-section">
+                    <div className="section-header compact">
+                      <h3>프린터 출력</h3>
+                      <div className="action-row">
+                        <button className="btn-primary secondary" onClick={() => loadPrinters().catch((error) => setPrinterError(error.message || '프린터 목록을 불러오지 못했습니다.'))}>
+                          프린터 새로고침
+                        </button>
+                        <button className="btn-primary secondary" disabled={!selectedSession || refreshPrintJobsBusy} onClick={handleRefreshPrinterJobs}>
+                          {refreshPrintJobsBusy ? '상태 확인 중...' : '출력 상태 새로고침'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {printerError ? <div className="history-empty">{printerError}</div> : null}
+                    {!printerError && printers.length === 0 ? (
+                      <div className="history-empty">표시 가능한 프린터가 없습니다. Windows에 CP1500 프린터를 설치하고, 필요하면 `PRINTER_NAME_ALLOWLIST` 설정을 확인하세요.</div>
+                    ) : null}
+                    {!printerError && printers.length === 0 && printerDiagnostics ? (
+                      <div className="printer-diagnostics-box">
+                        <div className="history-row-sub">Windows 등록 프린터 {printerDiagnostics.all_printers?.length || 0}대 · 숨김 {printerDiagnostics.hidden_printers?.length || 0}대</div>
+                        <div className="history-row-sub">숨김 프린터: {printerDiagnostics.hidden_printers?.length ? printerDiagnostics.hidden_printers.map((printer) => printer.name).join(', ') : '없음'}</div>
+                        <div className="history-row-sub">설치된 드라이버: {(printerDiagnostics.installed_print_drivers || []).length > 0 ? printerDiagnostics.installed_print_drivers.map((driver) => driver.name).join(', ') : '없음'}</div>
+                        <div className="history-row-sub">관련 장치: {(printerDiagnostics.related_pnp_devices || []).length > 0 ? printerDiagnostics.related_pnp_devices.map((device) => device.friendly_name || device.instance_id).join(', ') : '없음'}</div>
+                      </div>
+                    ) : null}
+
+                    {printers.length > 0 ? (
+                      <>
+                        <div className="printer-form-grid">
+                          <label className="form-col">
+                            <span className="summary-label">프린터 선택</span>
+                            <select value={selectedPrinterName} onChange={(event) => setSelectedPrinterName(event.target.value)}>
+                              {printers.map((printer) => (
+                                <option key={printer.name} value={printer.name} disabled={!printer.is_available}>
+                                  {printer.name}{printer.is_available ? '' : ' (오프라인)'}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
+                          <label className="form-col printer-copies">
+                            <span className="summary-label">장수</span>
+                            <input
+                              type="number"
+                              min="1"
+                              max="9"
+                              value={printCopies}
+                              onChange={(event) => setPrintCopies(event.target.value)}
+                            />
+                          </label>
+                        </div>
+
+                        <div className="printer-toolbar">
+                          <button
+                            className="btn-primary printer-primary-action"
+                            disabled={!selectedPrintOutput || !selectedPrinterName || !selectedPrinter?.is_available || printBusy}
+                            onClick={handleSendToPrinter}
+                          >
+                            {printBusy ? '프린터로 보내는 중...' : '선택 프린터로 출력'}
+                          </button>
+                          <button
+                            className="btn-primary secondary"
+                            disabled={!selectedPrinterName || !selectedPrinter?.is_available || testPrintBusy}
+                            onClick={handleSendTestPage}
+                          >
+                            {testPrintBusy ? '테스트 페이지 전송 중...' : '테스트 페이지 출력'}
+                          </button>
+                        </div>
+                      </>
+                    ) : null}
+
+                    {printerCapabilities?.preferred_paper ? (
+                      <div className="history-row-sub">추천 용지: {printerCapabilities.preferred_paper.name}{printerCapabilities.preferred_paper.width && printerCapabilities.preferred_paper.height ? ` (${printerCapabilities.preferred_paper.width}x${printerCapabilities.preferred_paper.height})` : ''}</div>
+                    ) : null}
+                    {selectedPrinterName && printerCapabilities && !printerCapabilities.preferred_paper ? (
+                      <div className="history-row-sub">이 프린터 드라이버에서는 postcard/4x6 용지를 찾지 못했습니다.</div>
+                    ) : null}
+                    {selectedPrinter && !selectedPrinter.is_available ? (
+                      <div className="history-row-sub">선택한 프린터가 현재 오프라인 상태입니다. 다른 프린터를 고르거나 연결 상태를 확인하세요.</div>
+                    ) : null}
+                    {printError ? <div className="flash flash-err">{printError}</div> : null}
+                    {printInfo ? <div className="flash">{printInfo}</div> : null}
+                  </div>
+
+                  <div className="sidebar-divider" />
+
+                  <div className="sidebar-section">
+                    <div className="section-header compact">
+                      <h3>출력 작업 추적</h3>
+                    </div>
+                    {selectedSession.latest_printer_job ? (
+                      <div className="print-meta-list">
+                        <div className="print-meta-row">
+                          <span className="summary-label">최근 출력</span>
+                          <strong className="text-ellipsis">
+                            {selectedSession.latest_printer_job.printer_name} · {selectedSession.latest_printer_job.copies}장 · {selectedSession.latest_printer_job.status}
+                            {selectedSession.latest_printer_job.windows_job_id ? ` · Job ${selectedSession.latest_printer_job.windows_job_id}` : ''}
+                          </strong>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="history-row-sub">아직 프린터로 보낸 기록이 없습니다.</div>
+                    )}
+
+                    {(selectedSession.printer_jobs || []).length > 0 ? (
+                      <div className="printer-job-list">
+                        {selectedSession.printer_jobs.map((job) => (
+                          <div key={job.printer_job_id} className="printer-job-card">
+                            <div className="printer-job-card-head">
+                              <strong className="text-ellipsis">{job.printer_name}</strong>
+                              <span>{job.job_status || job.status}</span>
+                            </div>
+                            <div className="printer-job-meta">
+                              <span className="text-ellipsis">인화본 {job.print_id}</span>
+                              <span>{job.copies}장</span>
+                              <span>{job.windows_job_id ? `Job ${job.windows_job_id}` : 'Job 없음'}</span>
+                              <span className="text-ellipsis">{job.submitted_time || '제출 시각 없음'}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="sidebar-divider" />
+
+                  <div className="sidebar-section">
+                    <div className="section-header compact">
+                      <h3>프린터 상태</h3>
+                    </div>
+                    {printers.length > 0 ? (
+                      <div className="printer-status-list">
+                        {printers.map((printer) => (
+                          <div key={printer.name} className="printer-status-card">
+                            <div className="printer-status-card-head">
+                              <strong className="text-ellipsis">{printer.name}</strong>
+                              <span className={`status-chip ${printer.is_available ? 'ok' : 'warn'}`}>{printer.is_available ? '준비됨' : '오프라인'}</span>
+                            </div>
+                            <div className="printer-job-meta">
+                              <span className="text-ellipsis">포트 {printer.port_name || '-'}</span>
+                              <span className="text-ellipsis">{printer.driver_name || '-'}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="history-row-sub">표시 가능한 프린터가 없으면 이 영역이 비어 있습니다.</div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="print-card">
+                  <div className="section-header compact">
+                    <h3>세션 마감</h3>
+                  </div>
+                  <div className="print-sidebar-stack">
+                    <button
+                      className="btn-primary printer-primary-action"
+                      disabled={!['result_ready', 'completed'].includes(selectedSession.phase) || !selectedPrintWasSent}
+                      onClick={handleComplete}
+                    >
+                      인화 완료 처리 후 다음 팀으로
+                    </button>
+                    {!selectedPrintWasSent && selectedPrintOutput ? (
+                      <div className="history-row-sub">완료 처리 전, 현재 선택된 인화본을 프린터로 한 번 보내야 합니다.</div>
+                    ) : null}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
