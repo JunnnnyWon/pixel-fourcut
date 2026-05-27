@@ -1,7 +1,6 @@
 # 픽셀네컷 — AI 포토부스 부스 운영 시스템
 
-> Canon DSLR → 파일 워처 → FastAPI 상태머신 → ComfyUI(로컬/원격 GPU) → Canon SELPHY CP1500.
-> 행사장 한복판에서 손님 한 명당 60초 안에 "촬영 → AI 변환 → 4컷 인쇄"를 끝내는 실전 부스 코드.
+행사장에서 손님 한 명을 1분 안에 통과시키는 게 목표였다. DSLR로 찍은 사진을 ComfyUI에 흘려보내 스타일을 입히고, 4컷으로 합쳐 SELPHY로 뽑아 손에 쥐여주는 흐름 — 그걸 운영자 한 명이 한 화면에서 굴릴 수 있게 만든 시스템.
 
 ![Hero](docs/images/hero.jpg)
 
@@ -9,12 +8,12 @@
 
 ---
 
-## TL;DR
+## 이게 뭔가요
 
-- **무엇을 만들었나** — 행사용 AI 포토부스. 운영자 1명이 `/admin` 한 화면에서 N개의 손님 세션을 동시에 굴린다.
-- **왜 직접 만들었나** — 시판 키오스크는 ComfyUI 워크플로우 핫스왑이 불가능하고, Canon DSLR + SELPHY 조합을 묶어주는 솔루션이 없었음.
-- **기술 스택** — FastAPI + WebSocket + asyncio · React 19 + Vite 8 · ComfyUI HTTP/WS API · Canon EOS Utility · SELPHY CP1500 (Windows 인쇄 큐).
-- **핵심 챌린지** — (1) 파일 워처 race condition, (2) 다중 세션 상태머신, (3) ComfyUI 워크플로우 동적 패치, (4) 로컬/원격 GPU 추상화, (5) 1200×1800 인쇄 레이아웃 수학, (6) 행사 중 강제 복구.
+- **무엇** — 행사용 AI 포토부스. 운영자 한 명이 `/admin` 한 화면에서 촬영 → AI 변환 → 인쇄까지 굴린다. 촬영은 한 명씩, 처리·인쇄는 큐에 쌓아 병렬로.
+- **왜 직접 만들었나** — 시판 키오스크는 ComfyUI 워크플로우를 자유롭게 갈아끼울 수 없고, Canon DSLR과 SELPHY를 한 흐름에 묶어주는 기성 솔루션이 없었다.
+- **무엇으로 만들었나** — FastAPI + WebSocket + asyncio (백엔드), React 19 + Vite 8 (프론트), ComfyUI HTTP/WS API, Canon EOS Utility, SELPHY CP1500 (Windows 인쇄 큐).
+- **무엇이 어려웠나** — 파일 워처 race condition, 여러 세션을 굴리는 상태머신, ComfyUI 워크플로우 동적 변경, 로컬/원격 GPU를 같은 코드로 다루기, 1200×1800 인쇄 레이아웃 좌표 변환, 그리고 행사 중 멈추지 않는 복구 경로.
 
 ---
 
@@ -130,83 +129,33 @@ sequenceDiagram
 
 ---
 
-## 기술 하이라이트 6선
+## 기술 하이라이트 6선 — 부스에서 배운 것들
 
-### 1. 파일 워처: race condition을 죽이는 폴링 + size-stable 체크
-DSLR이 JPG를 쓰는 동안 워처가 미완성 파일을 잡아 ComfyUI에 던지면 처리 실패가 났다. `watchfiles` 패키지가 의존성에 있지만 실제로는 **0.5초 폴링 + 8회 size-stable 재확인** 방식이 더 안정적이라 그쪽으로 갔다.
+코드를 쓴 이유는 대부분 책상이 아니라 행사장에서 정해졌다. 각 항목 끝에 관련 파일 경로를 남겨뒀으니 궁금하면 들어가서 보면 된다.
 
-```python
-# backend/watcher.py
-async def _wait_until_file_stable(path: Path, retries: int = 8, delay: float = 0.2):
-    previous_size = -1
-    for _ in range(retries):
-        current_size = path.stat().st_size
-        if current_size > 0 and current_size == previous_size:
-            return
-        previous_size = current_size
-        await asyncio.sleep(delay)
-```
+### 1. 워처는 단순해야 안 죽는다
+초기에는 `watchfiles` 같은 이벤트 기반 워처를 썼는데, 윈도우에서 DSLR이 USB로 마운트한 폴더는 이벤트를 가끔 흘렸다. 한 장이라도 놓치면 손님은 "내 사진은요?" 하고 묻는다. 결국 0.5초 폴링으로 내려갔고, 새 파일을 발견하면 크기가 멈출 때까지 몇 차례 더 확인한 뒤에야 다음 단계로 넘긴다. DSLR이 JPG를 쓰는 중인 미완성 파일이 ComfyUI로 넘어가는 사고를 막기 위해서다. 미적으로는 못생긴 폴링이지만, 행사 8시간 동안 한 장도 놓치지 않았다.
 → [`backend/watcher.py`](backend/watcher.py)
 
-### 2. SessionState — 영속 상태머신 (god node)
-`capturing → reviewing → queued → processing → result_ready → completed` 의 phase 전이를 단일 클래스가 책임진다. **모든 변경은 즉시 `meta.json`에 flush** 되므로 부스 PC가 꺼져도 재기동 시 `load_from_disk()`로 활성 세션을 복원한다. 동시에 처리 중 세션은 N개까지 가능하지만 **`active_capture_session_id` (촬영 중인 세션)는 유일하다** — 이게 운영자 인지 부하를 결정적으로 줄였다.
+### 2. 한 손님의 일생은 디스크에 새겨둔다
+부스 PC가 한 번 꺼진 적이 있다. 전원 케이블이 빠졌다. 다행히 세션의 모든 상태를 매 변경마다 `meta.json`에 즉시 저장해두는 구조였어서, 재기동 후 디스크에서 활성 세션을 복원하고 그대로 이어 진행했다. 손님은 우리가 컴퓨터를 재부팅한 줄도 몰랐다. "메모리에만 있는 상태"는 행사장에서 사치다.
+→ [`backend/session.py`](backend/session.py) (`SessionState` 클래스가 이 책임을 진다)
 
-→ [`backend/session.py`](backend/session.py) (752줄, `SessionState` 클래스 전체)
+### 3. "촬영 중인 손님은 한 명" 규칙
+한 번은 욕심을 부려 여러 손님을 동시에 촬영시켜봤다. 운영자가 화면에서 "지금 이 사진이 누구 거지?"를 계속 헷갈렸다. 그래서 정책을 단순하게 굳혔다 — 촬영은 한 번에 한 손님만, 다만 AI 처리/인쇄 단계는 여러 손님이 큐에 들어가도 된다. 이 분리 하나로 운영 부하가 절반으로 줄었다. 동시성을 늘리는 게 항상 옳지는 않다.
+→ [`backend/session.py`](backend/session.py)
 
-### 3. ComfyUI 워크플로우 동적 패치 + 프리셋 핫스왑
-운영 중 "이번 손님은 다른 스타일로" 같은 요청이 들어왔을 때 `workspace/presets/active.json`만 교체하면 다음 세션부터 즉시 반영된다. 워크플로우 JSON을 deepcopy 한 뒤 `LoadImage` 노드의 입력만 갈아끼고 시드도 옵션으로 override.
+### 4. 스타일 핫스왑 — 손님 앞에서 워크플로우 갈아끼우기
+"앞 손님이랑 다른 느낌으로 가능해요?" 행사장에서 가장 자주 들은 질문이다. 그래서 ComfyUI 워크플로우 JSON을 폴더에 모아두고, `active.json`만 바꾸면 다음 세션부터 새 스타일이 적용되도록 했다. 입력 이미지는 워크플로우 안의 `LoadImage` 노드만 동적으로 갈아끼우면 되고, 시드도 필요하면 그 자리에서 덮어쓴다. 운영자가 ComfyUI를 몰라도 스타일 전환이 가능하다는 게 중요했다.
+→ [`backend/comfy_client.py`](backend/comfy_client.py), [`workspace/presets/`](workspace/presets/)
 
-```python
-# backend/comfy_client.py
-def patch_workflow(workflow: dict, filename: str, seed_override=None) -> dict:
-    wf = copy.deepcopy(workflow)
-    for node in wf.values():
-        inputs = node.get("inputs", {})
-        if node.get("class_type") == "LoadImage":
-            inputs["image"] = filename
-        if seed_override is not None:
-            for key in ("seed", "noise_seed"):
-                if key in inputs:
-                    inputs[key] = seed_override
-    return wf
-```
-→ [`backend/comfy_client.py`](backend/comfy_client.py)
+### 5. 로컬 GPU와 원격 GPU를 같은 코드로
+부스마다 환경이 다르다. 어떤 행사장은 부스 PC에 GPU가 있어 ComfyUI를 로컬에서 돌리고, 어떤 행사장은 노트북뿐이라 Runyour AI Cloud의 원격 GPU를 빌렸다. 원격 게이트웨이는 인증 헤더나 Bearer 토큰을 요구해서, 모든 HTTP 호출과 WebSocket 연결에 헤더를 자동 주입하는 한 곳을 만들었다. 덕분에 부스 코드 한 줄도 안 고치고 환경변수만 바꿔서 어디서든 돌렸다.
+→ [`backend/config.py`](backend/config.py), [`backend/runner.py`](backend/runner.py)
 
-### 4. 로컬/원격 GPU 추상화 — Runyour 프록시 헤더 주입
-같은 코드를 (a) 부스 PC의 로컬 ComfyUI와 (b) Runyour AI Cloud의 원격 GPU 양쪽에 붙일 수 있어야 했다. 원격 쪽은 게이트웨이가 커스텀 헤더 또는 Bearer 토큰을 요구해서, **모든 httpx 클라이언트와 ComfyUI WebSocket 연결에 `get_comfyui_headers()`를 일괄 주입**하는 구조로 통일.
-
-```python
-# backend/runner.py — ComfyUI WS도 같은 헤더 주입
-async with websockets.connect(
-    f"{ws_url}/ws?clientId={client_id}",
-    additional_headers=get_comfyui_headers() or None,
-) as ws:
-    ...
-```
-환경변수 `COMFYUI_HEADERS_JSON`(JSON 문자열) / `COMFYUI_BEARER_TOKEN` 두 가지를 모두 지원.
-→ [`backend/runner.py`](backend/runner.py), [`backend/config.py`](backend/config.py)
-
-### 5. 1200×1800 인쇄 레이아웃 수학 — cover-fit + 드래그/리사이즈
-SELPHY CP1500의 L판(89×119mm, 약 1200×1800px @ 300dpi) 안에 4컷을 cover 방식으로 채우면서, 운영자가 프레임 안에서 컷을 드래그/리사이즈할 수 있어야 했다. 핵심은 **프리뷰 좌표(브라우저 픽셀)와 인쇄 좌표(1200×1800)를 `previewScale`로 일관 변환**하는 것.
-
-```js
-// frontend/src/printLayoutMath.js
-export function applyResizeDelta({ origin, handle, baseSize, startScale, deltaX, deltaY, previewScale }) {
-  const startWidth = baseSize.width * startScale
-  const logicalDeltaX = deltaX / previewScale          // 프리뷰 → 인쇄 좌표 변환
-  const nextWidth = Math.max(baseSize.width, startWidth + handle.sx * logicalDeltaX)
-  const nextScale = clampScale(Math.max(nextWidth / baseSize.width, ...))
-  ...
-}
-```
-→ [`frontend/src/printLayoutMath.js`](frontend/src/printLayoutMath.js), [`docs/frame-design-spec.md`](docs/frame-design-spec.md)
-
-### 6. 행사 중 장애 내성 — 강제 초기화, 결과 로컬 캐시, ComfyUI 재연결
-실전에서 가장 무서운 건 "줄 서 있는 손님 앞에서 멈춤"이다. 그래서 세 가지를 깔아뒀다:
-
-- **`run_worker`의 5회 재시도** — ComfyUI WS가 끊겨도 백오프 후 재연결, 마지막에 history API로 결과 회수 시도. ([runner.py:79-149](backend/runner.py))
-- **결과 로컬 캐시** — 원격 GPU의 결과를 `workspace/sessions/<id>/result-NNN.*`에 즉시 저장. Runyour 세션이 죽어도 인쇄/재확인은 로컬에서 가능. ([session.py `cache_result_file`](backend/session.py))
-- **강제 초기화 버튼** — 운영자가 `/admin`에서 한 번에 active session을 비우고 다음 손님으로 넘어갈 수 있도록 `discard_session()` 노출.
+### 6. 운영자는 "되돌리기"를 가장 많이 누른다
+손님 흐름은 늘 꼬인다. 사진을 잘못 골랐다, AI 결과가 마음에 안 든다, 다음 손님 차례인데 이전 세션이 안 끝났다. 정상 플로우보다 복구 플로우가 먼저였다. 촬영 다시 하기, 세션 통째로 버리기, 강제 초기화 — 운영자가 한 번 클릭으로 다음 손님에게 넘어갈 수 있는 경로를 처음부터 모든 단계에 깔아뒀다. 그리고 원격 GPU가 한 번 죽었을 때를 대비해 결과는 항상 로컬에도 캐싱한다. 원격이 죽어도 인쇄는 안 멈춘다.
+→ [`backend/runner.py`](backend/runner.py), [`backend/session.py`](backend/session.py)
 
 ---
 
@@ -284,27 +233,6 @@ start.bat            # Windows
 | `SESSIONS_FOLDER` | 세션 영속 디렉토리 (기본: `workspace/sessions`) |
 
 프로파일 예시: `.env.local.example` (로컬), `.env.runyour.example` (원격 GPU).
-
----
-
-## 부스 운영 회고
-
-실제 행사 운영하면서 코드 결정에 직접 영향을 준 것들.
-
-**1. "촬영 중 세션 1개" 제약은 옳았다**
-N개 동시 촬영을 허용하면 운영자가 어느 손님 사진을 보고 있는지 헷갈린다. `active_capture_session_id` 단일 슬롯 + 처리/인쇄 단계는 N개 큐 — 이 분리가 운영 부하를 절반으로 줄였다.
-
-**2. 결과 로컬 캐시는 보험이 아니라 필수였다**
-원격 GPU 인스턴스가 행사 중간에 한 번 죽었다. 결과를 로컬에 미리 저장해뒀던 덕에 인쇄는 멈추지 않았다. 이후 "원격은 처리 전용, 인쇄/재확인은 로컬"이 기본 원칙이 됨.
-
-**3. 운영자는 "되돌리기" 버튼을 가장 많이 누른다**
-`retry_capture`, `discard_session`, 강제 초기화 — 손님 흐름이 꼬였을 때 즉시 리셋할 수 있는 경로가 없으면 줄이 밀린다. 정상 플로우보다 **복구 플로우를 먼저 설계**해야 한다.
-
-**4. 인쇄 레이아웃 편집은 직관 > 정밀**
-운영자는 행사장에서 마우스 드래그로 컷을 옮길 시간만 있다. 수치 입력 UI는 다 빠지고 드래그/핀치만 남았다. `printLayoutMath.js`의 좌표 변환이 이 결정을 가능하게 했다.
-
-**5. 워처는 단순할수록 안 죽는다**
-`watchfiles` 도입을 시도했지만, 윈도우 USB 마운트 폴더에서 inotify 계열이 가끔 이벤트를 흘렸다. 0.5초 폴링이 미적이지는 않지만 행사 8시간 동안 한 장도 놓치지 않았다.
 
 ---
 
