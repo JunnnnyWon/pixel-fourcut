@@ -1,6 +1,6 @@
 # 픽셀네컷 — AI 포토부스 부스 운영 시스템
 
-행사장에서 손님 한 명을 1분 안에 통과시키는 게 목표였다. DSLR로 찍은 사진을 ComfyUI에 흘려보내 스타일을 입히고, 4컷으로 합쳐 SELPHY로 뽑아 손에 쥐여주는 흐름 — 그걸 운영자 한 명이 한 화면에서 굴릴 수 있게 만든 시스템.
+행사장에서 손님 한 명을 1분 안에 통과시키는 게 목표였다. DSLR로 찍은 사진을 ComfyUI에 흘려보내 스타일을 입히고, 2컷으로 합쳐 SELPHY로 뽑아 손에 쥐여주는 흐름 — 그걸 운영자 한 명이 한 화면에서 굴릴 수 있게 만든 시스템.
 
 ![Hero](docs/images/hero.png)
 
@@ -19,23 +19,27 @@
 
 ## 데모 갤러리
 
-| 부스 외관 | 운영자 화면 (`/admin`) | 공용 화면 (`/`) |
-|---|---|---|
-| ![booth](docs/images/booth.jpg) | ![admin](docs/images/admin.png) | ![public](docs/images/public.png) |
+행사 때 직접 만든 현수막·포스터 그래픽 자산입니다. 손님 사진은 초상권 보호를 위해 공개에서 제외했습니다.
 
-| 원본 컷 | AI 변환 결과 | 4컷 인쇄본 |
-|---|---|---|
-| ![raw](docs/images/sample-raw.jpg) | ![ai](docs/images/sample-ai.jpg) | ![print](docs/images/sample-print.jpg) |
+### 포스터
 
-<!-- 이미지 자리:
-  docs/images/booth.jpg          — 부스 셋업 사진
-  docs/images/admin.png          — /admin 스크린샷
-  docs/images/public.png         — / 공용 화면 스크린샷
-  docs/images/sample-raw.jpg     — 촬영 원본
-  docs/images/sample-ai.jpg      — ComfyUI 결과
-  docs/images/sample-print.jpg   — 최종 인쇄 레이아웃
-  docs/images/demo.gif           — 30초 시연 영상(선택)
--->
+| v1 | v2 |
+|---|---|
+| ![poster-v1](docs/gallery/poster/pixel4cut-poster-v1.png) | ![poster-v2](docs/gallery/poster/pixel4cut-poster-v2.png) |
+
+### 현수막 구성 요소
+
+| 타이틀 | 프롬프트 안내 | 카메라 부스 |
+|---|---|---|
+| ![title](docs/gallery/banner/title-plaque.png) | ![prompts](docs/gallery/banner/prompts-plaque.png) | ![camera](docs/gallery/banner/hero-camera-booth.png) |
+
+| 사진 변환 컨셉 | 하늘 배경 | 지면 스트립 |
+|---|---|---|
+| ![transform](docs/gallery/banner/hero-photo-transform.png) | ![sky](docs/gallery/banner/bg-sky-base.png) | ![ground](docs/gallery/banner/bg-ground-strip.png) |
+
+| 구름 | 반짝임 팩 |
+|---|---|
+| ![cloud](docs/gallery/banner/cloud-01.png) | ![sparkle](docs/gallery/banner/sparkle-pack.png) |
 
 ---
 
