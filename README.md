@@ -2,9 +2,9 @@
 
 행사장에서 손님 한 명을 1분 안에 통과시키는 게 목표였다. DSLR로 찍은 사진을 ComfyUI에 흘려보내 스타일을 입히고, 4컷으로 합쳐 SELPHY로 뽑아 손에 쥐여주는 흐름 — 그걸 운영자 한 명이 한 화면에서 굴릴 수 있게 만든 시스템.
 
-![Hero](docs/images/hero.jpg)
+![Hero](docs/images/hero.png)
 
-<!-- 이미지 자리: docs/images/hero.jpg — 부스 전경 한 컷 -->
+<!-- 이미지 자리: docs/images/hero.png — 동아리 현수막 -->
 
 ---
 
